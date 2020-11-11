@@ -1,33 +1,33 @@
-# Mobzy
+# Looty
 
-![CI](https://github.com/MineInAbyss/Mobzy/workflows/Java%20CI/badge.svg)
+## Overview
 
-### Overview
+Looty is a spigot plugin for creating custom items using our own Geary Entity Component System (ECS). It tries to bring together the super modular design of an ECS with a powerful configuration system to quickly create fancy custom items for Minecraft servers.
 
-Mobzy is a plugin for Spigot/Paper 1.16.2 which allows creating custom entities through an ECS (Entity Component System). It is currently under heavy development.
+## Features/Goals 
+*(most are WIP :p)*
 
-It also handles injecting custom NMS entity types into the server, and packet interception to allow clients to see them. Some of these more general-use features may be placed into their own library eventually.
+### Modular behaviours
 
-### ECS Plans
+ECS allows us to deconstruct complex item behaviours into individual components which we can then add to our items. It makes code easier to maintain and behaviours more reusable!
 
-ECS code currently in this project will eventually be moved into another project, Geary, which will also support custom items.
+### Easy serialization
 
-The project uses kotlinx.serialization for quick and easy serialization of components. This part of the project will eventually be delegated to Story, which will also allow components to be serialized seamlessly to entities.
+Thanks to kotlinx.serialization all our components are automatically serializable without reflection! We can then read them from item config files or save them directly to an item's persistent data container.
 
-Currently, the ECS supports defining custom entity types with static components, as well as pathfinder goals (if they have a registered serializable wrapper class). The plan is to eventually implement a behaviour tree system that fits nicely with the ECS to replace pathfinder goals entirely.
+### Config based items
 
-Some performance improvements (such as archetypes) may be added for the backend for systems iterating over entities, though compared to the cost of Bukkit's operations and Minecraft's poorly optimized entities, the current system is almost sufficient. 
+We provide a config system that allows for creating more complex item behaviours, for example adding components when a spigot event relating to the item occurs, or if a certain condition is met.
 
-![Custom Mobs](https://media.discordapp.net/attachments/464678554681081856/625036159772524582/2019-09-21_19.39.27.png?width=1210&height=681)
+Coders can focus on coding interesting components and systems while designers can tweak numbers and combine things together without messing with your precious code!
 
-### Use
+### Item tracking
 
-- We have [Github packages](https://github.com/MineInAbyss/Mobzy/packages) set up for use with gradle/maven, however the API isn't properly maintained yet. Many things will change as the ECS is being built.
-- There currently isn't a wiki explaining how to use things yet. We'll get one done once the plugin is properly released. You can ask about things in #plugin-dev on our [Discord](https://discord.gg/QXPCk2y).
+Looty will automatically keep track of item entities for you. Essentially, its job is to link Minecraft's concept of an ItemStack (an instance of which will quickly become outdated) to actual ECS entities.
 
-### Additional features
+Currently, we plan on keeping track of items in player inventories and when thrown on the ground. We may also allow specifically marked mobs to keep track of custom items in their inventory (doing this for all mobs would likely be too slow).
 
-- Custom hitboxes (Minecraft normally lets the client handle that, so it wouldn't work on entity types it doesn't know).
-- A small pathfinder goal API, with some premade pathfinders for our own mobs.
-- Custom mob spawning system
-- Configuration for mob drops and spawn locations
+## Biggest issues
+- Lots of caching needs to be done to efficiently keep track of items.
+- There are many design questions regarding how the config system should work and how to handle some complex behaviours.
+- There is no data migration for items, though if using the config system, most important item components would be static and not serialized to the item itself, meaning a config update would often fix issues for all items of that type.

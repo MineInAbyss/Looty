@@ -1,0 +1,14 @@
+name: Looty
+version: @plugin_version@
+author: Offz
+main: com.mineinabyss.looty.Looty
+api-version: 1.16
+depend: [KotlinSpice]
+
+prefix: Looty
+description: Custom items for Geary ECS
+
+commands:
+  looty:
+    description: The main looty command
+    usage: /looty [sub command]

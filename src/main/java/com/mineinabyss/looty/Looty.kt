@@ -20,7 +20,7 @@ class Looty : JavaPlugin(), LootyAddon {
 //        saveDefaultConfig()
 //        reloadConfig()
 
-        LootyECSRegistry.register()
+        attachToGeary()
 
         registerAddonWithLooty()
     }

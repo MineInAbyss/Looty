@@ -11,5 +11,3 @@ pluginManagement {
 }
 
 rootProject.name = 'looty'
-
-includeBuild "../Geary"

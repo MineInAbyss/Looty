@@ -11,6 +11,7 @@ import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
+import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
@@ -20,6 +21,11 @@ import com.mineinabyss.looty.ecs.components.Screaming
 object LootyCommands : IdofrontCommandExecutor() {
     override val commands = commands(looty) {
         "looty" {
+            "reload" {
+                action {
+                    LootyConfig.reload(sender)
+                }
+            }
             "item" {
                 val type by optionArg(options = LootyTypes.types) {
                     parseErrorMessage = { "No such entity: $passed" }

@@ -8,11 +8,12 @@ import org.bukkit.potion.PotionEffectType
 
 @Serializable
 @SerialName("looty:potion")
-class PotionComponent (
+class PotionComponent(
+        //TODO use idofront potion serializer
         @SerialName("effect")
         private val _effect: String,
         val level: Int
-):  GearyComponent(){
+) : GearyComponent() {
     @Transient
     val effect = PotionEffectType.getByName(_effect) ?: error("Invalid potion effect $_effect")
 

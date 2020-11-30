@@ -1,8 +1,10 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
+import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.looty.config.LootyAddon
 import com.mineinabyss.looty.config.registerAddonWithLooty
+import com.mineinabyss.looty.ecs.systems.InventoryTrackingListener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.time.ExperimentalTime
@@ -17,8 +19,13 @@ class Looty : JavaPlugin(), LootyAddon {
     @ExperimentalTime
     override fun onEnable() {
         logger.info("On enable has been called")
-//        saveDefaultConfig()
-//        reloadConfig()
+        saveDefaultConfig()
+        reloadConfig()
+        LootyCommands
+
+        registerEvents(
+                InventoryTrackingListener
+        )
 
         attachToGeary()
 

@@ -24,13 +24,13 @@ data class LootyType(
 
     fun instantiateItemStack() = item.toItemStack().apply {
         itemMeta = itemMeta.apply {
-            persistentDataContainer.encodeComponents(instantiateComponents() + StaticType(name))
+            persistentDataContainer.encodeComponents(instantiateComponents() + StaticType("Looty", name))
         }
     }
 
     override fun instantiate(): LootyEntity = //TODO should we even instantiate all this stuff right away?
             LootyEntity(Engine.getNextId(), instantiateItemStack()).apply {
-                addComponent(StaticType(name))
+                addComponent(StaticType("Looty", name))
                 addComponents(instantiateComponents())
             }
 }

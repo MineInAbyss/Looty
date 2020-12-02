@@ -1,28 +1,17 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.GearyEntity
 import com.mineinabyss.geary.ecs.components.*
 import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.ecs.engine.forEach
-import com.mineinabyss.geary.ecs.remove
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.geary.minecraft.store.*
-import com.mineinabyss.idofront.destructure.component1
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.Held
 import com.mineinabyss.looty.ecs.components.LootyEntity
-import org.bukkit.Material
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityPickupItemEvent
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerItemHeldEvent
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.PlayerInventory
-import kotlin.collections.set
 
 /**
  * ItemStack instances are super disposable, they don't represent real items. Additionally, tracking items is
@@ -37,59 +26,51 @@ import kotlin.collections.set
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    override fun tick() = Engine.forEach<PlayerComponent, ChildItemCache> { (player), inventoryComponent ->
+    override fun tick() = Engine.forEach<PlayerComponent, ChildItemCache> { (player), childItemCache ->
         //TODO make children use an engine too, then easily remove all held components
-        inventoryComponent.updateAndSaveItems(player.inventory, this)
+        childItemCache.updateAndSaveItems(player.inventory)
 
         //Add a held component to currently held item
-        inventoryComponent[player.inventory.heldItemSlot]?.addComponent(Held())
+        childItemCache[player.inventory.heldItemSlot]?.addComponent(Held())
     }
 
-    //FIXME seems when a duplicate item happens it doesn't get removed?
-    fun ChildItemCache.updateAndSaveItems(inventory: PlayerInventory, gearyEntity: GearyEntity) {
-        val oldCache = toMutableMap()
-        val newCache = mutableMapOf<Int, LootyEntity>()
+    //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
+    // not be tracked. Either we need a GC or make 1000% this never fails.
+    fun ChildItemCache.updateAndSaveItems(inventory: PlayerInventory) {
         val heldSlot = inventory.heldItemSlot
         //TODO prevent issues with children and id changes
 
-        inventory.forEachIndexed { i, item ->
+        inventory.forEachIndexed { slot, item ->
+
+            //================================ TODO MOVE OUT PROLLY cause we re-read meta when adding entity
             if (item == null || !item.hasItemMeta()) return@forEachIndexed
             val meta = item.itemMeta
             val container = meta.persistentDataContainer
             if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
+            //================================
 
-            //if the items match exactly, encode components
-            val cachedItemEntity = oldCache[i]
-            val itemEntity: GearyEntity = if (item == cachedItemEntity?.item) {
-                oldCache.remove(i)
-                container.encodeComponents(cachedItemEntity.getComponents())
-                cachedItemEntity
-            } else {
-                //if our old list of items still contains an item equal to this, simply update the indices
-                val equivalent = oldCache.entries.find { it.value.item == item }
-                if (equivalent != null) {
-                    oldCache.remove(equivalent.key)
-                    equivalent.value
-                } else { //if we didn't find an equal item, this must be a new one
-                    val entity = Engine.entity new@{ //TODO do we need new@?
-                        addComponents(container.decodeComponents())
-                    }
-                    gearyEntity.addChild(entity)
-                    entity
-                }
+            val cachedItemEntity: LootyEntity? = get(slot)
+
+            //if the items match exactly, encode components to the itemstack
+            if (item == cachedItemEntity?.item)
+                cachedItemEntity.writeToItem(item)
+            //otherwise try to find an equivalent item to attach back to (i.e. it was moved but we didn't notice)
+            // or finally add this as a new item to the system
+            else {
+                //TODO separate adding components into separate system?
+                val equivalent: LootyEntity? = TODO("Find equivalent")
+                if (equivalent != null)
+                //TODO I don't like moving items around all willy nilly, if an error has occurred we should just
+                // forget about it and re-serialize, not have a chance to attach to an unrelated item that happens to equal.
+                    move(equivalent.slot, slot)
+                //if we didn't find an equal item, this must be a new one
+                else add(slot, item)
             }
-            //TODO custom item config system
-            if (i != heldSlot) itemEntity.removeComponent<Held>()
+            //TODO managing whether an item is in main hand/offhand/armor, etc...
+            // This might be better to just evaluate as we go if we know slot in LootyEntity
 
-            //save the new encoded components to the actual item meta, and place them into the new cache
-            //TODO dont save if no changes found
-            item.itemMeta = meta
-            newCache[i] = LootyEntity(itemEntity.gearyId, item)
-        }
-        oldCache.values.forEach {
-            it.remove()
         }
 
-        update(newCache)
+        //TODO call killCache on the item cache or the like here to remove all items that were overridden but not reassigned
     }
 }

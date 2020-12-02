@@ -35,7 +35,7 @@ fun Looty.attachToGeary() {
             }
             onPlayerUnregister { gearyPlayer, player ->
                 gearyPlayer.with<ChildItemCache> {
-                    it.updateAndSaveItems(player.inventory, gearyPlayer)
+                    it.updateAndSaveItems(player.inventory)
                     it.clear()
                 }
             }

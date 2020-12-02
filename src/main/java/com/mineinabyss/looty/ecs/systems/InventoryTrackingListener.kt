@@ -75,7 +75,7 @@ object InventoryTrackingListener : Listener {
         player.with<ChildItemCache> { inventory ->
             val mainHandSlot = player.inventory.heldItemSlot
 
-            inventory.swapSlotCache(mainHandSlot, offHandSlot)
+            inventory.swap(mainHandSlot, offHandSlot)
 
             //we always want to remove from offhand and add into main hand
             inventory.swapHeldComponent(removeFrom = offHandSlot, addTo = mainHandSlot)
@@ -94,7 +94,7 @@ object InventoryTrackingListener : Listener {
         val (player) = e
         geary(player) {
             with<ChildItemCache> {
-                it.updateAndSaveItems(player.inventory, this)
+                it.updateAndSaveItems(player.inventory)
             }
         }
     }
@@ -105,7 +105,7 @@ object InventoryTrackingListener : Listener {
         geary(player) {
             with<ChildItemCache> {
                 //TODO item is not in inventory yet when we run this, run next tick?
-                it.updateAndSaveItems(player.inventory, this)
+                it.updateAndSaveItems(player.inventory)
             }
         }
     }

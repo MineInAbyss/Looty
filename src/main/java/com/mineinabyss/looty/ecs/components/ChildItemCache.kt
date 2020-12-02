@@ -6,7 +6,6 @@ import com.mineinabyss.geary.ecs.components.addChild
 import com.mineinabyss.geary.ecs.components.addComponents
 import com.mineinabyss.geary.ecs.components.getComponents
 import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.ecs.remove
 import com.mineinabyss.geary.minecraft.store.decodeComponents
 import com.mineinabyss.geary.minecraft.store.encodeComponents
@@ -17,9 +16,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 
 class ChildItemCache(
-        private val _itemCache: MutableMap<Int, LootyEntity> = mutableMapOf(),
         //TODO component probably shouldn't have access to the parent entity, do this in a system instead?
-        private val parent: Player//InventoryHolder,
+        private val parent: Player, //InventoryHolder
+        //TODO don't use a map, some better array structure instead.
+        private val _itemCache: MutableMap<Int, LootyEntity> = mutableMapOf(),
 ) : GearyComponent() {
     //yeah this is probably a sign this should be in a system
     private val gearyParent: GearyEntity by lazy { geary(parent)!! } //TODO !!
@@ -27,19 +27,23 @@ class ChildItemCache(
     //TODO getting entity
     operator fun get(slot: Int): LootyEntity? = _itemCache[slot]
 
-    /** TODO Updates the ItemStack reference for the entity in this [slot]. */
-    fun update(slot: Int) {
-        _itemCache[slot] = entity
+    /** Updates the ItemStack reference for the entity in this [slot]. */
+    fun update(slot: Int, item: ItemStack) {
+        _itemCache[slot]?.item = item
     }
 
     /** Adds a new entity into a specified [slot], given an accompanying [item] */
     fun add(slot: Int, item: ItemStack): GearyEntity {
-        val entity = Engine.entity {
+        val entity = LootyEntity(Engine.getNextId(), item, slot).apply {
             //TODO safety with itemMeta and perhaps sidestep copying it
             addComponents(item.itemMeta.persistentDataContainer.decodeComponents())
         }
+        //TODO isntead use Engine.entity { }
         gearyParent.addChild(entity)
-        remove(slot) //TODO instead of just removing, we want to remove and keep cached which swap could then look at
+
+        //remove the old entity from ECS entirely and replace with the new one
+        remove(slot)
+        _itemCache[slot] = entity
 
         return entity
     }
@@ -73,14 +77,21 @@ class ChildItemCache(
         if (secondTemp == null) _itemCache.remove(first)
         else _itemCache[first] = secondTemp
     }
+
+    internal fun clear() {
+        _itemCache.keys.forEach { index ->
+            remove(index)
+        }
+    }
 }
 
 //TODO figure out how to store info on the ItemStack within the actual ECS.
 data class LootyEntity(
         override val gearyId: Int,
-        val item: ItemStack,
+        var item: ItemStack, //TODO should setter be internal?
         var slot: Int,
 ) : GearyEntity {
+
     /** Serializes the entity's components to an [ItemStack]'s [PersistentDataContainer] */
     fun writeToItem(item: ItemStack) {
         //TODO don't clone itemMeta yet another time

@@ -52,20 +52,8 @@ object ItemTrackerSystem : TickingSystem(interval = 100) {
             val cachedItemEntity: LootyEntity? = get(slot)
 
             //if the items match exactly, encode components to the itemstack
-            if (item == cachedItemEntity?.item)
-                cachedItemEntity.writeToItem(item)
-            //otherwise try to find an equivalent item to attach back to (i.e. it was moved but we didn't notice)
-            // or finally add this as a new item to the system
-            else {
-                //TODO separate adding components into separate system?
-                val equivalent: LootyEntity? = TODO("Find equivalent")
-                if (equivalent != null)
-                //TODO I don't like moving items around all willy nilly, if an error has occurred we should just
-                // forget about it and re-serialize, not have a chance to attach to an unrelated item that happens to equal.
-                    move(equivalent.slot, slot)
-                //if we didn't find an equal item, this must be a new one
-                else add(slot, item)
-            }
+            if (item != cachedItemEntity?.item)
+                add(slot, item)
             //TODO managing whether an item is in main hand/offhand/armor, etc...
             // This might be better to just evaluate as we go if we know slot in LootyEntity
 

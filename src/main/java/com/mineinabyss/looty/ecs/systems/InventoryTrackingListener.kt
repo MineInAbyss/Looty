@@ -1,14 +1,14 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.components.addChild
-import com.mineinabyss.geary.ecs.components.addComponents
 import com.mineinabyss.geary.ecs.components.with
-import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.entity
-import com.mineinabyss.geary.minecraft.store.*
+import com.mineinabyss.geary.minecraft.store.geary
+import com.mineinabyss.geary.minecraft.store.get
+import com.mineinabyss.geary.minecraft.store.isGearyEntity
+import com.mineinabyss.geary.minecraft.store.with
 import com.mineinabyss.idofront.destructure.component1
+import com.mineinabyss.idofront.destructure.component2
+import com.mineinabyss.idofront.destructure.component3
 import com.mineinabyss.looty.ecs.components.ChildItemCache
-import com.mineinabyss.looty.ecs.components.LootyEntity
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem.updateAndSaveItems
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -28,7 +28,7 @@ object InventoryTrackingListener : Listener {
         val currItem = e.currentItem //REMOVE: the item that was clicked and its slot
 
         val player = e.whoClicked
-        val inventory = player.get<ChildItemCache>() ?: return
+        val itemCache = player.get<ChildItemCache>() ?: return
 
 //        player.info("""
 //            Cursor: ${e.cursor}
@@ -37,21 +37,20 @@ object InventoryTrackingListener : Listener {
 //        """.trimIndent())
 
         //shift clicking still considers cursor null and we don't know the location being put into TODO try to see if we can find it
+
         if (e.isShiftClick) return
 
         //TODO if both cursor and currItem aren't null, we try to swap them instead of removing
-        if (cursor == null || cursor.type == Material.AIR) { //remove if cursor had nothing
-            inventory.remove(e.slot)
-        } else if (cursor.hasItemMeta()) { //otherwise, cursor into cache
+        //remove if cursor had nothing (item clicked on and taken out of inventory)
+        if (cursor == null || cursor.type == Material.AIR)
+            itemCache.remove(e.slot)
+        //otherwise, add cursor to cache
+        //TODO stop this if clicked inventory is chest as well
+        else if (cursor.hasItemMeta() && e.clickedInventory != null) {
+            //TODO re-reading meta here
             val meta = cursor.itemMeta
             if (!meta.persistentDataContainer.isGearyEntity) return
-
-            val entity = Engine.entity {
-                addComponents(meta.persistentDataContainer.decodeComponents())
-            }
-            //TODO adding child should be done within inv
-            geary(player)?.addChild(entity)
-            inventory[e.slot] = LootyEntity(entity.gearyId, cursor)
+            itemCache.add(e.slot, cursor)
         }
     }
 
@@ -60,25 +59,23 @@ object InventoryTrackingListener : Listener {
     //TODO remove held when swapping into offhand
     @EventHandler
     fun onHeldItemSwap(e: PlayerItemHeldEvent) {
-//        val (player, prevSlot, newSlot) = e //TODO switch to this when updating idofront
-        val player = e.player
-        val prevSlot = e.previousSlot
-        val newSlot = e.newSlot
-        player.get<ChildItemCache>()?.swapHeldComponent(prevSlot, newSlot)
+        val (player, prevSlot, newSlot) = e
+        player.get<ChildItemCache>()?.swap(prevSlot, newSlot)
     }
 
-    private const val offHandSlot = 40 //TODO is there a version safe way of getting this slot via enum or something?
+    //TODO is there a version safe way of getting this slot via enum or something?
+    private const val offHandSlot = 40
 
     @EventHandler
     fun onSwapOffhand(e: PlayerSwapHandItemsEvent) {
         val (player) = e
-        player.with<ChildItemCache> { inventory ->
+        player.with<ChildItemCache> { itemCache ->
             val mainHandSlot = player.inventory.heldItemSlot
 
-            inventory.swap(mainHandSlot, offHandSlot)
+            itemCache.swap(mainHandSlot, offHandSlot)
 
             //we always want to remove from offhand and add into main hand
-            inventory.swapHeldComponent(removeFrom = offHandSlot, addTo = mainHandSlot)
+//            inventory.swapHeldComponent(removeFrom = offHandSlot, addTo = mainHandSlot)
         }
 
     }

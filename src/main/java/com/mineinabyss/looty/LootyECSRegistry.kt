@@ -30,8 +30,8 @@ fun Looty.attachToGeary() {
         }
 
         bukkitEntityAccess {
-            onPlayerRegister {
-                add(ChildItemCache())
+            onPlayerRegister { player ->
+                add(ChildItemCache(player))
             }
             onPlayerUnregister { gearyPlayer, player ->
                 gearyPlayer.with<ChildItemCache> {

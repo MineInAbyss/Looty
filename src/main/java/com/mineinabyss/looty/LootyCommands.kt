@@ -41,7 +41,7 @@ object LootyCommands : IdofrontCommandExecutor() {
                 "registerself" {
                     playerAction {
                         Engine.entity {
-                            addComponents(setOf(PlayerComponent(player.uniqueId), ChildItemCache()))
+                            addComponents(setOf(PlayerComponent(player.uniqueId), ChildItemCache(player)))
                         }
                     }
                 }

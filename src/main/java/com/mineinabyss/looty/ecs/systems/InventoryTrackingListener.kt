@@ -9,7 +9,6 @@ import com.mineinabyss.idofront.destructure.component1
 import com.mineinabyss.idofront.destructure.component2
 import com.mineinabyss.idofront.destructure.component3
 import com.mineinabyss.looty.ecs.components.ChildItemCache
-import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem.updateAndSaveItems
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -91,7 +90,7 @@ object InventoryTrackingListener : Listener {
         val (player) = e
         geary(player) {
             with<ChildItemCache> {
-                it.updateAndSaveItems(player.inventory)
+                it.update(player.inventory)
             }
         }
     }
@@ -102,7 +101,7 @@ object InventoryTrackingListener : Listener {
         geary(player) {
             with<ChildItemCache> {
                 //TODO item is not in inventory yet when we run this, run next tick?
-                it.updateAndSaveItems(player.inventory)
+                it.update(player.inventory)
             }
         }
     }

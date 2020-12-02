@@ -10,9 +10,11 @@ import com.mineinabyss.geary.ecs.remove
 import com.mineinabyss.geary.minecraft.store.decodeComponents
 import com.mineinabyss.geary.minecraft.store.encodeComponents
 import com.mineinabyss.geary.minecraft.store.geary
+import com.mineinabyss.geary.minecraft.store.isGearyEntity
 import com.mineinabyss.idofront.items.editItemMeta
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 import org.bukkit.persistence.PersistentDataContainer
 
 class ChildItemCache(
@@ -82,6 +84,41 @@ class ChildItemCache(
         _itemCache.keys.forEach { index ->
             remove(index)
         }
+    }
+
+    //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
+    // not be tracked. Either we need a GC or make 1000% this never fails.
+    @Synchronized
+    fun update(inventory: PlayerInventory) {
+        val heldSlot = inventory.heldItemSlot
+        //we remove any items from this copy that were modified, whatever remains will be removed
+        val untouched = _itemCache.toMutableMap()
+        //TODO prevent issues with children and id changes
+
+        inventory.forEachIndexed { slot, item ->
+
+            //================================ TODO MOVE OUT PROLLY cause we re-read meta when adding entity
+            if (item == null || !item.hasItemMeta()) return@forEachIndexed
+            val meta = item.itemMeta
+            val container = meta.persistentDataContainer
+            if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
+            //================================
+
+            val cachedItemEntity: LootyEntity? = get(slot)
+
+            //TODO if changes were made to the ECS entity, they should be re-serialized here
+            //if the items match exactly, encode components to the itemstack
+            if (item != cachedItemEntity?.item) {
+                add(slot, item)
+            }
+
+            untouched -= slot
+
+            //TODO managing whether an item is in main hand/offhand/armor, etc...
+            // This might be better to just evaluate as we go if we know slot in LootyEntity
+        }
+
+        untouched.keys.forEach { remove(it) }
     }
 }
 

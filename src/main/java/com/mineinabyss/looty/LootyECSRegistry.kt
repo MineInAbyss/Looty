@@ -8,7 +8,6 @@ import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
-import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem.updateAndSaveItems
 import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
 import com.mineinabyss.looty.ecs.systems.ScreamingSystem
 import kotlinx.serialization.modules.polymorphic
@@ -35,7 +34,7 @@ fun Looty.attachToGeary() {
             }
             onPlayerUnregister { gearyPlayer, player ->
                 gearyPlayer.with<ChildItemCache> {
-                    it.updateAndSaveItems(player.inventory)
+                    it.update(player.inventory)
                     it.clear()
                 }
             }

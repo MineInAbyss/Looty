@@ -7,11 +7,8 @@ import com.mineinabyss.geary.ecs.engine.Engine
 import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
-import com.mineinabyss.geary.minecraft.store.*
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.Held
-import com.mineinabyss.looty.ecs.components.LootyEntity
-import org.bukkit.inventory.PlayerInventory
 
 /**
  * ItemStack instances are super disposable, they don't represent real items. Additionally, tracking items is
@@ -28,37 +25,9 @@ import org.bukkit.inventory.PlayerInventory
 object ItemTrackerSystem : TickingSystem(interval = 100) {
     override fun tick() = Engine.forEach<PlayerComponent, ChildItemCache> { (player), childItemCache ->
         //TODO make children use an engine too, then easily remove all held components
-        childItemCache.updateAndSaveItems(player.inventory)
+        childItemCache.update(player.inventory)
 
         //Add a held component to currently held item
         childItemCache[player.inventory.heldItemSlot]?.addComponent(Held())
-    }
-
-    //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
-    // not be tracked. Either we need a GC or make 1000% this never fails.
-    fun ChildItemCache.updateAndSaveItems(inventory: PlayerInventory) {
-        val heldSlot = inventory.heldItemSlot
-        //TODO prevent issues with children and id changes
-
-        inventory.forEachIndexed { slot, item ->
-
-            //================================ TODO MOVE OUT PROLLY cause we re-read meta when adding entity
-            if (item == null || !item.hasItemMeta()) return@forEachIndexed
-            val meta = item.itemMeta
-            val container = meta.persistentDataContainer
-            if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
-            //================================
-
-            val cachedItemEntity: LootyEntity? = get(slot)
-
-            //if the items match exactly, encode components to the itemstack
-            if (item != cachedItemEntity?.item)
-                add(slot, item)
-            //TODO managing whether an item is in main hand/offhand/armor, etc...
-            // This might be better to just evaluate as we go if we know slot in LootyEntity
-
-        }
-
-        //TODO call killCache on the item cache or the like here to remove all items that were overridden but not reassigned
     }
 }

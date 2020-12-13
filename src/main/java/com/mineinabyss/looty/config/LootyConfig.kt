@@ -11,7 +11,9 @@ import kotlinx.serialization.Serializable
 
 object LootyConfig : IdofrontConfig<LootyConfig.Data>(looty, Data.serializer()) {
     @Serializable
-    class Data
+    class Data(
+            val debug: Boolean = false
+    )
 
     private val addons = mutableListOf<LootyAddon>()
 

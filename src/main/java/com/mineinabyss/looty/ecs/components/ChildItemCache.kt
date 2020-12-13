@@ -12,6 +12,7 @@ import com.mineinabyss.geary.minecraft.store.encodeComponents
 import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.geary.minecraft.store.isGearyEntity
 import com.mineinabyss.idofront.items.editItemMeta
+import com.mineinabyss.looty.debug
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
@@ -24,14 +25,19 @@ class ChildItemCache(
         private val _itemCache: MutableMap<Int, LootyEntity> = mutableMapOf(),
 ) : GearyComponent() {
     //yeah this is probably a sign this should be in a system
-    private val gearyParent: GearyEntity by lazy { geary(parent)!! } //TODO !!
+    private val gearyParent: GearyEntity by lazy {
+        geary(parent) ?: error("$parent was not registered with geary.")
+    }
 
-    //TODO getting entity
     operator fun get(slot: Int): LootyEntity? = _itemCache[slot]
 
     /** Updates the ItemStack reference for the entity in this [slot]. */
     fun update(slot: Int, item: ItemStack) {
         _itemCache[slot]?.item = item
+    }
+
+    fun update(slot: Int, edit: ItemStack.() -> Unit) {
+        _itemCache[slot]?.item?.apply(edit)
     }
 
     /** Adds a new entity into a specified [slot], given an accompanying [item] */
@@ -40,12 +46,13 @@ class ChildItemCache(
             //TODO safety with itemMeta and perhaps sidestep copying it
             addComponents(item.itemMeta.persistentDataContainer.decodeComponents())
         }
-        //TODO isntead use Engine.entity { }
+        //TODO instead use Engine.entity { }
         gearyParent.addChild(entity)
 
         //remove the old entity from ECS entirely and replace with the new one
         remove(slot)
         _itemCache[slot] = entity
+        debug("Added to $slot")
 
         return entity
     }
@@ -58,7 +65,10 @@ class ChildItemCache(
 
     /** Stops tracking entity in [slot] and removes it from ECS. */
     fun remove(slot: Int) {
-        _itemCache[slot]?.remove()
+        _itemCache[slot]?.apply {
+            remove()
+            debug("Removed from $slot")
+        }
         _itemCache -= slot
     }
 
@@ -78,6 +88,7 @@ class ChildItemCache(
 
         if (secondTemp == null) _itemCache.remove(first)
         else _itemCache[first] = secondTemp
+        debug("Swapped $first and $second")
     }
 
     internal fun clear() {

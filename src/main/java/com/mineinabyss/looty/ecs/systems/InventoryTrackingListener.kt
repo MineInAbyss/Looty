@@ -6,21 +6,19 @@ import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.geary.minecraft.store.isGearyEntity
 import com.mineinabyss.geary.minecraft.store.with
 import com.mineinabyss.idofront.destructure.component1
-import com.mineinabyss.idofront.destructure.component2
-import com.mineinabyss.idofront.destructure.component3
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 object InventoryTrackingListener : Listener {
-    //TODO issues when clicking too fast causes duplicate item
+    //TODO drag clicking is a separate event
     @EventHandler
     fun itemMoveEvent(e: InventoryClickEvent) {
         val cursor = e.cursor //ADD: the item that was put into the slot
@@ -35,32 +33,50 @@ object InventoryTrackingListener : Listener {
 //            Slot: ${e.slot}
 //        """.trimIndent())
 
-        //shift clicking still considers cursor null and we don't know the location being put into TODO try to see if we can find it
+        if (currItem != null) {
+            //if right clicking on an item with more than one stack, half of it will still
+            // stay in the inv, so we shouldn't remove it
+            if (e.click == ClickType.RIGHT && currItem.amount > 1) {
+                //TODO update amount here as well
+                return
+            }
+            //if adding onto a stack of existing items, just keep the old entity
 
-        if (e.isShiftClick) return
+            else if (cursor != null && e.click == ClickType.LEFT && currItem.isSimilar(cursor)) {
+                itemCache.update(e.slot) {
+                    //TODO the item in cache is sometimes the literal inventory item, causing duple glitches
+                    // when we increase its amount
+//                    amount = currItem.amount + cursor.amount
+                }
+                return
+            }
+        }
 
-        //TODO if both cursor and currItem aren't null, we try to swap them instead of removing
+        //TODO we don't know what slot shift clicking puts the item into, but preferably
+        // we'd like to move the entity's cached slot. Currently it just gets removed.
+        //if(e.isShiftClick){}
+
         //remove if cursor had nothing (item clicked on and taken out of inventory)
         if (cursor == null || cursor.type == Material.AIR)
             itemCache.remove(e.slot)
         //otherwise, add cursor to cache
-        //TODO stop this if clicked inventory is chest as well
-        else if (cursor.hasItemMeta() && e.clickedInventory != null) {
+        else if (cursor.hasItemMeta() && e.clickedInventory == player.inventory) {
             //TODO re-reading meta here
             val meta = cursor.itemMeta
             if (!meta.persistentDataContainer.isGearyEntity) return
-            itemCache.add(e.slot, cursor)
+            //clone required since item becomes AIR after this, I assume event messes with it
+            itemCache.add(e.slot, cursor.clone())
         }
     }
 
     /** Immediately adds a held component to the currently held item. */
     //TODO another component for when in offhand
     //TODO remove held when swapping into offhand
-    @EventHandler
+    /*@EventHandler
     fun onHeldItemSwap(e: PlayerItemHeldEvent) {
         val (player, prevSlot, newSlot) = e
-        player.get<ChildItemCache>()?.swap(prevSlot, newSlot)
-    }
+        player.get<ChildItemCache>()?.swapHeld(prevSlot, newSlot)
+    }*/
 
     //TODO is there a version safe way of getting this slot via enum or something?
     private const val offHandSlot = 40

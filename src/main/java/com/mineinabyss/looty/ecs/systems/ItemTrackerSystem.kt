@@ -8,7 +8,6 @@ import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.looty.ecs.components.ChildItemCache
-import com.mineinabyss.looty.ecs.components.Held
 
 /**
  * ItemStack instances are super disposable, they don't represent real items. Additionally, tracking items is
@@ -25,9 +24,9 @@ import com.mineinabyss.looty.ecs.components.Held
 object ItemTrackerSystem : TickingSystem(interval = 100) {
     override fun tick() = Engine.forEach<PlayerComponent, ChildItemCache> { (player), childItemCache ->
         //TODO make children use an engine too, then easily remove all held components
-        childItemCache.update(player.inventory)
+        childItemCache.reevaluate(player.inventory)
 
         //Add a held component to currently held item
-        childItemCache[player.inventory.heldItemSlot]?.addComponent(Held())
+//        childItemCache[player.inventory.heldItemSlot]?.addComponent(Held())
     }
 }

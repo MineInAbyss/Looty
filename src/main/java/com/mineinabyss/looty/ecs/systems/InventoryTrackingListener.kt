@@ -3,7 +3,7 @@ package com.mineinabyss.looty.ecs.systems
 import com.mineinabyss.geary.ecs.components.with
 import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.geary.minecraft.store.get
-import com.mineinabyss.geary.minecraft.store.isGearyEntity
+import com.mineinabyss.geary.minecraft.isGearyEntity
 import com.mineinabyss.geary.minecraft.store.with
 import com.mineinabyss.idofront.destructure.component1
 import com.mineinabyss.looty.ecs.components.ChildItemCache
@@ -106,7 +106,7 @@ object InventoryTrackingListener : Listener {
         val (player) = e
         geary(player) {
             with<ChildItemCache> {
-                it.update(player.inventory)
+                it.reevaluate(player.inventory)
             }
         }
     }
@@ -117,7 +117,7 @@ object InventoryTrackingListener : Listener {
         geary(player) {
             with<ChildItemCache> {
                 //TODO item is not in inventory yet when we run this, run next tick?
-                it.update(player.inventory)
+                it.reevaluate(player.inventory)
             }
         }
     }

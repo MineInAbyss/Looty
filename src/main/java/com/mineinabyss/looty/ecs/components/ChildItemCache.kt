@@ -2,52 +2,49 @@ package com.mineinabyss.looty.ecs.components
 
 import com.mineinabyss.geary.ecs.GearyComponent
 import com.mineinabyss.geary.ecs.GearyEntity
-import com.mineinabyss.geary.ecs.components.addChild
-import com.mineinabyss.geary.ecs.components.addComponents
-import com.mineinabyss.geary.ecs.components.getComponents
+import com.mineinabyss.geary.ecs.components.*
 import com.mineinabyss.geary.ecs.engine.Engine
+import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.ecs.remove
+import com.mineinabyss.geary.minecraft.components.ItemComponent
 import com.mineinabyss.geary.minecraft.store.decodeComponents
-import com.mineinabyss.geary.minecraft.store.encodeComponents
 import com.mineinabyss.geary.minecraft.store.geary
-import com.mineinabyss.geary.minecraft.store.isGearyEntity
-import com.mineinabyss.idofront.items.editItemMeta
+import com.mineinabyss.geary.minecraft.isGearyEntity
 import com.mineinabyss.looty.debug
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
-import org.bukkit.persistence.PersistentDataContainer
 
 class ChildItemCache(
         //TODO component probably shouldn't have access to the parent entity, do this in a system instead?
         private val parent: Player, //InventoryHolder
         //TODO don't use a map, some better array structure instead.
-        private val _itemCache: MutableMap<Int, LootyEntity> = mutableMapOf(),
+        private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
 ) : GearyComponent() {
     //yeah this is probably a sign this should be in a system
     private val gearyParent: GearyEntity by lazy {
         geary(parent) ?: error("$parent was not registered with geary.")
     }
 
-    operator fun get(slot: Int): LootyEntity? = _itemCache[slot]
+    operator fun get(slot: Int): GearyEntity? = _itemCache[slot]
 
     /** Updates the ItemStack reference for the entity in this [slot]. */
     fun update(slot: Int, item: ItemStack) {
-        _itemCache[slot]?.item = item
+        _itemCache[slot]?.get<ItemComponent>()?.item = item
     }
 
     fun update(slot: Int, edit: ItemStack.() -> Unit) {
-        _itemCache[slot]?.item?.apply(edit)
+        _itemCache[slot]?.get<ItemComponent>()?.item?.apply(edit)
     }
 
     /** Adds a new entity into a specified [slot], given an accompanying [item] */
     fun add(slot: Int, item: ItemStack): GearyEntity {
-        val entity = LootyEntity(Engine.getNextId(), item, slot).apply {
+        val entity = Engine.entity {
+            addComponent(ItemComponent(item, slot))
             //TODO safety with itemMeta and perhaps sidestep copying it
             addComponents(item.itemMeta.persistentDataContainer.decodeComponents())
+            parent = gearyParent
         }
-        //TODO instead use Engine.entity { }
-        gearyParent.addChild(entity)
 
         //remove the old entity from ECS entirely and replace with the new one
         remove(slot)
@@ -100,7 +97,7 @@ class ChildItemCache(
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
     // not be tracked. Either we need a GC or make 1000% this never fails.
     @Synchronized
-    fun update(inventory: PlayerInventory) {
+    fun reevaluate(inventory: PlayerInventory) {
         val heldSlot = inventory.heldItemSlot
         //we remove any items from this copy that were modified, whatever remains will be removed
         val untouched = _itemCache.toMutableMap()
@@ -115,37 +112,22 @@ class ChildItemCache(
             if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
             //================================
 
-            val cachedItemEntity: LootyEntity? = get(slot)
+            get(slot)?.with<ItemComponent> { lootyItem ->
+                //TODO if changes were made to the ECS entity, they should be re-serialized here
+                //if the items match exactly, encode components to the itemstack
+                if (item != lootyItem.item) {
+                    add(slot, item)
+                }
 
-            //TODO if changes were made to the ECS entity, they should be re-serialized here
-            //if the items match exactly, encode components to the itemstack
-            if (item != cachedItemEntity?.item) {
-                add(slot, item)
+                untouched -= slot
+
+                //TODO managing whether an item is in main hand/offhand/armor, etc...
+                // This might be better to just evaluate as we go if we know slot in LootyEntity
+
             }
 
-            untouched -= slot
-
-            //TODO managing whether an item is in main hand/offhand/armor, etc...
-            // This might be better to just evaluate as we go if we know slot in LootyEntity
         }
 
         untouched.keys.forEach { remove(it) }
-    }
-}
-
-//TODO figure out how to store info on the ItemStack within the actual ECS.
-data class LootyEntity(
-        override val gearyId: Int,
-        var item: ItemStack, //TODO should setter be internal?
-        var slot: Int,
-) : GearyEntity {
-
-    /** Serializes the entity's components to an [ItemStack]'s [PersistentDataContainer] */
-    fun writeToItem(item: ItemStack) {
-        //TODO don't clone itemMeta yet another time
-        //TODO dont save if no changes found to avoid extra computations
-        item.editItemMeta {
-            persistentDataContainer.encodeComponents(getComponents())
-        }
     }
 }

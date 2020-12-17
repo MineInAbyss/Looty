@@ -1,14 +1,11 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.GearyComponent
 import com.mineinabyss.geary.ecs.components.addComponents
 import com.mineinabyss.geary.ecs.components.getComponents
 import com.mineinabyss.geary.ecs.engine.Engine
 import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
-import com.mineinabyss.geary.minecraft.store.encodeComponents
 import com.mineinabyss.geary.minecraft.store.get
-import com.mineinabyss.idofront.commands.Command
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
@@ -17,8 +14,6 @@ import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
-import com.mineinabyss.looty.ecs.components.PotionComponent
-import com.mineinabyss.looty.ecs.components.Screaming
 
 @ExperimentalCommandDSL
 object LootyCommands : IdofrontCommandExecutor() {

@@ -7,9 +7,9 @@ import com.mineinabyss.geary.ecs.engine.Engine
 import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.ecs.remove
 import com.mineinabyss.geary.minecraft.components.ItemComponent
-import com.mineinabyss.geary.minecraft.store.decodeComponents
-import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.geary.minecraft.isGearyEntity
+import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
+import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.looty.debug
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -42,7 +42,7 @@ class ChildItemCache(
         val entity = Engine.entity {
             addComponent(ItemComponent(item, slot))
             //TODO safety with itemMeta and perhaps sidestep copying it
-            addComponents(item.itemMeta.persistentDataContainer.decodeComponents())
+            decodeComponentsFrom(item.itemMeta.persistentDataContainer)
             parent = gearyParent
         }
 

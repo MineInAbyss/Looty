@@ -36,6 +36,7 @@ object LootyConfig : IdofrontConfig<LootyConfig.Data>(looty, Data.serializer()) 
         }
     }
 
+    //TODO put something like this into geary ecs registration and share with mobzy
     private fun activateAddons() {
         LootyTypes.reset()
         for (addon in addons) {

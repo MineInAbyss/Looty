@@ -18,6 +18,6 @@ data class LootyType(
     override val types = LootyTypes
 
     fun instantiateItemStack() = item.toItemStack().editItemMeta {
-        encodeTo(persistentDataContainer)
+        encodeComponentsTo(persistentDataContainer)
     }
 }

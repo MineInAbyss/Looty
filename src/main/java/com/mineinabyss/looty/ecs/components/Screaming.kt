@@ -8,4 +8,4 @@ import kotlinx.serialization.Serializable
 @SerialName("debug:screaming")
 data class Screaming (
         val scream: String = "AAAAAAAAAAAA"
-):  GearyComponent()
+):  GearyComponent

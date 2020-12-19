@@ -20,7 +20,7 @@ class ChildItemCache(
         private val parent: Player, //InventoryHolder
         //TODO don't use a map, some better array structure instead.
         private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
-) : GearyComponent() {
+) : GearyComponent {
     //yeah this is probably a sign this should be in a system
     private val gearyParent: GearyEntity by lazy {
         geary(parent) ?: error("$parent was not registered with geary.")

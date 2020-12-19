@@ -13,7 +13,7 @@ class PotionComponent(
         @SerialName("effect")
         private val _effect: String,
         val level: Int
-) : GearyComponent() {
+) : GearyComponent {
     @Transient
     val effect = PotionEffectType.getByName(_effect) ?: error("Invalid potion effect $_effect")
 

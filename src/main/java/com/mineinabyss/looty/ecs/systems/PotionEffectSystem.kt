@@ -7,11 +7,10 @@ import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.looty.ecs.components.PotionComponent
-import org.bukkit.potion.PotionEffect
 
 object PotionEffectSystem : TickingSystem(interval = 5) {
-    override fun tick() = Engine.forEach<PotionComponent, Parent> { (effect, level), (parent) ->
+    override fun tick() = Engine.forEach<PotionComponent, Parent> { (effects), (parent) ->
         val (player) = parent?.get<PlayerComponent>() ?: return@forEach //TODO EntityComponent
-        player.addPotionEffect(PotionEffect(effect, 10, level, true))
+        player.addPotionEffects(effects)
     }
 }

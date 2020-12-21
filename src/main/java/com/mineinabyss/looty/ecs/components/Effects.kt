@@ -1,22 +1,13 @@
 package com.mineinabyss.looty.ecs.components
 
 import com.mineinabyss.geary.ecs.GearyComponent
+import com.mineinabyss.idofront.serialization.PotionSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import org.bukkit.potion.PotionEffectType
+import org.bukkit.potion.PotionEffect
 
 @Serializable
 @SerialName("looty:potion")
-class PotionComponent(
-        //TODO use idofront potion serializer
-        @SerialName("effect")
-        private val _effect: String,
-        val level: Int
-) : GearyComponent {
-    @Transient
-    val effect = PotionEffectType.getByName(_effect) ?: error("Invalid potion effect $_effect")
-
-    operator fun component1() = effect
-    operator fun component2() = level
-}
+data class PotionComponent(
+        val effects: List<@Serializable(with=PotionSerializer::class) PotionEffect>
+) : GearyComponent

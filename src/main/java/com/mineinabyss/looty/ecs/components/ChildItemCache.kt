@@ -112,19 +112,18 @@ class ChildItemCache(
             if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
             //================================
 
-            get(slot)?.with<ItemComponent> { lootyItem ->
-                //TODO if changes were made to the ECS entity, they should be re-serialized here
-                //if the items match exactly, encode components to the itemstack
-                if (item != lootyItem.item) {
-                    add(slot, item)
-                }
-
-                untouched -= slot
-
-                //TODO managing whether an item is in main hand/offhand/armor, etc...
-                // This might be better to just evaluate as we go if we know slot in LootyEntity
-
+            val lootyItem = get(slot)?.get<ItemComponent>()
+            //FIXME if changes were made to the ECS entity, they should be re-serialized here
+            // currently the changes on the actual entity will just be ignored
+            //if the items match exactly, encode components to the itemstack
+            if (item != lootyItem?.item) {
+                add(slot, item)
             }
+
+            untouched -= slot
+
+            //TODO managing whether an item is in main hand/offhand/armor, etc...
+            // This might be better to just evaluate as we go if we know slot in LootyEntity
 
         }
 

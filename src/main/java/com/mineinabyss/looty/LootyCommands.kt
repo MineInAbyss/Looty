@@ -1,9 +1,9 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.components.addComponents
-import com.mineinabyss.geary.ecs.components.getComponents
 import com.mineinabyss.geary.ecs.engine.Engine
 import com.mineinabyss.geary.ecs.engine.entity
+import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.idofront.commands.arguments.optionArg
@@ -38,14 +38,12 @@ object LootyCommands : IdofrontCommandExecutor() {
             "debug" {
                 "pdc"{
                     playerAction {
-                        sender.info(player.inventory.itemInMainHand.itemMeta!!.persistentDataContainer)
+                        sender.info(player.inventory.itemInMainHand.itemMeta!!.persistentDataContainer.keys)
                     }
                 }
                 "components"{
                     playerAction {
-                        val entity = player.get<ChildItemCache>()?.get(player.mainHand.ordinal)
-//                        val components = player.inventory.itemInMainHand.itemMeta!!.persistentDataContainer.decodeComponents()
-                        player.info(entity?.getComponents())
+                        sender.info(player.get<ChildItemCache>()?.get(player.inventory.heldItemSlot)?.listComponents())
                     }
                     //TODO print static and serialized on separate lines
                 }

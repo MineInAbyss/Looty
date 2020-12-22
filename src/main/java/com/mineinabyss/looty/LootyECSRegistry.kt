@@ -7,6 +7,7 @@ import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
+import com.mineinabyss.looty.ecs.components.events.Events
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
 import com.mineinabyss.looty.ecs.systems.ScreamingSystem
@@ -25,6 +26,7 @@ fun Looty.attachToGeary() {
             polymorphic(GearyComponent::class) {
                 subclass(Screaming.serializer())
                 subclass(PotionComponent.serializer())
+                subclass(Events.serializer())
             }
         }
 

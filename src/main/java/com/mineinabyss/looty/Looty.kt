@@ -4,6 +4,7 @@ import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.looty.config.LootyAddon
 import com.mineinabyss.looty.config.registerAddonWithLooty
+import com.mineinabyss.looty.ecs.components.events.LootyEventListener
 import com.mineinabyss.looty.ecs.systems.InventoryTrackingListener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -24,7 +25,8 @@ class Looty : JavaPlugin(), LootyAddon {
         LootyCommands
 
         registerEvents(
-                InventoryTrackingListener
+                InventoryTrackingListener,
+                LootyEventListener
         )
 
         attachToGeary()

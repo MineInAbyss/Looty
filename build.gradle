@@ -30,8 +30,8 @@ dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:$server_version"
 //    compileOnly "org.spigotmc:spigot:$server_version" // NMS
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "com.mineinabyss:geary"
-    implementation platform("com.mineinabyss:kotlinspice:1.4.10-10")
+    compileOnly "com.mineinabyss:geary"
+    compileOnly platform("com.mineinabyss:kotlinspice:1.4.10-10")
     compileOnly "com.okkero.skedule:skedule"
 
     implementation "com.mineinabyss:idofront:0.3.26"

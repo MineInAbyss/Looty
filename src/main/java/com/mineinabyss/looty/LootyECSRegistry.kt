@@ -3,10 +3,12 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.dsl.attachToGeary
 import com.mineinabyss.geary.ecs.components.with
 import com.mineinabyss.looty.config.LootyTypes
+import com.mineinabyss.looty.ecs.actions.Explode
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
 import com.mineinabyss.looty.ecs.components.events.Events
+import com.mineinabyss.looty.ecs.systems.CooldownDisplaySystem
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
 import com.mineinabyss.looty.ecs.systems.ScreamingSystem
@@ -17,7 +19,12 @@ fun Looty.attachToGeary() {
                 ItemTrackerSystem,
                 ScreamingSystem,
                 PotionEffectSystem,
+                CooldownDisplaySystem,
         )
+
+        actions {
+            action(Explode.serializer())
+        }
 
         components {
             component(Screaming.serializer())

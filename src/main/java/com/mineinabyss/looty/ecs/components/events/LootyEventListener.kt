@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemBreakEvent
 
 val Player.heldLootyItem get() = get<ChildItemCache>()?.get(inventory.heldItemSlot)
 
@@ -26,5 +27,10 @@ object LootyEventListener : Listener {
         val (player) = e
         if (e.leftClicked) player.heldLootyItem?.event("leftClick")
         if (e.rightClicked) player.heldLootyItem?.event("rightClick")
+    }
+
+    @EventHandler
+    fun onItemBreak(e: PlayerItemBreakEvent) {
+        e.player.heldLootyItem?.event("break")
     }
 }

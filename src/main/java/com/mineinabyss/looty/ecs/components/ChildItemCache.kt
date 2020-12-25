@@ -11,6 +11,7 @@ import com.mineinabyss.geary.minecraft.isGearyEntity
 import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
 import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.looty.debug
+import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
@@ -98,7 +99,6 @@ class ChildItemCache(
     // not be tracked. Either we need a GC or make 1000% this never fails.
     @Synchronized
     fun reevaluate(inventory: PlayerInventory) {
-        val heldSlot = inventory.heldItemSlot
         //we remove any items from this copy that were modified, whatever remains will be removed
         val untouched = _itemCache.toMutableMap()
         //TODO prevent issues with children and id changes
@@ -112,21 +112,19 @@ class ChildItemCache(
             if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
             //================================
 
-            val lootyItem = get(slot)?.get<ItemComponent>()
+            val originalItem = get(slot)?.get<ItemComponent>()
+
             //FIXME if changes were made to the ECS entity, they should be re-serialized here
             // currently the changes on the actual entity will just be ignored
-            //if the items match exactly, encode components to the itemstack
-            if (item != lootyItem?.item) {
+            //if the items don't match, add the new item to this slot
+            if (item != originalItem?.item)
                 add(slot, item)
-            }
 
             untouched -= slot
-
-            //TODO managing whether an item is in main hand/offhand/armor, etc...
-            // This might be better to just evaluate as we go if we know slot in LootyEntity
-
         }
 
         untouched.keys.forEach { remove(it) }
+
+        get(inventory.heldItemSlot)?.addComponent(SlotType.Held)
     }
 }

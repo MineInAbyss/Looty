@@ -7,13 +7,14 @@ import com.mineinabyss.geary.ecs.engine.Engine
 import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
+import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import kotlin.math.floor
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 object CooldownDisplaySystem : TickingSystem(interval = 10) {
     @ExperimentalTime
-    override fun tick() = Engine.forEach<CooldownManager> { cooldownManager ->
+    override fun tick() = Engine.forEach<SlotType.Held, CooldownManager> { _, cooldownManager ->
         parent?.with<PlayerComponent>() { (player) ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, value) ->
                 "$key [${floor((value - System.currentTimeMillis()).milliseconds.inSeconds * 10) / 10}s]"

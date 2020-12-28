@@ -8,6 +8,7 @@ import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
 import com.mineinabyss.looty.ecs.components.events.Events
+import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.systems.CooldownDisplaySystem
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
@@ -30,6 +31,10 @@ fun Looty.attachToGeary() {
             component(Screaming.serializer())
             component(PotionComponent.serializer())
             component(Events.serializer())
+
+            component(SlotType.Held.serializer())
+            component(SlotType.Offhand.serializer())
+            component(SlotType.Hotbar.serializer())
         }
 
         bukkitEntityAccess {

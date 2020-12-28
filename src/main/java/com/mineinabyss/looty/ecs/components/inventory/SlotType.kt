@@ -6,14 +6,14 @@ import kotlinx.serialization.Serializable
 
 object SlotType {
     @Serializable
-    @SerialName("looty:held")
+    @SerialName("looty:slot.held")
     object Held: GearyComponent
 
     @Serializable
-    @SerialName("looty:held")
+    @SerialName("looty:slot.offhand")
     object Offhand: GearyComponent
 
     @Serializable
-    @SerialName("looty:hotbar")
+    @SerialName("looty:slot.hotbar")
     object Hotbar: GearyComponent
 }

@@ -9,6 +9,7 @@ import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -107,7 +108,7 @@ object InventoryTrackingListener : Listener {
      * There's no way of knowing which slot an item was in when dropped, so the most reliable way of ensuring nothing
      * funky happens is recalculating everything. Try and improve on this later!
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerDropItemEvent.onDropItem() {
         player.with<ChildItemCache> {
             it.reevaluate(player.inventory)

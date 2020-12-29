@@ -4,6 +4,7 @@ import com.mineinabyss.geary.dsl.attachToGeary
 import com.mineinabyss.geary.ecs.components.with
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.actions.Explode
+import com.mineinabyss.looty.ecs.actions.Meteor
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
@@ -25,6 +26,7 @@ fun Looty.attachToGeary() {
 
         actions {
             action(Explode.serializer())
+            action(Meteor.serializer())
         }
 
         components {

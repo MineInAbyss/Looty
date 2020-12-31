@@ -17,10 +17,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 
 class ChildItemCache(
-        //TODO component probably shouldn't have access to the parent entity, do this in a system instead?
-        private val parent: Player, //InventoryHolder
-        //TODO don't use a map, some better array structure instead.
-        private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
+    //TODO component probably shouldn't have access to the parent entity, do this in a system instead?
+    private val parent: Player, //InventoryHolder
+    //TODO don't use a map, some better array structure instead.
+    private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
 ) : GearyComponent {
     //yeah this is probably a sign this should be in a system
     private val gearyParent: GearyEntity by lazy {
@@ -90,9 +90,9 @@ class ChildItemCache(
     }
 
     internal fun clear() {
-        _itemCache.keys.forEach { index ->
-            remove(index)
-        }
+        _itemCache.values
+            .also { _itemCache.clear() }
+            .forEach { it.remove() }
     }
 
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but

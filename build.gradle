@@ -34,7 +34,7 @@ dependencies {
     compileOnly platform("com.mineinabyss:kotlinspice:1.4.10-10")
     compileOnly "com.okkero.skedule:skedule"
 
-    implementation "com.mineinabyss:idofront:0.3.26"
+    implementation "com.mineinabyss:idofront:0.3.29"
 }
 
 shadowJar {

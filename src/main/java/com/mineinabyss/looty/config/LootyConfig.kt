@@ -3,6 +3,7 @@ package com.mineinabyss.looty.config
 import com.mineinabyss.geary.ecs.serialization.Formats
 import com.mineinabyss.idofront.config.IdofrontConfig
 import com.mineinabyss.idofront.config.ReloadScope
+import com.mineinabyss.idofront.messaging.logError
 import com.mineinabyss.idofront.messaging.logSuccess
 import com.mineinabyss.looty.looty
 import com.okkero.skedule.schedule
@@ -42,8 +43,13 @@ object LootyConfig : IdofrontConfig<LootyConfig.Data>(looty, Data.serializer()) 
         for (addon in addons) {
             addon.relicsDir.walk().filter { it.isFile }.forEach { file ->
                 val name = file.nameWithoutExtension
-                val type = Formats.yamlFormat.decodeFromString(LootyType.serializer(), file.readText())
-                LootyTypes.registerType(name, type) //TODO namespaces
+                try {
+                    val type = Formats.yamlFormat.decodeFromString(LootyType.serializer(), file.readText())
+                    LootyTypes.registerType(name, type) //TODO namespaces
+                } catch (e: Exception) {
+                    logError("Error deserializing item: $name")
+                    e.printStackTrace()
+                }
             }
         }
     }

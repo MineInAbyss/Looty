@@ -1,7 +1,7 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.dsl.attachToGeary
 import com.mineinabyss.geary.ecs.components.with
+import com.mineinabyss.geary.minecraft.dsl.attachToGeary
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.actions.Explode
 import com.mineinabyss.looty.ecs.actions.Meteor
@@ -16,7 +16,7 @@ import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
 import com.mineinabyss.looty.ecs.systems.ScreamingSystem
 
 fun Looty.attachToGeary() {
-    attachToGeary(types = LootyTypes) {
+    attachToGeary (types = LootyTypes) {
         systems(
                 ItemTrackerSystem,
                 ScreamingSystem,

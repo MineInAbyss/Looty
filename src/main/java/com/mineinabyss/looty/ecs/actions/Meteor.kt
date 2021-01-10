@@ -1,9 +1,9 @@
 package com.mineinabyss.looty.ecs.actions
 
 import com.mineinabyss.geary.ecs.GearyEntity
-import com.mineinabyss.geary.ecs.actions.AtPlayerLocation
-import com.mineinabyss.geary.ecs.actions.ConfigurableLocation
 import com.mineinabyss.geary.ecs.actions.GearyAction
+import com.mineinabyss.geary.minecraft.actions.AtPlayerLocation
+import com.mineinabyss.geary.minecraft.actions.ConfigurableLocation
 import com.mineinabyss.idofront.spawning.spawn
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

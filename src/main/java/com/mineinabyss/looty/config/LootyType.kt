@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.config
 
 import com.mineinabyss.geary.ecs.types.GearyEntityType
+import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import kotlinx.serialization.Serializable

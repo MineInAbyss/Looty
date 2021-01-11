@@ -16,7 +16,7 @@ import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 
 @ExperimentalCommandDSL
-object LootyCommands : IdofrontCommandExecutor() {
+class LootyCommands : IdofrontCommandExecutor() {
     override val commands = commands(looty) {
         "looty" {
             "reload" {

@@ -22,7 +22,9 @@ class Looty : JavaPlugin(), LootyAddon {
         logger.info("On enable has been called")
         saveDefaultConfig()
         reloadConfig()
-        LootyCommands
+
+        //Register commands
+        LootyCommands()
 
         registerEvents(
                 InventoryTrackingListener,

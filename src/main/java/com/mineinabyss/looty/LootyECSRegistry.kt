@@ -14,14 +14,15 @@ import com.mineinabyss.looty.ecs.systems.CooldownDisplaySystem
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.ecs.systems.PotionEffectSystem
 import com.mineinabyss.looty.ecs.systems.ScreamingSystem
+import org.bukkit.entity.Player
 
 fun Looty.attachToGeary() {
-    attachToGeary (types = LootyTypes) {
+    attachToGeary(types = LootyTypes) {
         systems(
-                ItemTrackerSystem,
-                ScreamingSystem,
-                PotionEffectSystem,
-                CooldownDisplaySystem,
+            ItemTrackerSystem,
+            ScreamingSystem,
+            PotionEffectSystem,
+            CooldownDisplaySystem,
         )
 
         actions {
@@ -40,10 +41,11 @@ fun Looty.attachToGeary() {
         }
 
         bukkitEntityAccess {
-            onPlayerRegister { player ->
+            onEntityRegister<Player> { player ->
                 add(ChildItemCache(player))
             }
-            onPlayerUnregister { gearyPlayer, player ->
+
+            onEntityUnregister<Player> { gearyPlayer, player ->
                 gearyPlayer.with<ChildItemCache> {
                     it.reevaluate(player.inventory)
                     it.clear()

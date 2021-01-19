@@ -1,10 +1,6 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.components.addComponents
-import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.entity
 import com.mineinabyss.geary.helpers.listComponents
-import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
@@ -16,7 +12,7 @@ import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 
 @ExperimentalCommandDSL
-object LootyCommands : IdofrontCommandExecutor() {
+class LootyCommands : IdofrontCommandExecutor() {
     override val commands = commands(looty) {
         "looty" {
             "reload" {
@@ -46,13 +42,6 @@ object LootyCommands : IdofrontCommandExecutor() {
                         sender.info(player.get<ChildItemCache>()?.get(player.inventory.heldItemSlot)?.listComponents())
                     }
                     //TODO print static and serialized on separate lines
-                }
-                "registerself" {
-                    playerAction {
-                        Engine.entity {
-                            addComponents(setOf(PlayerComponent(player.uniqueId), ChildItemCache(player)))
-                        }
-                    }
                 }
             }
         }

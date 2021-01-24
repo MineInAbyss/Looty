@@ -1,6 +1,5 @@
 package com.mineinabyss.looty.ecs.components
 
-import com.mineinabyss.geary.ecs.GearyComponent
 import com.mineinabyss.geary.ecs.GearyEntity
 import com.mineinabyss.geary.ecs.components.*
 import com.mineinabyss.geary.ecs.engine.Engine
@@ -21,7 +20,7 @@ class ChildItemCache(
     private val parent: Player, //InventoryHolder
     //TODO don't use a map, some better array structure instead.
     private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
-) : GearyComponent {
+) {
     //yeah this is probably a sign this should be in a system
     private val gearyParent: GearyEntity by lazy {
         geary(parent) ?: error("$parent was not registered with geary.")

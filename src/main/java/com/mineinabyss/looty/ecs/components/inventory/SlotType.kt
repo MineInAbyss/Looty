@@ -1,19 +1,22 @@
 package com.mineinabyss.looty.ecs.components.inventory
 
-import com.mineinabyss.geary.ecs.GearyComponent
+import com.mineinabyss.geary.ecs.autoscan.AutoscanComponent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 object SlotType {
     @Serializable
     @SerialName("looty:slot.held")
-    object Held: GearyComponent
+    @AutoscanComponent
+    object Held
 
     @Serializable
     @SerialName("looty:slot.offhand")
-    object Offhand: GearyComponent
+    @AutoscanComponent
+    object Offhand
 
     @Serializable
     @SerialName("looty:slot.hotbar")
-    object Hotbar: GearyComponent
+    @AutoscanComponent
+    object Hotbar
 }

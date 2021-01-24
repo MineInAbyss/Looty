@@ -9,8 +9,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class LootyType(
-        val item: SerializableItemStack,
-        private val _name: String? = null,
+    val item: SerializableItemStack
 ) : GearyEntityType() {
     @Transient
     override val types = LootyTypes

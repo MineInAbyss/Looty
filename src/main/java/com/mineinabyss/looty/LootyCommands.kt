@@ -1,5 +1,7 @@
 package com.mineinabyss.looty
 
+import com.mineinabyss.geary.ecs.engine.Engine
+import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.idofront.commands.arguments.optionArg
@@ -10,6 +12,7 @@ import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.components.ChildItemCache
+import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 
 @ExperimentalCommandDSL
 class LootyCommands : IdofrontCommandExecutor() {
@@ -18,6 +21,12 @@ class LootyCommands : IdofrontCommandExecutor() {
             "reload" {
                 action {
                     LootyConfig.reload(sender)
+
+                    // Re-register all items in every player's inventory
+                    Engine.forEach<ChildItemCache> {
+                        it.clear()
+                    }
+                    ItemTrackerSystem.tick()
                 }
             }
             "item" {

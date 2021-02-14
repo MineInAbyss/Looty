@@ -2,13 +2,13 @@ package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.components.with
 import com.mineinabyss.geary.minecraft.dsl.attachToGeary
+import com.mineinabyss.geary.minecraft.events.Events
 import com.mineinabyss.looty.config.LootyTypes
 import com.mineinabyss.looty.ecs.actions.Explode
 import com.mineinabyss.looty.ecs.actions.Meteor
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PotionComponent
 import com.mineinabyss.looty.ecs.components.Screaming
-import com.mineinabyss.looty.ecs.components.events.Events
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.systems.CooldownDisplaySystem
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem

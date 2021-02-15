@@ -51,6 +51,9 @@ class ChildItemCache(
         _itemCache[slot] = entity
         debug("Added to $slot")
 
+        if(slot in 36..39) //TODO make version safe!
+            entity.addComponent(SlotType.Equipped)
+
         return entity
     }
 
@@ -89,9 +92,7 @@ class ChildItemCache(
     }
 
     internal fun clear() {
-        _itemCache.values
-            .also { _itemCache.clear() }
-            .forEach { it.remove() }
+        _itemCache.keys.toList().forEach { remove(it) }
     }
 
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but

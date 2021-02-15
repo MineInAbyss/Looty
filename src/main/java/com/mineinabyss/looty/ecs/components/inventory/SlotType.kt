@@ -19,4 +19,9 @@ object SlotType {
     @SerialName("looty:slot.hotbar")
     @AutoscanComponent
     object Hotbar
+
+    @Serializable
+    @SerialName("looty:slot.equipped")
+    @AutoscanComponent
+    object Equipped
 }

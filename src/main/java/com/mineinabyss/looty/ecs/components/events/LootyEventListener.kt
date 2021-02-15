@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
 
 val Player.heldLootyItem get() = get<ChildItemCache>()?.get(inventory.heldItemSlot)
 
@@ -46,5 +47,10 @@ object LootyEventListener : Listener {
         gearyEntity.addComponent(Target(geary(entity)))
         event(gearyEntity, "hitEntity")
         gearyEntity.removeComponent<Target>()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun PlayerItemConsumeEvent.onConsume(){
+        event(player.heldLootyItem, "consume")
     }
 }

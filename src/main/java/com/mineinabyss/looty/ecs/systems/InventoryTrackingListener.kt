@@ -7,10 +7,14 @@ import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.geary.minecraft.store.with
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
+import com.mineinabyss.looty.looty
+import com.okkero.skedule.schedule
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -115,12 +119,15 @@ object InventoryTrackingListener : Listener {
         }
     }
 
-    /*@EventHandler
+    @EventHandler
     fun EntityPickupItemEvent.onPickUpItem() {
         val player = entity as? Player ?: return
-        player.with<ChildItemCache> {
-            //TODO item is not in inventory yet when we run this, run next tick?
-            it.reevaluate(player.inventory)
-        }
-    }*/
+        if (item.itemStack.itemMeta.persistentDataContainer.isGearyEntity)
+            player.with<ChildItemCache> {
+                looty.schedule {
+                    waitFor(1)
+                    it.reevaluate(player.inventory)
+                }
+            }
+    }
 }

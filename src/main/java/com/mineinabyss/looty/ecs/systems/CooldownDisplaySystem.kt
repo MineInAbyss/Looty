@@ -8,7 +8,8 @@ import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.ecs.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
-import kotlin.math.floor
+import org.bukkit.ChatColor
+import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -16,8 +17,26 @@ object CooldownDisplaySystem : TickingSystem(interval = 10) {
     @ExperimentalTime
     override fun tick() = Engine.forEach<SlotType.Held, CooldownManager> { _, cooldownManager ->
         parent?.with<PlayerComponent>() { (player) ->
-            player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, value) ->
-                "$key [${floor((value - System.currentTimeMillis()).milliseconds.inSeconds * 10) / 10}s]"
+            player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
+                val displayLength = 10
+                val displayChar = '■'
+                val length = cooldown.length.milliseconds
+                val timeLeft = (cooldown.endTime - System.currentTimeMillis()).milliseconds
+                val squaresLeft = if(timeLeft.inSeconds * 20 < 10) 0 else (timeLeft / length * displayLength).roundToInt()
+
+                buildString {
+                    append("$key ")
+                    append(ChatColor.GREEN)
+                    repeat (displayLength - squaresLeft) {
+                        append(displayChar)
+                    }
+                    append(ChatColor.RED)
+                    repeat (squaresLeft) {
+                        append(displayChar)
+                    }
+                    append(ChatColor.GRAY)
+                    append(" [${timeLeft.toString()}]")
+                }
             })
         }
     }

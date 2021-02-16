@@ -1,6 +1,8 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.components.with
+import com.mineinabyss.geary.ecs.engine.Engine
+import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.minecraft.dsl.attachToGeary
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
@@ -70,5 +72,6 @@ class Looty : JavaPlugin(), LootyAddon {
         super.onDisable()
         logger.info("onDisable has been invoked!")
         server.scheduler.cancelTasks(this)
+        Engine.forEach<ChildItemCache> { it.clear() }
     }
 }

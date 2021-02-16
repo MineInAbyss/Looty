@@ -30,12 +30,12 @@ dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:$server_version"
 //    compileOnly "org.spigotmc:spigot:$server_version" // NMS
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compileOnly "com.mineinabyss:geary-spigot:0.2.23"
+    compileOnly "com.mineinabyss:geary-spigot:0.2.25"
 
     compileOnly platform("com.mineinabyss:kotlinspice:1.4.10-10")
     compileOnly "com.okkero.skedule:skedule"
 
-    implementation "com.mineinabyss:idofront:0.4.3"
+    implementation "com.mineinabyss:idofront:0.5.6"
 }
 
 shadowJar {

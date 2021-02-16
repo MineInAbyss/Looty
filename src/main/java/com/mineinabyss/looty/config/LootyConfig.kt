@@ -28,7 +28,7 @@ object LootyConfig : IdofrontConfig<LootyConfig.Data>(looty, Data.serializer()) 
         }
     }
 
-    override fun reload(): ReloadScope.() -> Unit = {
+    override fun ReloadScope.reload() {
         logSuccess("Unregistering types in Looty config")
         LootyTypes.reset()
 

@@ -1,11 +1,8 @@
 package com.mineinabyss.looty.ecs.components.events
 
 import com.mineinabyss.geary.ecs.components.Target
-import com.mineinabyss.geary.ecs.components.addComponent
-import com.mineinabyss.geary.ecs.components.removeComponent
+import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.events.event
-import com.mineinabyss.geary.minecraft.store.geary
-import com.mineinabyss.geary.minecraft.store.get
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.ecs.components.ChildItemCache
@@ -18,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 
-val Player.heldLootyItem get() = get<ChildItemCache>()?.get(inventory.heldItemSlot)
+val Player.heldLootyItem get() = geary(this).get<ChildItemCache>()?.get(inventory.heldItemSlot)
 
 object LootyEventListener : Listener {
     @EventHandler
@@ -44,13 +41,13 @@ object LootyEventListener : Listener {
         val player = damager as? Player ?: return
         val gearyEntity = player.heldLootyItem ?: return
 
-        gearyEntity.addComponent(Target(geary(entity)))
+        gearyEntity.set(Target(geary(entity)))
         event(gearyEntity, "hitEntity")
-        gearyEntity.removeComponent<Target>()
+        gearyEntity.remove<Target>()
     }
 
     @EventHandler(ignoreCancelled = true)
-    fun PlayerItemConsumeEvent.onConsume(){
+    fun PlayerItemConsumeEvent.onConsume() {
         event(player.heldLootyItem, "consume")
     }
 }

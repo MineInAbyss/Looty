@@ -1,14 +1,8 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.components.with
-import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.forEach
 import com.mineinabyss.geary.minecraft.dsl.attachToGeary
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
-import com.mineinabyss.looty.config.LootyAddon
-import com.mineinabyss.looty.config.LootyTypes
-import com.mineinabyss.looty.config.registerAddonWithLooty
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.events.LootyEventListener
 import com.mineinabyss.looty.ecs.systems.*
@@ -21,8 +15,8 @@ import kotlin.time.ExperimentalTime
 /** Gets [Geary] via Bukkit once, then sends that reference back afterwards */
 val looty: Looty by lazy { JavaPlugin.getPlugin(Looty::class.java) }
 
-class Looty : JavaPlugin(), LootyAddon {
-    override val relicsDir = File(dataFolder, "relics")
+class Looty : JavaPlugin() {
+    val relicsDir = File(dataFolder, "relics")
 
     @InternalSerializationApi
     @ExperimentalCommandDSL
@@ -40,11 +34,10 @@ class Looty : JavaPlugin(), LootyAddon {
             LootyEventListener
         )
 
-        attachToGeary(types = LootyTypes) {
+        attachToGeary {
             systems(
                 ItemTrackerSystem,
                 ScreamingSystem,
-                PotionEffectSystem,
                 CooldownDisplaySystem,
             )
 
@@ -53,25 +46,24 @@ class Looty : JavaPlugin(), LootyAddon {
 
             bukkitEntityAccess {
                 onEntityRegister<Player> { player ->
-                    add(ChildItemCache(player))
+                    add(ChildItemCache())
                 }
 
-                onEntityUnregister<Player> { gearyPlayer, player ->
+                onEntityUnregister<Player> { gearyPlayer, _ ->
                     gearyPlayer.with<ChildItemCache> {
-                        it.reevaluate(player.inventory)
+                        gearyPlayer.lootyRefresh()
                         it.clear()
                     }
                 }
             }
+            loadPrefabs(relicsDir)
         }
-
-        registerAddonWithLooty()
     }
 
     override fun onDisable() {
         super.onDisable()
         logger.info("onDisable has been invoked!")
         server.scheduler.cancelTasks(this)
-        Engine.forEach<ChildItemCache> { it.clear() }
+//        Engine.forEach<ChildItemCache> { it.clear() }
     }
 }

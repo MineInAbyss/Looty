@@ -6,7 +6,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'org.jetbrains.kotlin.kapt'
-    id 'io.github.0ffz.github-packages' version '1.2.0'
 }
 
 apply from: 'https://raw.githubusercontent.com/MineInAbyss/shared-gradle/master/common.gradle'
@@ -19,9 +18,8 @@ repositories {
     jcenter()
 //    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' } //Spigot
     maven { url 'https://papermc.io/repo/repository/maven-public/' } //Paper
-    maven githubPackage.invoke("MineInAbyss/Idofront")
-    maven githubPackage.invoke("MineInAbyss/KotlinSpice")
-    maven { url 'http://nexus.okkero.com/repository/maven-releases/' } //Skedule
+    maven { url 'https://repo.mineinabyss.com/releases'}
+    maven { url 'https://jitpack.io' }
 
     mavenLocal()
 }
@@ -30,12 +28,12 @@ dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:$server_version"
 //    compileOnly "org.spigotmc:spigot:$server_version" // NMS
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compileOnly "com.mineinabyss:geary-spigot:0.2.25"
 
-    compileOnly platform("com.mineinabyss:kotlinspice:1.4.10-10")
-    compileOnly "com.okkero.skedule:skedule"
+    compileOnly platform("com.mineinabyss:kotlinspice:$kotlin_version+")
+    compileOnly "com.github.okkero:skedule"
 
-    implementation "com.mineinabyss:idofront:0.5.6"
+    compileOnly "com.mineinabyss:geary-spigot:0.3.27"
+    implementation "com.mineinabyss:idofront:0.5.8"
 }
 
 shadowJar {
@@ -53,10 +51,16 @@ build.dependsOn shadowJar
 
 publishing {
     repositories {
-        maven githubPackagePublish.invoke("MineInAbyss/Looty")
+        maven {
+            url = "https://repo.mineinabyss.com/releases"
+            credentials {
+                username = findProperty('mineinabyssMavenUsername')
+                password = findProperty('mineinabyssMavenPassword')
+            }
+        }
     }
     publications {
-        gpr(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
         }
     }

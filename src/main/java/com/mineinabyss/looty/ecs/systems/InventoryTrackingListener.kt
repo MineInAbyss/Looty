@@ -1,10 +1,8 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.components.addComponent
-import com.mineinabyss.geary.ecs.components.removeComponent
-import com.mineinabyss.geary.minecraft.isGearyEntity
-import com.mineinabyss.geary.minecraft.store.get
-import com.mineinabyss.geary.minecraft.store.with
+import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.hasComponentsEncoded
+import com.mineinabyss.looty.addLooty
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.looty
@@ -29,7 +27,7 @@ object InventoryTrackingListener : Listener {
         val currItem = currentItem
 
         val player = whoClicked
-        val itemCache = player.get<ChildItemCache>() ?: return
+        val itemCache = geary(player).get<ChildItemCache>() ?: return
 
 //        player.info("""
 //            Cursor: ${e.cursor}
@@ -67,9 +65,10 @@ object InventoryTrackingListener : Listener {
         else if (cursor.hasItemMeta() && clickedInventory == player.inventory) {
             //TODO re-reading meta here
             val meta = cursor.itemMeta
-            if (!meta.persistentDataContainer.isGearyEntity) return
+            if (!meta.persistentDataContainer.hasComponentsEncoded) return
             //clone required since item becomes AIR after this, I assume event messes with it
-            itemCache.add(slot, cursor.clone())
+
+            geary(player).addLooty(cursor.clone(), slot)
         }
     }
 
@@ -78,9 +77,9 @@ object InventoryTrackingListener : Listener {
     //TODO remove held when swapping into offhand
     @EventHandler
     fun PlayerItemHeldEvent.onHeldItemSwap() {
-        player.with<ChildItemCache> { items ->
-            items[previousSlot]?.removeComponent<SlotType.Held>()
-            items[newSlot]?.addComponent(SlotType.Held)
+        geary(player).with<ChildItemCache> { items ->
+            items[previousSlot]?.remove<SlotType.Held>()
+            items[newSlot]?.set(SlotType.Held)
         }
     }
 
@@ -89,19 +88,19 @@ object InventoryTrackingListener : Listener {
 
     @EventHandler
     fun PlayerSwapHandItemsEvent.onSwapOffhand() {
-        player.with<ChildItemCache> { itemCache ->
+        geary(player).with<ChildItemCache> { itemCache ->
             val mainHandSlot = player.inventory.heldItemSlot
 
             itemCache.swap(mainHandSlot, offHandSlot)
 
             itemCache[mainHandSlot]?.apply {
-                addComponent(SlotType.Held)
-                removeComponent<SlotType.Offhand>()
+                set(SlotType.Held)
+                remove<SlotType.Offhand>()
             }
 
             itemCache[offHandSlot]?.apply {
-                addComponent(SlotType.Offhand)
-                removeComponent<SlotType.Held>()
+                set(SlotType.Offhand)
+                remove<SlotType.Held>()
             }
         }
     }
@@ -114,20 +113,16 @@ object InventoryTrackingListener : Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerDropItemEvent.onDropItem() {
-        player.with<ChildItemCache> {
-            it.reevaluate(player.inventory)
-        }
+        geary(player).lootyRefresh()
     }
 
     @EventHandler
     fun EntityPickupItemEvent.onPickUpItem() {
         val player = entity as? Player ?: return
-        if (item.itemStack.itemMeta.persistentDataContainer.isGearyEntity)
-            player.with<ChildItemCache> {
-                looty.schedule {
-                    waitFor(1)
-                    it.reevaluate(player.inventory)
-                }
+        if (item.itemStack.itemMeta.persistentDataContainer.hasComponentsEncoded)
+            looty.schedule {
+                waitFor(1)
+                geary(player).lootyRefresh()
             }
     }
 }

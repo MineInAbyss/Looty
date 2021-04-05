@@ -1,12 +1,11 @@
 package com.mineinabyss.looty.ecs.actions
 
-import com.mineinabyss.geary.ecs.GearyEntity
-import com.mineinabyss.geary.ecs.actions.GearyAction
-import com.mineinabyss.geary.ecs.components.addComponent
+import com.mineinabyss.geary.ecs.api.actions.GearyAction
+import com.mineinabyss.geary.ecs.api.entities.GearyEntity
+import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.actions.AtPlayerLocation
 import com.mineinabyss.geary.minecraft.actions.ConfigurableLocation
 import com.mineinabyss.geary.minecraft.events.Events
-import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.idofront.spawning.spawn
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,7 +33,7 @@ class Meteor(
         spawnLoc.spawn<SizedFireball>() {
             direction = Vector(0, -1, 0)
             geary(this) {
-                addComponent(events)
+                set(events)
             }
         }
         return true

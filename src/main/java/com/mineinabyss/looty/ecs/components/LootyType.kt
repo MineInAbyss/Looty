@@ -1,12 +1,13 @@
 package com.mineinabyss.looty.ecs.components
 
 import com.mineinabyss.geary.ecs.api.autoscan.AutoscanComponent
+import com.mineinabyss.idofront.serialization.SerializableItemStack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("debug:screaming")
+@SerialName("looty:type")
 @AutoscanComponent
-data class Screaming(
-    val scream: String = "AAAAAAAAAAAA"
+class LootyType(
+    val item: SerializableItemStack
 )

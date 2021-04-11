@@ -79,7 +79,7 @@ object InventoryTrackingListener : Listener {
     fun PlayerItemHeldEvent.onHeldItemSwap() {
         geary(player).with<ChildItemCache> { items ->
             items[previousSlot]?.remove<SlotType.Held>()
-            items[newSlot]?.set(SlotType.Held)
+            items[newSlot]?.add<SlotType.Held>()
         }
     }
 
@@ -94,12 +94,12 @@ object InventoryTrackingListener : Listener {
             itemCache.swap(mainHandSlot, offHandSlot)
 
             itemCache[mainHandSlot]?.apply {
-                set(SlotType.Held)
+                add<SlotType.Held>()
                 remove<SlotType.Offhand>()
             }
 
             itemCache[offHandSlot]?.apply {
-                set(SlotType.Offhand)
+                add<SlotType.Offhand>()
                 remove<SlotType.Held>()
             }
         }

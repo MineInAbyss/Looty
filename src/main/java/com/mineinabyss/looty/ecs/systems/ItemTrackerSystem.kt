@@ -64,5 +64,5 @@ fun GearyEntity.lootyRefresh() {
 
     untouched.keys.forEach { itemCache.remove(it) }
 
-    itemCache[player.inventory.heldItemSlot]?.set(SlotType.Held)
+    itemCache[player.inventory.heldItemSlot]?.add<SlotType.Held>()
 }

@@ -4,6 +4,7 @@ import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.components.getPrefabsFor
 import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
@@ -35,7 +36,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
             }
             "item" {
                 //TODO more efficient way of finding the right types
-                val type by optionArg(options = PrefabManager.keys.filter { it.plugin == looty.name }.map { it.name }) {
+                val type by optionArg(options = PrefabManager.getPrefabsFor(looty).map { it.name }) {
                     parseErrorMessage = { "No such entity: $passed" }
                 }
 

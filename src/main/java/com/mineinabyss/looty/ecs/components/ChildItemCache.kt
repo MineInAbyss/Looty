@@ -32,7 +32,7 @@ class ChildItemCache {
 
         // If in armor slots
         if (slot in 36..39) //TODO make version safe!
-            entity.set(SlotType.Equipped)
+            entity.add<SlotType.Equipped>()
     }
 
 

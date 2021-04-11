@@ -1,9 +1,10 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.components.PrefabKey
+import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
@@ -39,7 +40,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 }
 
                 playerAction {
-                    geary(player).addLooty(PrefabManager[PrefabKey(looty.name, type)] ?: return@playerAction)
+                    geary(player).addLooty(PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction)
                 }
             }
 

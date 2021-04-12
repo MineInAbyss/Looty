@@ -21,23 +21,24 @@ internal fun debug(message: Any?) {
     if (LootyConfig.data.debug) broadcast(message)
 }
 
+fun LootyType.toItemStack(prefab: GearyEntity, encodePrefabKey: Boolean = false) =
+    item.toItemStack().editItemMeta {
+        prefab.encodeComponentsTo(persistentDataContainer, encodePrefabKey)
+    }
+
 fun GearyEntity.addLooty(prefab: PrefabKey): Pair<GearyEntity, ItemStack>? {
     return addLooty(PrefabManager[prefab] ?: return null)
 }
 
 fun GearyEntity.addLooty(prefab: GearyEntity, slot: Int? = null): Pair<GearyEntity, ItemStack>? {
-    val item = prefab.get<LootyType>()?.item?.toItemStack() ?: return null
+    val type = prefab.get<LootyType>() ?: return null
 
     val entity = Engine.entity {
         addParent(this@addLooty)
         addPrefab(prefab)
     }
 
-    item.editItemMeta {
-        entity.encodeComponentsTo(persistentDataContainer)
-    }
-
-    return addLooty(entity, item, slot)
+    return addLooty(entity, type.toItemStack(this), slot)
 }
 
 fun GearyEntity.addLooty(item: ItemStack, slot: Int? = null): Pair<GearyEntity, ItemStack>? {

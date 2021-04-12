@@ -53,24 +53,27 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 }
                 "components"{
                     playerAction {
-                        sender.info(geary(player).get<ChildItemCache>()?.get(player.inventory.heldItemSlot)?.listComponents())
+                        sender.info(
+                            geary(player).get<ChildItemCache>()?.get(player.inventory.heldItemSlot)?.listComponents()
+                        )
                     }
                     //TODO print static and serialized on separate lines
                 }
             }
         }
     }
+
     override fun onTabComplete(
         sender: CommandSender,
         command: Command,
         alias: String,
         args: Array<String>
     ): List<String> {
-        if(command.name != "looty") return emptyList()
-        return when(args.size) {
-            2 -> when(args[0]) {
+        if (command.name != "looty") return emptyList()
+        return when (args.size) {
+            2 -> when (args[0]) {
                 "item" -> {
-                    PrefabManager.keys.filter { it.plugin == looty.name }.map { it.name }.filter { it.startsWith(args[1].toLowerCase()) }
+                    PrefabManager.getPrefabsFor(looty).map { it.name }.filter { it.startsWith(args[1].toLowerCase()) }
                 }
                 else -> emptyList()
             }

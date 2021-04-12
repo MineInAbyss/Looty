@@ -39,6 +39,7 @@ class Looty : JavaPlugin() {
                 ItemTrackerSystem,
                 ScreamingSystem,
                 CooldownDisplaySystem,
+                ItemRecipeSystem(),
             )
 
             autoscanActions()

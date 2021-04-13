@@ -41,7 +41,10 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 }
 
                 playerAction {
-                    geary(player).addLooty(PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction)
+                    geary(player).addLooty(
+                        PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction,
+                        addToInventory = true
+                    )
                 }
             }
 

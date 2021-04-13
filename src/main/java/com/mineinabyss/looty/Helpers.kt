@@ -26,11 +26,19 @@ fun LootyType.toItemStack(prefab: GearyEntity, encodePrefabKey: Boolean = false)
         prefab.encodeComponentsTo(persistentDataContainer, encodePrefabKey)
     }
 
-fun GearyEntity.addLooty(prefab: PrefabKey): Pair<GearyEntity, ItemStack>? {
-    return addLooty(PrefabManager[prefab] ?: return null)
+fun GearyEntity.addLooty(
+    prefab: PrefabKey,
+    slot: Int? = null,
+    addToInventory: Boolean = false,
+): Pair<GearyEntity, ItemStack>? {
+    return addLooty(PrefabManager[prefab] ?: return null, slot, addToInventory)
 }
 
-fun GearyEntity.addLooty(prefab: GearyEntity, slot: Int? = null): Pair<GearyEntity, ItemStack>? {
+fun GearyEntity.addLooty(
+    prefab: GearyEntity,
+    slot: Int? = null,
+    addToInventory: Boolean = false,
+): Pair<GearyEntity, ItemStack>? {
     val type = prefab.get<LootyType>() ?: return null
 
     val entity = Engine.entity {
@@ -38,23 +46,27 @@ fun GearyEntity.addLooty(prefab: GearyEntity, slot: Int? = null): Pair<GearyEnti
         addPrefab(prefab)
     }
 
-    return addLooty(entity, type.toItemStack(this), slot)
+    return addLooty(entity, type.toItemStack(this), slot, addToInventory)
 }
 
-fun GearyEntity.addLooty(item: ItemStack, slot: Int? = null): Pair<GearyEntity, ItemStack>? {
+fun GearyEntity.addLooty(
+    item: ItemStack,
+    slot: Int? = null,
+    addToInventory: Boolean = false,
+): Pair<GearyEntity, ItemStack>? {
     val entity = Engine.entity {
         addParent(this@addLooty)
         decodeComponentsFrom(item.itemMeta.persistentDataContainer)
     }
 
-    return addLooty(entity, item, slot)
+    return addLooty(entity, item, slot, addToInventory)
 }
-
 
 private fun GearyEntity.addLooty(
     entity: GearyEntity,
     item: ItemStack,
-    slot: Int? = null
+    slot: Int? = null,
+    addToInventory: Boolean = false
 ): Pair<GearyEntity, ItemStack>? {
     //TODO create an ECS version of Inventory so we don't rely on spigot
     val (player) = get<PlayerComponent>() ?: return null
@@ -63,8 +75,9 @@ private fun GearyEntity.addLooty(
     val useSlot = slot ?: player.inventory.firstEmpty()
     val itemCache = getOrSet { ChildItemCache() }
 
+    if (addToInventory) player.inventory.setItem(useSlot, item)
+
     itemCache.add(useSlot, entity, item)
 
-    player.inventory.setItem(useSlot, item)
     return entity to item
 }

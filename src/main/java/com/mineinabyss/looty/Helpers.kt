@@ -7,7 +7,6 @@ import com.mineinabyss.geary.ecs.entities.addParent
 import com.mineinabyss.geary.ecs.entities.addPrefab
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
-import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
@@ -15,6 +14,7 @@ import com.mineinabyss.idofront.messaging.broadcast
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.LootyType
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 internal fun debug(message: Any?) {
@@ -69,7 +69,7 @@ private fun GearyEntity.addLooty(
     addToInventory: Boolean = false
 ): Pair<GearyEntity, ItemStack>? {
     //TODO create an ECS version of Inventory so we don't rely on spigot
-    val (player) = get<PlayerComponent>() ?: return null
+    val player = get<Player>() ?: return null
 
     //TODO What if it's full?
     val useSlot = slot ?: player.inventory.firstEmpty()

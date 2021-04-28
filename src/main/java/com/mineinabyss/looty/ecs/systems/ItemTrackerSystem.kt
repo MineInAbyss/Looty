@@ -5,11 +5,11 @@ package com.mineinabyss.looty.ecs.systems
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.ItemComponent
-import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.addLooty
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
+import org.bukkit.entity.Player
 
 /**
  * ItemStack instances are super disposable, they don't represent real items. Additionally, tracking items is
@@ -24,7 +24,7 @@ import com.mineinabyss.looty.ecs.components.inventory.SlotType
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    val player by get<PlayerComponent>()
+    val player = has<Player>()
     val itemCache by get<ChildItemCache>()
 
     override fun GearyEntity.tick() {
@@ -36,7 +36,7 @@ object ItemTrackerSystem : TickingSystem(interval = 100) {
 // not be tracked. Either we need a GC or make 1000% this never fails.
 @Synchronized
 fun GearyEntity.lootyRefresh() {
-    val (player) = get<PlayerComponent>() ?: return
+    val player = get<Player>() ?: return
     val itemCache = get<ChildItemCache>() ?: return
 
     //we remove any items from this copy that were modified, whatever remains will be removed

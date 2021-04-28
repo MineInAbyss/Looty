@@ -4,9 +4,9 @@ import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.CooldownManager
 import com.mineinabyss.geary.ecs.entities.parent
-import com.mineinabyss.geary.minecraft.components.PlayerComponent
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.ChatColor
+import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -17,7 +17,7 @@ object CooldownDisplaySystem : TickingSystem(interval = 10) {
 
     @ExperimentalTime
     override fun GearyEntity.tick() {
-        parent?.with<PlayerComponent>() { (player) ->
+        parent?.with<Player>() { player ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val displayLength = 10
                 val displayChar = '■'
@@ -37,7 +37,7 @@ object CooldownDisplaySystem : TickingSystem(interval = 10) {
                         append(displayChar)
                     }
                     append(ChatColor.GRAY)
-                    append(" [${timeLeft.toString()}]")
+                    append(" [$timeLeft]")
                 }
             })
         }

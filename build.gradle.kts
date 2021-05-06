@@ -1,7 +1,6 @@
 import com.mineinabyss.kotlinSpice
-import com.mineinabyss.looty.Deps
-import com.mineinabyss.miaSharedSetup
 import com.mineinabyss.mineInAbyss
+import com.mineinabyss.sharedSetup
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -9,13 +8,13 @@ plugins {
     idea
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version com.mineinabyss.looty.Deps.kotlinVersion
-    kotlin("plugin.serialization") version com.mineinabyss.looty.Deps.kotlinVersion
-    kotlin("kapt") version com.mineinabyss.looty.Deps.kotlinVersion
-    id("com.mineinabyss.shared-gradle") version "0.0.3"
+    kotlin("jvm")
+    kotlin("plugin.serialization")
+    kotlin("kapt")
+    id("com.mineinabyss.shared-gradle") version "0.0.6"
 }
 
-miaSharedSetup()
+sharedSetup()
 
 repositories {
     mavenCentral()
@@ -27,12 +26,15 @@ repositories {
     mavenLocal()
 }
 
+val kotlinVersion: String by project
+val serverVersion: String by project
+
 dependencies {
-    compileOnly("com.destroystokyo.paper:paper-api:${Deps.serverVersion}")
+    compileOnly("com.destroystokyo.paper:paper-api:$serverVersion")
 //    compileOnly("org.spigotmc:spigot:${Deps.serverVersion}") // NMS
     compileOnly(kotlin("stdlib-jdk8"))
 
-    kotlinSpice("${Deps.kotlinVersion}+")
+    kotlinSpice("$kotlinVersion+")
     compileOnly("com.github.okkero:skedule")
 
     compileOnly("com.mineinabyss:geary-spigot:0.3.30")

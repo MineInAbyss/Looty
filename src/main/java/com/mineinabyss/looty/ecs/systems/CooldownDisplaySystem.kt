@@ -11,9 +11,11 @@ import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-object CooldownDisplaySystem : TickingSystem(interval = 10) {
-    val held = has<SlotType.Held>()
-    val cooldownManager by get<CooldownManager>()
+private const val INTERVAL = 3L
+
+object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
+    private val held = has<SlotType.Held>()
+    private val cooldownManager by get<CooldownManager>()
 
     @ExperimentalTime
     override fun GearyEntity.tick() {
@@ -24,7 +26,7 @@ object CooldownDisplaySystem : TickingSystem(interval = 10) {
                 val length = cooldown.length.milliseconds
                 val timeLeft = (cooldown.endTime - System.currentTimeMillis()).milliseconds
                 val squaresLeft =
-                    if (timeLeft.inSeconds * 20 < 10) 0 else (timeLeft / length * displayLength).roundToInt()
+                    if (timeLeft.inSeconds * 20 < INTERVAL) 0 else (timeLeft / length * displayLength).roundToInt()
 
                 buildString {
                     append("$key ")

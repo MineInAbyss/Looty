@@ -46,13 +46,14 @@ class Looty : JavaPlugin() {
             autoscanComponents()
 
             bukkitEntityAccess {
-                onEntityRegister<Player> { player ->
-                    add(ChildItemCache())
+                onEntityRegister<Player> {
+                    set(ChildItemCache())
+                    lootyRefresh()
                 }
 
-                onEntityUnregister<Player> { gearyPlayer, _ ->
-                    gearyPlayer.with<ChildItemCache> {
-                        gearyPlayer.lootyRefresh()
+                onEntityUnregister<Player> {
+                    with<ChildItemCache> {
+                        lootyRefresh()
                         it.clear()
                     }
                 }

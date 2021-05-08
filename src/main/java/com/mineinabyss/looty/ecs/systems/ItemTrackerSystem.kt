@@ -6,7 +6,7 @@ import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.components.ItemComponent
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
-import com.mineinabyss.looty.addLooty
+import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.entity.Player
@@ -57,7 +57,7 @@ fun GearyEntity.lootyRefresh() {
         // currently the changes on the actual entity will just be ignored
         //if the items don't match, add the new item to this slot
         if (item != originalItem?.item)
-            addLooty(item, slot)
+            LootyFactory.loadFromItem(this, item, slot, addToInventory = false)
 
         untouched -= slot
     }

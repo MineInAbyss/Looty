@@ -4,7 +4,7 @@ import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.components.ItemComponent
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
-import com.mineinabyss.looty.addLooty
+import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PickedUpItemData
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
@@ -82,9 +82,11 @@ object InventoryTrackingListener : Listener {
             //TODO re-reading meta here
             val meta = cursor.itemMeta
             if (!meta.persistentDataContainer.hasComponentsEncoded) return
-            //clone required since item becomes AIR after this, I assume event messes with it
 
-            geary(player).addLooty(cursor.clone(), slot, addToInventory = false)
+            //clone required since item becomes AIR after this, I assume event messes with it
+            val (entity, item) = LootyFactory.loadFromItem(geary(player), cursor.clone(), slot, addToInventory = false) ?: return
+            if(slot == player.inventory.heldItemSlot)
+                entity.add<SlotType.Held>()
         }
     }
 

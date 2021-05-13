@@ -1,60 +1,38 @@
 package com.mineinabyss.looty.ecs.components
 
-import com.mineinabyss.geary.ecs.GearyEntity
-import com.mineinabyss.geary.ecs.components.*
-import com.mineinabyss.geary.ecs.engine.Engine
-import com.mineinabyss.geary.ecs.engine.entity
-import com.mineinabyss.geary.ecs.remove
+import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.minecraft.components.ItemComponent
-import com.mineinabyss.geary.minecraft.isGearyEntity
-import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
-import com.mineinabyss.geary.minecraft.store.geary
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
 
-class ChildItemCache(
-    //TODO component probably shouldn't have access to the parent entity, do this in a system instead?
-    private val parent: Player, //InventoryHolder
+class ChildItemCache {
     //TODO don't use a map, some better array structure instead.
-    private val _itemCache: MutableMap<Int, GearyEntity> = mutableMapOf(),
-) {
-    //yeah this is probably a sign this should be in a system
-    private val gearyParent: GearyEntity by lazy {
-        geary(parent) ?: error("$parent was not registered with geary.")
-    }
+    val itemMap get() = _itemMap.toMutableMap()
+    private val _itemMap: MutableMap<Int, GearyEntity> = mutableMapOf()
 
-    operator fun get(slot: Int): GearyEntity? = _itemCache[slot]
+    operator fun get(slot: Int): GearyEntity? = _itemMap[slot]
 
     /** Updates the ItemStack reference for the entity in this [slot]. */
     fun update(slot: Int, item: ItemStack) {
-        _itemCache[slot]?.get<ItemComponent>()?.item = item
+        _itemMap[slot]?.get<ItemComponent>()?.item = item
     }
 
     fun update(slot: Int, edit: ItemStack.() -> Unit) {
-        _itemCache[slot]?.get<ItemComponent>()?.item?.apply(edit)
+        _itemMap[slot]?.get<ItemComponent>()?.item?.apply(edit)
     }
 
     /** Adds a new entity into a specified [slot], given an accompanying [item] */
-    fun add(slot: Int, item: ItemStack): GearyEntity {
-        val entity = Engine.entity {
-            addComponent(ItemComponent(item, slot))
-            //TODO safety with itemMeta and perhaps sidestep copying it
-            decodeComponentsFrom(item.itemMeta.persistentDataContainer)
-            parent = gearyParent
-        }
-
+    fun add(slot: Int, entity: GearyEntity, item: ItemStack) {
         //remove the old entity from ECS entirely and replace with the new one
         remove(slot)
-        _itemCache[slot] = entity
+        _itemMap[slot] = entity
+        entity.set(ItemComponent(item, slot))
         debug("Added to $slot")
 
-        if(slot in 36..39) //TODO make version safe!
-            entity.addComponent(SlotType.Equipped)
-
-        return entity
+        // If in armor slots
+        if (slot in 36..39) //TODO make version safe!
+            entity.add<SlotType.Equipped>()
     }
 
 
@@ -65,11 +43,9 @@ class ChildItemCache(
 
     /** Stops tracking entity in [slot] and removes it from ECS. */
     fun remove(slot: Int) {
-        _itemCache[slot]?.apply {
-            remove()
-            debug("Removed from $slot")
-        }
-        _itemCache -= slot
+        _itemMap[slot]?.removeEntity() ?: return
+        debug("Removed from $slot")
+        _itemMap -= slot
     }
 
     /*fun swapHeldComponent(removeFrom: Int, addTo: Int) {
@@ -79,52 +55,19 @@ class ChildItemCache(
 
     /** Swaps the slots of two existing components. Either can be null. */
     fun swap(first: Int, second: Int) {
-        val firstTemp = _itemCache[first]
-        val secondTemp = _itemCache[second]
+        val firstTemp = _itemMap[first]
+        val secondTemp = _itemMap[second]
 
         // null safety forces us to remove the item from the map if it's null
-        if (firstTemp == null) _itemCache.remove(second)
-        else _itemCache[second] = firstTemp
+        if (firstTemp == null) _itemMap.remove(second)
+        else _itemMap[second] = firstTemp
 
-        if (secondTemp == null) _itemCache.remove(first)
-        else _itemCache[first] = secondTemp
+        if (secondTemp == null) _itemMap.remove(first)
+        else _itemMap[first] = secondTemp
         debug("Swapped $first and $second")
     }
 
     internal fun clear() {
-        _itemCache.keys.toList().forEach { remove(it) }
-    }
-
-    //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
-    // not be tracked. Either we need a GC or make 1000% this never fails.
-    @Synchronized
-    fun reevaluate(inventory: PlayerInventory) {
-        //we remove any items from this copy that were modified, whatever remains will be removed
-        val untouched = _itemCache.toMutableMap()
-        //TODO prevent issues with children and id changes
-
-        inventory.forEachIndexed { slot, item ->
-
-            //================================ TODO MOVE OUT PROLLY cause we re-read meta when adding entity
-            if (item == null || !item.hasItemMeta()) return@forEachIndexed
-            val meta = item.itemMeta
-            val container = meta.persistentDataContainer
-            if (!container.isGearyEntity) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
-            //================================
-
-            val originalItem = get(slot)?.get<ItemComponent>()
-
-            //FIXME if changes were made to the ECS entity, they should be re-serialized here
-            // currently the changes on the actual entity will just be ignored
-            //if the items don't match, add the new item to this slot
-            if (item != originalItem?.item)
-                add(slot, item)
-
-            untouched -= slot
-        }
-
-        untouched.keys.forEach { remove(it) }
-
-        get(inventory.heldItemSlot)?.addComponent(SlotType.Held)
+        _itemMap.keys.toList().forEach { remove(it) }
     }
 }

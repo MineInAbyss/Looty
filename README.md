@@ -1,4 +1,7 @@
 # Looty
+[![Java CI with Gradle](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml/badge.svg)](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml)
+[![Package](https://badgen.net/maven/v/metadata-url/repo.mineinabyss.com/releases/com/mineinabyss/looty/maven-metadata.xml)](https://repo.mineinabyss.com/releases/com/mineinabyss/looty)
+[![Contribute](https://shields.io/badge/Contribute-e57be5?logo=github%20sponsors&style=flat&logoColor=white)](https://wiki.mineinabyss.com/contribute)
 
 ## Overview
 

@@ -14,6 +14,7 @@ import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.LootyType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.*
 
 internal fun debug(message: Any?) {
     if (LootyConfig.data.debug) broadcast(message)
@@ -30,6 +31,7 @@ object LootyFactory {
         val entity = Engine.entity {
             addParent(holder)
             addPrefab(prefab)
+            set(UUID.randomUUID())
         }
 
         return addToInventory(holder, entity, entity.encodeComponentsTo(type), slot, addToInventory)
@@ -44,6 +46,7 @@ object LootyFactory {
         val entity = Engine.entity {
             addParent(holder)
             decodeComponentsFrom(item.itemMeta.persistentDataContainer)
+            set(UUID.randomUUID())
         }
 
         return addToInventory(holder, entity, item, slot, addToInventory)

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.6.15",
+  "package": "com.mineinabyss.looty.mixin",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "server": [
+    "MixinPlayerInventory",
+    "MixinCraftServer",
+    "MixinItemStack"
+  ]
+}

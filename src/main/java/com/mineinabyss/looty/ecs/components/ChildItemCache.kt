@@ -5,6 +5,8 @@ import com.mineinabyss.geary.minecraft.components.ItemComponent
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.inventory.ItemStack
+import java.lang.ref.WeakReference
+import kotlin.reflect.KProperty
 
 class ChildItemCache {
     //TODO don't use a map, some better array structure instead.
@@ -71,3 +73,5 @@ class ChildItemCache {
         _itemMap.keys.toList().forEach { remove(it) }
     }
 }
+
+private operator fun <T> WeakReference<T>.getValue(thisRef: Any?, property: KProperty<*>): T? = get()

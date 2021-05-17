@@ -19,6 +19,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -149,7 +150,7 @@ object InventoryTrackingListener : Listener {
         if (item.itemStack.itemMeta.persistentDataContainer.hasComponentsEncoded)
             looty.schedule {
                 waitFor(1)
-                geary(player).lootyRefresh()
+//TODO                ItemTrackerSystem.refresh(geary(player))
             }
     }
 }

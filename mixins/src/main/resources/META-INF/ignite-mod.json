@@ -1,0 +1,10 @@
+{
+  "id": "looty",
+  "version": "1.0.0",
+  "requiredDependencies": [
+    "ignite"
+  ],
+  "mixins": [
+    "mixins.looty.mineinabyss.json"
+  ]
+}

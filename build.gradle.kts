@@ -21,6 +21,7 @@ repositories {
 //    maven("https://hub.spigotmc.org/nexus/content/groups/public/") //Spigot
     maven("https://papermc.io/repo/repository/maven-public/") //Paper
     mineInAbyss()
+    maven("https://repo.codemc.io/repository/nms/")
     maven("https://jitpack.io")
 
     mavenLocal()
@@ -31,6 +32,7 @@ val serverVersion: String by project
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:$serverVersion")
+    compileOnly("com.destroystokyo.paper:paper:$serverVersion")
 //    compileOnly("org.spigotmc:spigot:${Deps.serverVersion}") // NMS
     compileOnly(kotlin("stdlib-jdk8"))
 
@@ -39,6 +41,7 @@ dependencies {
 
     compileOnly("com.mineinabyss:geary-spigot:0.4.42")
     implementation("com.mineinabyss:idofront:0.6.13")
+    compileOnly(project(":looty-mixins"))
 }
 
 tasks {

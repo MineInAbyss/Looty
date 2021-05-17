@@ -30,8 +30,9 @@ class Looty : JavaPlugin() {
         LootyCommands()
 
         registerEvents(
-            InventoryTrackingListener,
-            LootyEventListener
+//            InventoryTrackingListener,
+            LootyEventListener,
+//            PlayerInventoryInjection()
         )
 
         attachToGeary {
@@ -48,12 +49,12 @@ class Looty : JavaPlugin() {
             bukkitEntityAccess {
                 onEntityRegister<Player> {
                     set(ChildItemCache())
-                    lootyRefresh()
+//TODO                    ItemTrackerSystem.refresh(this)
                 }
 
                 onEntityUnregister<Player> {
                     with<ChildItemCache> {
-                        lootyRefresh()
+//                        ItemTrackerSystem.refresh(this)
                         it.clear()
                     }
                 }

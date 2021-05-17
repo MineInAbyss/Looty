@@ -13,3 +13,9 @@ pluginManagement {
 }
 
 rootProject.name = "looty"
+
+include(
+    "looty-mixins",
+)
+
+project(":looty-mixins").projectDir = file("./mixins")

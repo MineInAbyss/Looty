@@ -4,11 +4,13 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.minecraft.components.ItemComponent
-import com.mineinabyss.geary.minecraft.hasComponentsEncoded
-import com.mineinabyss.looty.LootyFactory
+import com.mineinabyss.geary.minecraft.access.BukkitAssociations
+import com.mineinabyss.geary.minecraft.store.GearyStore
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
+import com.mineinabyss.looty.tracking.gearyOrNull
+import com.mineinabyss.looty.tracking.lootyUUID
+import com.mineinabyss.looty.tracking.toNMS
 import org.bukkit.entity.Player
 
 /**
@@ -24,45 +26,35 @@ import org.bukkit.entity.Player
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    val player = has<Player>()
+    val player by get<Player>()
     val itemCache by get<ChildItemCache>()
 
     override fun GearyEntity.tick() {
-        lootyRefresh()
-    }
-}
-
-//TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
-// not be tracked. Either we need a GC or make 1000% this never fails.
-@Synchronized
-fun GearyEntity.lootyRefresh() {
-    val player = get<Player>() ?: return
-    val itemCache = get<ChildItemCache>() ?: return
-
-    //we remove any items from this copy that were modified, whatever remains will be removed
-    val untouched = itemCache.itemMap
-    //TODO prevent issues with children and id changes
-
-    player.inventory.forEachIndexed { slot, item ->
-        //================================ TODO MOVE OUT PROLLY cause we re-read meta when adding entity
-        if (item == null || !item.hasItemMeta()) return@forEachIndexed
-        val meta = item.itemMeta
-        val container = meta.persistentDataContainer
-        if (!container.hasComponentsEncoded) return@forEachIndexed //TODO perhaps some way of knowing this without cloning the ItemMeta
-        //================================
-
-        val originalItem = itemCache[slot]?.get<ItemComponent>()
-
-        //FIXME if changes were made to the ECS entity, they should be re-serialized here
-        // currently the changes on the actual entity will just be ignored
-        //if the items don't match, add the new item to this slot
-        if (item != originalItem?.item)
-            LootyFactory.loadFromItem(this, item, slot, addToInventory = false)
-
-        untouched -= slot
+        refresh(this, player, itemCache)
     }
 
-    untouched.keys.forEach { itemCache.remove(it) }
+    //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
+    // not be tracked. Either we need a GC or make 1000% this never fails.
+    @Synchronized
+    fun refresh(entity: GearyEntity, player: Player, itemCache: ChildItemCache) {
+        //we remove any items from this copy that were modified, whatever remains will be removed
+        val untouched = itemCache.itemMap
+        //TODO prevent issues with children and id changes
 
-    itemCache[player.inventory.heldItemSlot]?.add<SlotType.Held>()
+        val nmsInv = player.inventory.toNMS()
+
+        nmsInv.contents.forEachIndexed { slot, item ->
+            val uuid = item.lootyUUID ?: return@forEachIndexed
+            BukkitAssociations.getOrNull(uuid)
+            GearyStore.decode(uuid)
+            gearyOrNull(item)?.apply {
+
+            }
+        }
+
+        untouched.keys.forEach { itemCache.remove(it) }
+
+        itemCache[player.inventory.heldItemSlot]?.add<SlotType.Held>()
+
+    }
 }

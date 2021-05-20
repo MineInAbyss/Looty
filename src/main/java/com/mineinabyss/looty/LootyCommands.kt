@@ -14,6 +14,7 @@ import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.ChildItemCache
+import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.interfaces.IPlayerTest
 import com.okkero.skedule.schedule
@@ -48,9 +49,9 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
 
                 playerAction {
                     LootyFactory.createFromPrefab(
-                        holder = geary(player),
+                        parent = geary(player),
                         prefab = PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction,
-                        addToInventory = true
+                        context = PlayerInventoryContext(player, player.inventory.firstEmpty())
                     )
                 }
             }

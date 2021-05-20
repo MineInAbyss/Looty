@@ -2,10 +2,12 @@ package com.mineinabyss.looty.ecs.components.events
 
 import com.mineinabyss.geary.ecs.components.Target
 import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.access.gearyOrNull
 import com.mineinabyss.geary.minecraft.events.event
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.ecs.components.ChildItemCache
+import com.mineinabyss.looty.tracking.gearyOrNull
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 
-val Player.heldLootyItem get() = geary(this).get<ChildItemCache>()?.get(inventory.heldItemSlot)
+val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand)
 
 object LootyEventListener : Listener {
     @EventHandler

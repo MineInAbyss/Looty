@@ -41,6 +41,7 @@ class Looty : JavaPlugin() {
                 ScreamingSystem,
                 CooldownDisplaySystem,
                 ItemRecipeSystem(),
+                PlayerInventoryContextTracker(),
             )
 
             autoscanActions()
@@ -49,12 +50,12 @@ class Looty : JavaPlugin() {
             bukkitEntityAccess {
                 onEntityRegister<Player> {
                     set(ChildItemCache())
-//TODO                    ItemTrackerSystem.refresh(this)
+                    get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }
 
                 onEntityUnregister<Player> {
                     with<ChildItemCache> {
-//                        ItemTrackerSystem.refresh(this)
+                        get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                         it.clear()
                     }
                 }

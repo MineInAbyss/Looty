@@ -5,14 +5,17 @@ import com.mineinabyss.geary.ecs.api.engine.entity
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.entities.addParent
 import com.mineinabyss.geary.ecs.entities.addPrefab
+import com.mineinabyss.geary.minecraft.access.BukkitAssociations
+import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.messaging.broadcast
 import com.mineinabyss.looty.config.LootyConfig
-import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.LootyType
-import org.bukkit.entity.Player
+import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.tracking.gearyOrNull
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
@@ -22,55 +25,42 @@ internal fun debug(message: Any?) {
 
 object LootyFactory {
     fun createFromPrefab(
-        holder: GearyEntity,
+        parent: GearyEntity,
         prefab: GearyEntity,
-        slot: Int? = null,
-        addToInventory: Boolean = false,
-    ): Pair<GearyEntity, ItemStack>? {
+        context: PlayerInventoryContext,
+    ): GearyEntity? {
+        val (_, slot, inventory) = context
         val type = prefab.get<LootyType>() ?: return null
-        val entity = Engine.entity {
-            addParent(holder)
+
+        return Engine.entity {
+            addParent(parent)
             addPrefab(prefab)
-            set(UUID.randomUUID())
-        }
+            set(context)
+            val uuid = setPersisting(UUID.randomUUID())
 
-        return addToInventory(holder, entity, entity.encodeComponentsTo(type), slot, addToInventory)
+            val item = encodeComponentsTo(type)
+            set(item)
+            inventory.setItem(slot, item)
+
+            BukkitAssociations.register(uuid, this)
+        }
     }
 
-    fun loadFromItem(
-        holder: GearyEntity,
-        item: ItemStack,
-        slot: Int? = null,
-        addToInventory: Boolean = false,
-    ): Pair<GearyEntity, ItemStack>? {
-        val entity = Engine.entity {
-            addParent(holder)
+    fun loadFromPlayerInventory(context: PlayerInventoryContext): GearyEntity? {
+        val item = context.item ?: return null
+        if (item.type == Material.AIR) return null
+        if(gearyOrNull(item) != null) return null
+
+        return Engine.entity {
+            addParent(geary(context.holder))
             decodeComponentsFrom(item.itemMeta.persistentDataContainer)
-            set(UUID.randomUUID())
+            set(context)
+            set(item)
+
+            // Ensure a UUID is set and actually unique
+            val uuid = get<UUID>()?.takeIf { it !in BukkitAssociations } ?: setPersisting(UUID.randomUUID())
+            BukkitAssociations.register(uuid, this)
         }
-
-        return addToInventory(holder, entity, item, slot, addToInventory)
-    }
-
-    private fun addToInventory(
-        holder: GearyEntity,
-        entity: GearyEntity,
-        item: ItemStack,
-        slot: Int? = null,
-        addToInventory: Boolean = false
-    ): Pair<GearyEntity, ItemStack>? {
-        //TODO create an ECS version of Inventory so we don't rely on spigot
-        val player = holder.get<Player>() ?: return null
-        val inventory = player.inventory
-        val useSlot = slot ?: inventory.firstEmpty()
-
-        //TODO What if it's full?
-        if (addToInventory) inventory.setItem(useSlot, item)
-
-        val itemCache = holder.getOrSet { ChildItemCache() }
-        itemCache.add(useSlot, entity, item)
-
-        return entity to item
     }
 }
 

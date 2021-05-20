@@ -19,11 +19,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
+/*
 object InventoryTrackingListener : Listener {
     //TODO drag clicking is a separate event
     @EventHandler
@@ -85,13 +85,15 @@ object InventoryTrackingListener : Listener {
             if (!meta.persistentDataContainer.hasComponentsEncoded) return
 
             //clone required since item becomes AIR after this, I assume event messes with it
-            val (entity, item) = LootyFactory.loadFromItem(geary(player), cursor.clone(), slot, addToInventory = false) ?: return
+            val (entity, item) = LootyFactory.loadFromItem(geary(player), cursor.clone()) ?: return
             if(slot == player.inventory.heldItemSlot)
                 entity.add<SlotType.Held>()
         }
     }
 
-    /** Immediately adds a held component to the currently held item. */
+    */
+/** Immediately adds a held component to the currently held item. *//*
+
     //TODO another component for when in offhand
     //TODO remove held when swapping into offhand
     @EventHandler
@@ -126,10 +128,12 @@ object InventoryTrackingListener : Listener {
 
     //TODO picking up and dropping items doesn't tell us which slot the item came/left from, so currently forces an
     // expensive re-read of inventory
-    /**
+    */
+/**
      * There's no way of knowing which slot an item was in when dropped, so the most reliable way of ensuring nothing
      * funky happens is recalculating everything. Try and improve on this later!
-     */
+     *//*
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerDropItemEvent.onDropItem() {
         val gearyPlayer = geary(player)
@@ -154,3 +158,4 @@ object InventoryTrackingListener : Listener {
             }
     }
 }
+*/

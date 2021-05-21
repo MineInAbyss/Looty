@@ -17,6 +17,7 @@ import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.interfaces.IPlayerTest
+import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -24,6 +25,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.inventory.ItemStack
 
 @ExperimentalCommandDSL
 class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
@@ -57,6 +59,11 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
             }
 
             "debug" {
+                "stone" {
+                    playerAction {
+                        gearyOrNull(player.inventory.itemInMainHand)?.get<ItemStack>()?.type = Material.STONE
+                    }
+                }
                 "reference" {
                     playerAction {
                         val item = player.inventory.itemInMainHand

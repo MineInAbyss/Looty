@@ -7,6 +7,7 @@ import com.mineinabyss.geary.ecs.entities.addParent
 import com.mineinabyss.geary.ecs.entities.addPrefab
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
 import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.access.gearyOrNull
 import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
@@ -49,17 +50,21 @@ object LootyFactory {
     fun loadFromPlayerInventory(context: PlayerInventoryContext): GearyEntity? {
         val item = context.item ?: return null
         if (item.type == Material.AIR) return null
-        if(gearyOrNull(item) != null) return null
+        val gearyPlayer = gearyOrNull(context.holder) ?: return null
+
+        if(gearyOrNull(item)?.get<PlayerInventoryContext>()?.slot == context.slot) return null
 
         return Engine.entity {
-            addParent(geary(context.holder))
+            addParent(gearyPlayer)
             decodeComponentsFrom(item.itemMeta.persistentDataContainer)
             set(context)
             set(item)
-
             // Ensure a UUID is set and actually unique
             val uuid = get<UUID>()?.takeIf { it !in BukkitAssociations } ?: setPersisting(UUID.randomUUID())
+
+            debug("Creating item in slot ${context.slot} and uuid $uuid")
             BukkitAssociations.register(uuid, this)
+            encodeComponentsTo(item)
         }
     }
 }

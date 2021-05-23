@@ -43,6 +43,7 @@ class Looty : JavaPlugin() {
                 ItemRecipeSystem(),
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),
+                PeriodicSaveSystem(),
             )
 
             autoscanActions()

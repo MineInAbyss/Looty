@@ -47,8 +47,11 @@ object LootyFactory {
         }
     }
 
-    fun loadFromPlayerInventory(context: PlayerInventoryContext): GearyEntity? {
-        val item = context.item ?: return null
+    fun loadFromPlayerInventory(
+        context: PlayerInventoryContext,
+        item: ItemStack? = context.item,
+    ): GearyEntity? {
+        if(item == null) return null
         if (item.type == Material.AIR) return null
         val gearyPlayer = gearyOrNull(context.holder) ?: return null
 

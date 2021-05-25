@@ -32,6 +32,7 @@ class Looty : JavaPlugin() {
         registerEvents(
 //            InventoryTrackingListener,
             LootyEventListener,
+            InventoryTrackingListener,
 //            PlayerInventoryInjection()
         )
 
@@ -43,7 +44,7 @@ class Looty : JavaPlugin() {
                 ItemRecipeSystem(),
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),
-                PeriodicSaveSystem(),
+                PeriodicSaveSystem,
             )
 
             autoscanActions()

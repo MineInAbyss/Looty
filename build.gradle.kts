@@ -39,7 +39,7 @@ dependencies {
     kotlinSpice("$kotlinVersion+")
     compileOnly("com.github.okkero:skedule")
 
-    compileOnly("com.mineinabyss:geary-spigot:0.4.42")
+    compileOnly("com.mineinabyss:geary-spigot:0.4.43")
     implementation("com.mineinabyss:idofront:0.6.13")
     compileOnly(project(":looty-mixins"))
 }

@@ -41,7 +41,6 @@ dependencies {
 
     compileOnly("com.mineinabyss:geary-spigot:0.4.43")
     implementation("com.mineinabyss:idofront:0.6.13")
-    compileOnly(project(":looty-mixins"))
 }
 
 tasks {

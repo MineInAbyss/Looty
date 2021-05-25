@@ -16,7 +16,6 @@ import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
-import com.mineinabyss.looty.interfaces.IPlayerTest
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
 import org.bukkit.Material
@@ -78,11 +77,6 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                             waitFor(length.toLong())
                             item.count += 1
                         }
-                    }
-                }
-                "mixins" {
-                    playerAction {
-                        ((player as CraftPlayer).handle as IPlayerTest).test()
                     }
                 }
                 "pdc"{

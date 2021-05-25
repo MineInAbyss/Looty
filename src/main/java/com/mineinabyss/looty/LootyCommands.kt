@@ -6,17 +6,23 @@ import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.components.getPrefabsFor
 import com.mineinabyss.geary.minecraft.components.of
+import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
-import com.mineinabyss.looty.ecs.components.ChildItemCache
+import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
+import com.mineinabyss.looty.tracking.gearyOrNull
+import com.okkero.skedule.schedule
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.inventory.ItemStack
 
 @ExperimentalCommandDSL
 class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
@@ -42,14 +48,35 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
 
                 playerAction {
                     LootyFactory.createFromPrefab(
-                        holder = geary(player),
+                        parent = geary(player),
                         prefab = PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction,
-                        addToInventory = true
+                        context = PlayerInventoryContext(player, player.inventory.firstEmpty())
                     )
                 }
             }
 
             "debug" {
+                "stone" {
+                    playerAction {
+                        gearyOrNull(player.inventory.itemInMainHand)?.get<ItemStack>()?.type = Material.STONE
+                    }
+                }
+                "reference" {
+                    playerAction {
+                        val item = player.inventory.itemInMainHand
+                        CraftItemStack.asNMSCopy(item).asBukkitMirror().type = Material.STONE
+                    }
+                }
+                "swap" {
+                    val length by intArg()
+                    playerAction {
+                        val item = (player.inventory.itemInMainHand as CraftItemStack).handle
+                        looty.schedule {
+                            waitFor(length.toLong())
+                            item.count += 1
+                        }
+                    }
+                }
                 "pdc"{
                     playerAction {
                         sender.info(player.inventory.itemInMainHand.itemMeta!!.persistentDataContainer.keys)
@@ -58,7 +85,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 "components"{
                     playerAction {
                         sender.info(
-                            geary(player).get<ChildItemCache>()?.get(player.inventory.heldItemSlot)?.listComponents()
+                            gearyOrNull(player.inventory.itemInMainHand)?.listComponents()
                         )
                     }
                     //TODO print static and serialized on separate lines
@@ -77,7 +104,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
         return when (args.size) {
             2 -> when (args[0]) {
                 "item" -> {
-                    PrefabManager.getPrefabsFor(looty).map { it.name }.filter { it.startsWith(args[1].toLowerCase()) }
+                    PrefabManager.getPrefabsFor(looty).map { it.name }.filter { it.startsWith(args[1].lowercase()) }
                 }
                 else -> emptyList()
             }

@@ -6,7 +6,7 @@ import com.mineinabyss.idofront.messaging.broadcast
 import com.mineinabyss.looty.ecs.components.Screaming
 
 object ScreamingSystem : TickingSystem(interval = 50) {
-    val screaming by get<Screaming>()
+    private val screaming by get<Screaming>()
 
     override fun GearyEntity.tick() {
         broadcast("I am screaming ${screaming.scream}")

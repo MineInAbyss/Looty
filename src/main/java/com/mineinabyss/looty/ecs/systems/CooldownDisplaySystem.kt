@@ -8,6 +8,8 @@ import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -23,10 +25,10 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val displayLength = 10
                 val displayChar = '■'
-                val length = cooldown.length.milliseconds
-                val timeLeft = (cooldown.endTime - System.currentTimeMillis()).milliseconds
+                val length = Duration.milliseconds(cooldown.length)
+                val timeLeft = Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))
                 val squaresLeft =
-                    if (timeLeft.inSeconds * 20 < INTERVAL) 0 else (timeLeft / length * displayLength).roundToInt()
+                    if (timeLeft.toDouble(DurationUnit.SECONDS) * 20 < INTERVAL) 0 else (timeLeft / length * displayLength).roundToInt()
 
                 buildString {
                     append("$key ")

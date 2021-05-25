@@ -3,7 +3,6 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.minecraft.dsl.attachToGeary
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
-import com.mineinabyss.looty.ecs.components.ChildItemCache
 import com.mineinabyss.looty.ecs.components.events.LootyEventListener
 import com.mineinabyss.looty.ecs.systems.*
 import kotlinx.serialization.InternalSerializationApi
@@ -52,15 +51,11 @@ class Looty : JavaPlugin() {
 
             bukkitEntityAccess {
                 onEntityRegister<Player> {
-                    set(ChildItemCache())
                     get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }
 
                 onEntityUnregister<Player> {
-                    with<ChildItemCache> {
-                        get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
-                        it.clear()
-                    }
+                    get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }
             }
             loadPrefabs(relicsDir)

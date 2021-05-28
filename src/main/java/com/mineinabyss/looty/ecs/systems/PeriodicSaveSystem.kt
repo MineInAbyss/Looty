@@ -24,13 +24,7 @@ object PeriodicSaveSystem : TickingSystem(interval = 100) {
         val oldHash = persisting.hashed
         val newHash = persisting.updateComponentHash()
 
-        if (thoroughEval) {
+        if (thoroughEval || oldHash != newHash)
             entity.encodeComponentsTo(item)
-            return
-        }
-
-        if (newHash == oldHash) return
-
-        entity.encodeComponentsTo(item)
     }
 }

@@ -10,4 +10,6 @@ import kotlinx.serialization.Serializable
 @AutoscanComponent
 class LootyType(
     val item: SerializableItemStack
-)
+) {
+    fun createItem() = item.toItemStack()
+}

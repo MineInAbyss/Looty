@@ -8,10 +8,13 @@ import com.mineinabyss.geary.minecraft.components.getPrefabsFor
 import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
+import com.mineinabyss.idofront.commands.arguments.stringArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.info
+import com.mineinabyss.looty.command.removeComponentBySerialName
+import com.mineinabyss.looty.command.addRawJSONComponent
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
@@ -22,6 +25,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 @ExperimentalCommandDSL
@@ -89,6 +93,22 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         )
                     }
                     //TODO print static and serialized on separate lines
+                }
+                "component" {
+                    "add" {
+                        action {
+                            val player = if (sender is Player) sender as Player else return@action
+                            val json = arguments.joinToString(" ")
+                            addRawJSONComponent(player, json)
+                        }
+                    }
+
+                    "remove" {
+                        val name by stringArg()
+                        playerAction {
+                            removeComponentBySerialName(player, name)
+                        }
+                    }
                 }
             }
         }

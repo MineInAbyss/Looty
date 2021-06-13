@@ -1,7 +1,9 @@
 package com.mineinabyss.looty
 
+import com.mineinabyss.geary.ecs.api.GearyComponent
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
+import com.mineinabyss.geary.ecs.serialization.Formats
 import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.components.getPrefabsFor
@@ -13,13 +15,13 @@ import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.info
-import com.mineinabyss.looty.command.removeComponentBySerialName
-import com.mineinabyss.looty.command.addRawJSONComponent
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.SerializationException
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -99,14 +101,27 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         action {
                             val player = if (sender is Player) sender as Player else return@action
                             val json = arguments.joinToString(" ")
-                            addRawJSONComponent(player, json)
+                            val item = gearyOrNull(player.inventory.itemInMainHand) ?: return@action
+
+                            try {
+                                val component = Formats.jsonFormat.decodeFromString(PolymorphicSerializer(GearyComponent::class), json)
+                                item.set(component, component::class)
+                            } catch (e: SerializationException) {
+                                player.info(e.message)
+                            }
                         }
                     }
 
                     "remove" {
                         val name by stringArg()
                         playerAction {
-                            removeComponentBySerialName(player, name)
+                            try {
+                                val kClass = Formats.getClassFor(name)
+                                val item = gearyOrNull(player.inventory.itemInMainHand) ?: return@playerAction
+                                item.remove(kClass)
+                            } catch (e: IllegalStateException) {
+                                player.info(e.message)
+                            }
                         }
                     }
                 }

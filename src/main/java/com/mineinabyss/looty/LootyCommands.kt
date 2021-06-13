@@ -21,7 +21,6 @@ import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
 import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.SerializationException
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -99,15 +98,17 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 "component" {
                     "add" {
                         action {
-                            val player = if (sender is Player) sender as Player else return@action
-                            val json = arguments.joinToString(" ")
-                            val item = gearyOrNull(player.inventory.itemInMainHand) ?: return@action
-
-                            try {
-                                val component = Formats.jsonFormat.decodeFromString(PolymorphicSerializer(GearyComponent::class), json)
-                                item.set(component, component::class)
-                            } catch (e: SerializationException) {
-                                player.info(e.message)
+                            val player = sender as? Player ?: return@action
+                            runCatching {
+                                Formats.jsonFormat.decodeFromString(
+                                    PolymorphicSerializer(GearyComponent::class),
+                                    arguments.joinToString(" ")
+                                )
+                            }.onSuccess {
+                                gearyOrNull(player.inventory.itemInMainHand)
+                                    ?.set(it, it::class)
+                            }.onFailure {
+                                player.info(it.message)
                             }
                         }
                     }
@@ -115,12 +116,13 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     "remove" {
                         val name by stringArg()
                         playerAction {
-                            try {
-                                val kClass = Formats.getClassFor(name)
-                                val item = gearyOrNull(player.inventory.itemInMainHand) ?: return@playerAction
-                                item.remove(kClass)
-                            } catch (e: IllegalStateException) {
-                                player.info(e.message)
+                            runCatching {
+                                Formats.getClassFor(name)
+                            }.onSuccess {
+                                gearyOrNull(player.inventory.itemInMainHand)
+                                    ?.remove(it)
+                            }.onFailure {
+                                player.info(it.message)
                             }
                         }
                     }
@@ -128,6 +130,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
             }
         }
     }
+
 
     override fun onTabComplete(
         sender: CommandSender,

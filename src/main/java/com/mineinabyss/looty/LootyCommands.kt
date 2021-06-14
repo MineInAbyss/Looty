@@ -124,6 +124,14 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 }
                 "component" {
                     "add" {
+                        "id" {
+                            val id by intArg()
+                            playerAction {
+                                gearyOrNull(player.inventory.itemInMainHand)
+                                    ?.add(id.toULong())
+                            }
+                        }
+
                         action {
                             val player = sender as? Player ?: return@action
                             runCatching {

@@ -37,6 +37,7 @@ class Looty : JavaPlugin() {
 
         attachToGeary {
             systems(
+                EntityDetectorSystem,
                 ItemTrackerSystem,
                 ScreamingSystem,
                 CooldownDisplaySystem,
@@ -44,10 +45,23 @@ class Looty : JavaPlugin() {
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),
                 PeriodicSaveSystem,
+
+                UpdateContextItemSystem,
+                //<editor-fold desc="Durability"
+                DecreaseDurabilitySystem,
+                DurabilityDepletedSystem,
+
+                //<editor-fold desc="Durability depleted logic"
+                ConsumeOnDurabilityDepleteSystem,
+                PutInABrokenStateOnDurabilityDepleteSystem,
+                RemoveDurabilityDepletedComponentSystem
+                //</editor-fold"
+                //</editor-fold>
             )
 
             autoscanActions()
             autoscanComponents()
+            autoscanConditions()
 
             bukkitEntityAccess {
                 onEntityRegister<Player> {

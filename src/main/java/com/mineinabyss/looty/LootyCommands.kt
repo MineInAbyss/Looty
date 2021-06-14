@@ -1,10 +1,13 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.api.GearyComponent
+import com.mineinabyss.geary.ecs.api.engine.componentId
+import com.mineinabyss.geary.ecs.api.engine.type
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.ecs.serialization.Formats
 import com.mineinabyss.geary.helpers.listComponents
+import com.mineinabyss.geary.helpers.serialName
 import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.components.getPrefabsFor
 import com.mineinabyss.geary.minecraft.components.of
@@ -88,6 +91,30 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     }
                 }
                 "components"{
+                    "name-id" {
+                        playerAction {
+                            sender.info(
+                                gearyOrNull(player.inventory.itemInMainHand)?.let {
+                                    """
+                                        Type: ${
+                                        it.type.mapNotNull {
+                                            com.mineinabyss.geary.ecs.api.entities.geary(it).get<PrefabKey>()
+                                        }
+                                    }
+                                        Instance: ${
+                                        it.getInstanceComponents()
+                                            .map { "${it.serialName} with id=${componentId(it::class)}" }
+                                    }
+                                        Persisting: ${
+                                        it.getPersistingComponents()
+                                            .map { "${it.serialName} with id=${componentId(it::class)}" }
+                                    }
+                                    """.trimIndent()
+                                }
+                            )
+                        }
+                    }
+
                     playerAction {
                         sender.info(
                             gearyOrNull(player.inventory.itemInMainHand)?.listComponents()

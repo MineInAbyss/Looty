@@ -5,11 +5,12 @@ import com.mineinabyss.looty.ecs.components.DecreaseDurabilityComponent
 import com.mineinabyss.looty.ecs.components.DurabilityComponent
 
 object DecreaseDurabilitySystem : LootyItemSystem() {
-    private val decrease by get<DecreaseDurabilityComponent>()
-    private val durability by get<DurabilityComponent>()
+    private val decreaseDurabilityComponent by get<DecreaseDurabilityComponent>()
+    private val durabilityComponent by get<DurabilityComponent>()
 
     override fun GearyEntity.tick() {
-        durability.durability = (durability.durability - decrease.deltaDurability).coerceAtLeast(0)
+        durabilityComponent.durability =
+            (durabilityComponent.durability - decreaseDurabilityComponent.deltaDurability).coerceAtLeast(0)
         remove<DecreaseDurabilityComponent>()
     }
 }

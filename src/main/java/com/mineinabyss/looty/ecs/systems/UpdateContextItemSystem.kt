@@ -12,12 +12,10 @@ object UpdateContextItemSystem : LootyItemSystem() {
         val entity = BukkitAssociations[uuid] ?: return
         val context = entity.get<PlayerInventoryContext>()
         context?.item?.let {
-            if (it.type != updateContextItemComponent.item.type) {
-                it.setType(updateContextItemComponent.item.type)
-                it.data = updateContextItemComponent.item.toItemStack().data
-            }
-            if (it.amount != updateContextItemComponent.item.amount) it.amount = updateContextItemComponent.item.amount
-            context.inventory.setItem(context.slot, it)
+            val oldMeta = it.itemMeta
+            val item = updateContextItemComponent.item.toItemStack().clone()
+            item.itemMeta = oldMeta
+            context.inventory.setItem(context.slot, item)
         }
         remove<UpdateContextItemComponent>()
     }

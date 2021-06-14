@@ -9,6 +9,6 @@ object RemoveDurabilityDepletedComponentSystem : LootyItemSystem() {
 
     override fun GearyEntity.tick() {
         remove<DurabilityDepletedComponent>()
-        add<BrokenComponent>()
+        setPersisting(BrokenComponent())
     }
 }

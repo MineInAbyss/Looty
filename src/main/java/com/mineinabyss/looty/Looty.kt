@@ -47,8 +47,6 @@ class Looty : JavaPlugin() {
 
                 UpdateContextItemSystem,
                 //<editor-fold desc="Durability"
-                IncreaseDurabilitySystem,
-                DecreaseDurabilitySystem,
                 DurabilityDepletedSystem,
 
                 //<editor-fold desc="Durability depleted logic"

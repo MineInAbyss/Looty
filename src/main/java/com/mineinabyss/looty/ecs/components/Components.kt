@@ -21,16 +21,6 @@ data class MinDurabilityComponent(val minDurability: Int = 0)
 data class DurabilityComponent(var durability: Int)
 
 @Serializable
-@SerialName("looty:decreaseDurability")
-@AutoscanComponent
-data class DecreaseDurabilityComponent(val deltaDurability: Int = 1)
-
-@Serializable
-@SerialName("looty:increaseDurability")
-@AutoscanComponent
-data class IncreaseDurabilityComponent(val deltaDurability: Int = 1)
-
-@Serializable
 @SerialName("looty:durabilityDepleted")
 @AutoscanComponent
 data class DurabilityDepletedComponent(val empty: Boolean = true)

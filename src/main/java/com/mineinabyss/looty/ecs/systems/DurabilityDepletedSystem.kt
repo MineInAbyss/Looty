@@ -9,9 +9,10 @@ import com.mineinabyss.looty.ecs.components.MinDurabilityComponent
 object DurabilityDepletedSystem : LootyItemSystem() {
     private val durabilityComponent by get<DurabilityComponent>()
     private val minDurabilityComponent by get<MinDurabilityComponent>()
+    private val brokenComponent = hasNot<BrokenComponent>()
 
     override fun GearyEntity.tick() {
-        if (!has<BrokenComponent>() && durabilityComponent.durability == minDurabilityComponent.minDurability) {
+        if (durabilityComponent.durability == minDurabilityComponent.minDurability) {
             add<DurabilityDepletedComponent>()
         }
     }

@@ -8,10 +8,9 @@ import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 object ConsumeOnDurabilityDepleteSystem : LootyItemSystem() {
     private val durabilityDepletedComponent = has<DurabilityDepletedComponent>()
     private val context by get<PlayerInventoryContext>()
+    private val a = has<ConsumeOnDurabilityDepleteComponent>(set = true)
 
     override fun GearyEntity.tick() {
-        if (!has<ConsumeOnDurabilityDepleteComponent>()) return
-
         context.item?.apply { context.inventory.remove(this) }
     }
 }

@@ -45,13 +45,13 @@ class Looty : JavaPlugin() {
                 HeldItemTracker(),
                 PeriodicSaveSystem,
 
-                UpdateContextItemSystem,
+                ReplaceContextItemSystem,
                 //<editor-fold desc="Durability"
                 DurabilityDepletedSystem,
 
                 //<editor-fold desc="Durability depleted logic"
                 ConsumeOnDurabilityDepleteSystem,
-                PutInABrokenStateOnDurabilityDepleteSystem,
+                ReplaceItemToBrokenOnDurabilityDepleteSystem,
                 RemoveDurabilityDepletedComponentSystem
                 //</editor-fold"
                 //</editor-fold>

@@ -2,10 +2,10 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
-import com.mineinabyss.looty.ecs.components.UpdateContextItemComponent
+import com.mineinabyss.looty.ecs.components.ItemReplacementComponent
 
-object UpdateContextItemSystem : LootyItemSystem() {
-    private val updateContextItemComponent by get<UpdateContextItemComponent>()
+object ReplaceContextItemSystem : LootyItemSystem() {
+    private val updateContextItemComponent by get<ItemReplacementComponent>()
     private val context by get<PlayerInventoryContext>()
 
     override fun GearyEntity.tick() {
@@ -15,6 +15,6 @@ object UpdateContextItemSystem : LootyItemSystem() {
             item.itemMeta = oldMeta
             context.inventory.setItem(context.slot, item)
         }
-        remove<UpdateContextItemComponent>()
+        remove<ItemReplacementComponent>()
     }
 }

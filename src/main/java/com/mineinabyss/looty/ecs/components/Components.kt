@@ -6,12 +6,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("looty:maxDurability")
+@SerialName("looty:max_durability")
 @AutoscanComponent
 data class MaxDurabilityComponent(val maxDurability: Int)
 
 @Serializable
-@SerialName("looty:minDurability")
+@SerialName("looty:min_durability")
 @AutoscanComponent
 data class MinDurabilityComponent(val minDurability: Int = 0)
 
@@ -21,7 +21,7 @@ data class MinDurabilityComponent(val minDurability: Int = 0)
 data class DurabilityComponent(var durability: Int)
 
 @Serializable
-@SerialName("looty:durabilityDepleted")
+@SerialName("looty:durability_depleted")
 @AutoscanComponent
 data class DurabilityDepletedComponent(val empty: Boolean = true)
 
@@ -31,16 +31,16 @@ data class DurabilityDepletedComponent(val empty: Boolean = true)
 data class BrokenComponent(val empty: Boolean = true)
 
 @Serializable
-@SerialName("looty:consumeOnDurabilityDeplete")
+@SerialName("looty:consumable")
 @AutoscanComponent
 data class ConsumeOnDurabilityDepleteComponent(val empty: Boolean = true)
 
 @Serializable
-@SerialName("looty:putInABrokenStateOnDurabilityDeplete")
+@SerialName("looty:broken_item")
 @AutoscanComponent
-data class PutInABrokenStateDurabilityDepleteComponent(val item: SerializableItemStack)
+data class BrokenItemComponent(val item: SerializableItemStack)
 
 @Serializable
-@SerialName("looty:putInABrokenStateOnDurabilityDeplete")
+@SerialName("looty:context_item_replacement")
 @AutoscanComponent
-data class UpdateContextItemComponent(val item: SerializableItemStack)
+data class ItemReplacementComponent(val item: SerializableItemStack)

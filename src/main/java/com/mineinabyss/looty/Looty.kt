@@ -37,6 +37,7 @@ class Looty : JavaPlugin() {
 
         attachToGeary {
             systems(
+                InitByPrefabSystem,
                 ItemTrackerSystem,
                 ScreamingSystem,
                 CooldownDisplaySystem,

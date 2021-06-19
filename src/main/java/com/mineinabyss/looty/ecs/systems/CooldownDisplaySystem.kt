@@ -7,6 +7,7 @@ import com.mineinabyss.geary.ecs.entities.parent
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
+import org.bukkit.map.MinecraftFont
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -41,7 +42,7 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
                         append(displayChar)
                     }
                     append(ChatColor.GRAY)
-                    append(" [$timeLeft]")
+                    if (squaresLeft < 1) (append(ChatColor.BOLD," ✓")) else append(" [$timeLeft]")
                 }
             })
         }

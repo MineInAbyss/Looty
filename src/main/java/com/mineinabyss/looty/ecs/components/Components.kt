@@ -43,4 +43,4 @@ data class BrokenItemComponent(val item: SerializableItemStack)
 @Serializable
 @SerialName("looty:context_item_replacement")
 @AutoscanComponent
-data class ItemReplacementComponent(val item: SerializableItemStack)
+data class ReplaceContextItemComponent(val item: SerializableItemStack)

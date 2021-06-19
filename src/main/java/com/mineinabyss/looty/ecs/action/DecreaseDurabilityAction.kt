@@ -7,10 +7,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("looty:decreaseDurability")
+@SerialName("looty:decrease_durability")
 class DecreaseDurabilityAction(private val deltaDurability: Int) : GearyAction() {
+    private val GearyEntity.durability by get<DurabilityComponent>()
+
     override fun GearyEntity.run(): Boolean {
-        val durability = get<DurabilityComponent>() ?: return false
         durability.durability -= deltaDurability
         return true
     }

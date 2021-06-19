@@ -1,19 +1,21 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
+import com.mineinabyss.geary.ecs.engine.QueryResult
 import com.mineinabyss.looty.ecs.components.DurabilityDepletedComponent
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.BrokenItemComponent
+import com.mineinabyss.looty.ecs.components.ReplaceContextItemComponent
 
 object ReplaceItemToBrokenOnDurabilityDepleteSystem : LootyItemSystem() {
-    private val durabilityDepletedComponent = has<DurabilityDepletedComponent>()
-    private val brokenItemComponent by get<BrokenItemComponent>()
-    private val context by get<PlayerInventoryContext>()
+    private val QueryResult.brokenItemComponent by get<BrokenItemComponent>()
+    private val QueryResult.context by get<PlayerInventoryContext>()
 
-    override fun GearyEntity.tick() {
-        context.item?.let {
+    private val durabilityDepletedComponent = has<DurabilityDepletedComponent>()
+
+    override fun QueryResult.tick() {
+        context.item?.also {
             if (!lootyType.item.type.isItem) return
-            set(UpdateContextItemComponent(brokenItemComponent.item))
+            entity.set(ReplaceContextItemComponent(brokenItemComponent.item))
         }
     }
 }

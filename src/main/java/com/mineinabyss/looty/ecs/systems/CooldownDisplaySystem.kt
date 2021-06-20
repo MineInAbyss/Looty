@@ -3,6 +3,7 @@ package com.mineinabyss.looty.ecs.systems
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.CooldownManager
+import com.mineinabyss.geary.ecs.engine.QueryResult
 import com.mineinabyss.geary.ecs.entities.parent
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import org.bukkit.ChatColor
@@ -17,11 +18,11 @@ private const val INTERVAL = 3L
 
 object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
     private val held = has<SlotType.Held>()
-    private val cooldownManager by get<CooldownManager>()
+    private val QueryResult.cooldownManager by get<CooldownManager>()
 
     @ExperimentalTime
-    override fun GearyEntity.tick() {
-        parent?.with<Player>() { player ->
+    override fun QueryResult.tick() {
+        entity.parent?.with<Player>() { player ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val displayLength = 10
                 val displayChar = '■'

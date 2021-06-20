@@ -4,6 +4,7 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
+import com.mineinabyss.geary.ecs.engine.QueryResult
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
@@ -22,9 +23,9 @@ import org.bukkit.entity.Player
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    private val player by get<Player>()
+    private val QueryResult.player by get<Player>()
 
-    override fun GearyEntity.tick() {
+    override fun QueryResult.tick() {
         refresh(player)
     }
 

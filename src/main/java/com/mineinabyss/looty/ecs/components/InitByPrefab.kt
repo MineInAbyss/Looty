@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @AutoscanComponent
-@SerialName("looty:init")
-data class Init (val prefabTypeName: String)
+@SerialName("looty:init_by_prefab")
+data class InitByPrefab (val prefabTypeName: String)

@@ -6,7 +6,7 @@ import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.store.encodeComponents
 import com.mineinabyss.idofront.items.editItemMeta
-import com.mineinabyss.looty.ecs.components.Init
+import com.mineinabyss.looty.ecs.components.InitByPrefab
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.RegisterRecipeComponent
 import org.bukkit.NamespacedKey
@@ -19,7 +19,7 @@ class ItemRecipeSystem : TickingSystem() {
     override fun GearyEntity.tick() {
         remove<RegisterRecipeComponent>()
         val result = lootyType.item.toItemStack().editItemMeta {
-            val components = List(1) { Init(prefabKey.name) }
+            val components = List(1) { InitByPrefab(prefabKey.name) }
             persistentDataContainer.encodeComponents(components, GearyType())
         }
         recipes.wrapped.forEachIndexed { i, recipe ->

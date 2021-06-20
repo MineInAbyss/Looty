@@ -5,11 +5,14 @@ import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.entities.addPrefab
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
+import com.mineinabyss.geary.ecs.serialization.Formats
 import com.mineinabyss.geary.minecraft.components.of
+import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
+import com.mineinabyss.geary.minecraft.store.toComponentKey
+import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.looty.ecs.components.InitByPrefab
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
-import com.mineinabyss.looty.encodeComponentsTo
 import com.mineinabyss.looty.looty
 
 object InitByPrefabSystem : TickingSystem() {
@@ -20,11 +23,14 @@ object InitByPrefabSystem : TickingSystem() {
         val prefabType = initByPrefab.prefabTypeName
         val prefab = PrefabManager[PrefabKey.of(looty, prefabType)] ?: return;
         var lootyType = prefab.get<LootyType>() ?: return
+        val contextItem = context.item ?: return
+        val key = Formats.getSerialNameFor(InitByPrefab::class)?.toComponentKey() ?: return
+        remove<InitByPrefab>()
         addPrefab(prefab)
         set(lootyType)
-        remove<InitByPrefab>()
-        val item = encodeComponentsTo(lootyType)
-        set(item)
-        context.inventory.setItem(context.slot, item)
+        encodeComponentsTo(contextItem)
+        contextItem.editItemMeta {
+            persistentDataContainer.remove(key)
+        }
     }
 }

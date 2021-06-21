@@ -6,10 +6,8 @@ import com.mineinabyss.geary.minecraft.events.event
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.dto.LootyEventNames
-import com.mineinabyss.looty.ecs.components.*
-import com.mineinabyss.looty.ecs.components.events.listeners.consumeItemOnBroke
-import com.mineinabyss.looty.ecs.components.events.listeners.replaceItemToBroken
 import com.mineinabyss.looty.events.LootyItemBrokeEvent
+import com.mineinabyss.looty.events.LootyItemRepairedEvent
 import com.mineinabyss.looty.tracking.gearyOrNull
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -19,7 +17,6 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
-import java.util.*
 
 val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand)
 
@@ -61,7 +58,10 @@ object LootyEventListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun LootyItemBrokeEvent.onBroke() {
         event(entity, LootyEventNames.LOOTY_ITEM_BROKE)
-        consumeItemOnBroke(entity)
-        replaceItemToBroken(entity)
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun LootyItemRepairedEvent.onRepair() {
+        event(entity, LootyEventNames.LOOTY_ITEM_REPAIRED)
     }
 }

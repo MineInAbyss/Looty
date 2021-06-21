@@ -44,17 +44,7 @@ class Looty : JavaPlugin() {
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),
                 PeriodicSaveSystem,
-
                 ReplaceContextItemSystem,
-                //<editor-fold desc="Durability"
-                DurabilityDepletedSystem,
-
-                //<editor-fold desc="Durability depleted logic"
-                ConsumeOnDurabilityDepleteSystem,
-                ReplaceItemToBrokenOnDurabilityDepleteSystem,
-                RemoveDurabilityDepletedComponentSystem
-                //</editor-fold"
-                //</editor-fold>
             )
 
             autoscanActions()

@@ -16,7 +16,7 @@ class ConsumeItemAction(val no_param: Boolean = true) : GearyAction() {
     private val GearyEntity.context by get<PlayerInventoryContext>()
 
     override fun GearyEntity.run(): Boolean {
-        context.item?.apply { context.inventory.remove(this) }
+        context.item?.apply { context.inventory.clear(context.slot) }
         Engine.removeEntity(this.id)
         return true;
     }

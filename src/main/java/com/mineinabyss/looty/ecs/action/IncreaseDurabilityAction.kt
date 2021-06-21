@@ -18,10 +18,11 @@ class IncreaseDurabilityAction(@SerialName("delta_durability") private val delta
     private val GearyEntity.durability by get<DurabilityComponent>()
 
     override fun GearyEntity.run(): Boolean {
+        val oldDurability = durability.durability
         durability.durability += deltaDurability
 
         get<MinDurabilityComponent>()?.let {
-            if (durability.durability > it.minDurability) {
+            if (oldDurability <= it.minDurability && durability.durability > it.minDurability) {
                 LootyItemRepairedEvent(this).call()
             }
         }

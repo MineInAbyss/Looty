@@ -16,8 +16,6 @@ class RestoreItemVisualAction(val no_param: Boolean = true) : GearyAction() {
     private val GearyEntity.context by get<PlayerInventoryContext>()
 
     override fun GearyEntity.run(): Boolean {
-        if (context.item != null && context.item == lootyType.item.toItemStack()) return false;
-
         ChangeItemVisualAction(lootyType.item).runOn(this)
         return true;
     }

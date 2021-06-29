@@ -20,7 +20,6 @@ fun updateDurabilityBar(entity: GearyEntity)
                 else -> newDurability
             }
             it.itemMeta = itemMeta
-            //inventory.setItem(slot, it)
         }
     }
 }

@@ -22,16 +22,16 @@ class IncreaseDurabilityAction(@SerialName("delta_durability") private val delta
         val oldDurability = durability.durability
         durability.durability += deltaDurability
 
+        get<MaxDurabilityComponent>()?.let {
+            durability.durability = durability.durability.coerceAtMost(it.maxDurability)
+        }
+
         LootyItemDurabilityChangedEvent(this).call()
 
         get<MinDurabilityComponent>()?.let {
             if (oldDurability <= it.minDurability && durability.durability > it.minDurability) {
                 LootyItemRepairedEvent(this).call()
             }
-        }
-
-        get<MaxDurabilityComponent>()?.let {
-            durability.durability = durability.durability.coerceAtMost(it.maxDurability)
         }
 
 

@@ -6,11 +6,11 @@ import com.mineinabyss.looty.ecs.components.DurabilityComponent
 import com.mineinabyss.looty.ecs.components.MaxDurabilityComponent
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 
-fun updateDurabilityBar(entity: GearyEntity)
+fun GearyEntity.updateDurabilityBar()
 {
-    entity.get<PlayerInventoryContext>()?.apply {
-        val durability = entity.get<DurabilityComponent>()?.durability ?: return
-        val maxDurability = entity.get<MaxDurabilityComponent>()?.maxDurability ?: return
+    get<PlayerInventoryContext>()?.apply {
+        val durability = get<DurabilityComponent>()?.durability ?: return
+        val maxDurability = get<MaxDurabilityComponent>()?.maxDurability ?: return
         item?.also {
             var newDurability = it.type.maxDurability.let { it - it * durability / maxDurability }
             val itemMeta = it.itemMeta

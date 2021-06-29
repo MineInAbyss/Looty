@@ -16,11 +16,11 @@ private val durabilityLoreMessage: String
 private val replaceRegex = Regex("\\$\\d+")
 private val regexPattern = Regex(durabilityLoreMessage.replace(replaceRegex) { "\\d+" })
 
-fun updateDurabilityLore(entity: GearyEntity)
+fun GearyEntity.updateDurabilityLore()
 {
-    entity.get<PlayerInventoryContext>()?.apply {
-        val durability = entity.get<DurabilityComponent>()?.durability ?: return
-        val maxDurability = entity.get<MaxDurabilityComponent>()?.maxDurability ?: return
+    get<PlayerInventoryContext>()?.apply {
+        val durability = get<DurabilityComponent>()?.durability ?: return
+        val maxDurability = get<MaxDurabilityComponent>()?.maxDurability ?: return
         item?.setDurability(durability, maxDurability)
     }
 }

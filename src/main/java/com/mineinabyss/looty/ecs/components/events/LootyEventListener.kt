@@ -6,7 +6,11 @@ import com.mineinabyss.geary.minecraft.events.event
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.dto.LootyEventNames
+import com.mineinabyss.looty.ecs.components.ShowDurabilityBar
+import com.mineinabyss.looty.ecs.components.ShowDurabilityItem
+import com.mineinabyss.looty.ecs.components.ShowDurabilityLore
 import com.mineinabyss.looty.ecs.components.events.actions.updateDurabilityBar
+import com.mineinabyss.looty.ecs.components.events.actions.updateDurabilityItem
 import com.mineinabyss.looty.ecs.components.events.actions.updateDurabilityLore
 import com.mineinabyss.looty.events.LootyItemBrokeEvent
 import com.mineinabyss.looty.events.LootyItemDurabilityChangedEvent
@@ -69,8 +73,9 @@ object LootyEventListener : Listener {
 
     @EventHandler(ignoreCancelled = true)
     fun LootyItemDurabilityChangedEvent.onDurabilityChanges() {
-        updateDurabilityLore(entity)
-        updateDurabilityBar(entity)
+        if (entity.has<ShowDurabilityItem>()) entity.updateDurabilityItem()
+        if (entity.has<ShowDurabilityLore>()) entity.updateDurabilityLore()
+        if (entity.has<ShowDurabilityBar>()) entity.updateDurabilityBar()
         event(entity, LootyEventNames.LOOTY_ITEM_DURABILITY_CHANGED)
     }
 }

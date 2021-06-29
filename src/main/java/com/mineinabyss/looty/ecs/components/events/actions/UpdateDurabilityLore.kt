@@ -9,12 +9,15 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.inventory.ItemStack
 
-private val durabilityLoreMessage: String
-    get() {
-        return LootyConfig.data.durabilityLoreMessage
-    }
+private var durabilityLoreMessage: String = ""
+private var regexPattern: Regex = Regex("")
 private val replaceRegex = Regex("\\$\\d+")
-private val regexPattern = Regex(durabilityLoreMessage.replace(replaceRegex) { "\\d+" })
+
+fun updateDurabilityLoreMessage()
+{
+    durabilityLoreMessage = LootyConfig.data.durabilityLoreMessage
+    regexPattern = Regex(durabilityLoreMessage.replace(replaceRegex) { "\\d+" })
+}
 
 fun GearyEntity.updateDurabilityLore()
 {

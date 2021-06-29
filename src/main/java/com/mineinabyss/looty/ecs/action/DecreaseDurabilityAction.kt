@@ -8,6 +8,7 @@ import com.mineinabyss.looty.dto.LootyEventNames
 import com.mineinabyss.looty.ecs.components.DurabilityComponent
 import com.mineinabyss.looty.ecs.components.MinDurabilityComponent
 import com.mineinabyss.looty.events.LootyItemBrokeEvent
+import com.mineinabyss.looty.events.LootyItemDurabilityChangedEvent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,6 +20,8 @@ class DecreaseDurabilityAction(@SerialName("delta_durability") private val delta
 
     override fun GearyEntity.run(): Boolean {
         durability.durability -= deltaDurability
+        
+        LootyItemDurabilityChangedEvent(this).call()
 
         get<MinDurabilityComponent>()?.let {
             durability.durability = durability.durability.coerceAtLeast(it.minDurability)

@@ -7,6 +7,7 @@ import com.mineinabyss.idofront.events.call
 import com.mineinabyss.looty.ecs.components.DurabilityComponent
 import com.mineinabyss.looty.ecs.components.MaxDurabilityComponent
 import com.mineinabyss.looty.ecs.components.MinDurabilityComponent
+import com.mineinabyss.looty.events.LootyItemDurabilityChangedEvent
 import com.mineinabyss.looty.events.LootyItemRepairedEvent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,6 +22,8 @@ class IncreaseDurabilityAction(@SerialName("delta_durability") private val delta
         val oldDurability = durability.durability
         durability.durability += deltaDurability
 
+        LootyItemDurabilityChangedEvent(this).call()
+
         get<MinDurabilityComponent>()?.let {
             if (oldDurability <= it.minDurability && durability.durability > it.minDurability) {
                 LootyItemRepairedEvent(this).call()
@@ -30,6 +33,7 @@ class IncreaseDurabilityAction(@SerialName("delta_durability") private val delta
         get<MaxDurabilityComponent>()?.let {
             durability.durability = durability.durability.coerceAtMost(it.maxDurability)
         }
+
 
         return true
     }

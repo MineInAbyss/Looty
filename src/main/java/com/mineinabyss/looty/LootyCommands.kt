@@ -37,7 +37,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
 
                     LootyConfig.reload(sender)
 
-                    ItemTrackerSystem.tick()
+                    ItemTrackerSystem.doTick()
                 }
             }
             "item" {

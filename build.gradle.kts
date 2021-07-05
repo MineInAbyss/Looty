@@ -40,7 +40,7 @@ dependencies {
     compileOnly("com.github.okkero:skedule")
 
     compileOnly("com.mineinabyss:geary-spigot:0.5.45")
-    implementation("com.mineinabyss:idofront:0.6.13")
+    implementation("com.mineinabyss:idofront:0.6.14")
 }
 
 tasks {

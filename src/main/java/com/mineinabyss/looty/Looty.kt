@@ -32,6 +32,7 @@ class Looty : JavaPlugin() {
 //            InventoryTrackingListener,
             LootyEventListener,
             InventoryTrackingListener,
+            LootyTypeItemUpdaterSystem,
 //            PlayerInventoryInjection()
         )
 

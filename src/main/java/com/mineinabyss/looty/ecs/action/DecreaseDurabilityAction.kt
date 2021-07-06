@@ -20,13 +20,17 @@ class DecreaseDurabilityAction(@SerialName("delta_durability") private val delta
     override fun GearyEntity.run(): Boolean {
         durability.durability -= deltaDurability
 
-        get<MinDurabilityComponent>()?.also {
-            durability.durability = durability.durability.coerceAtLeast(it.minDurability)
+        get<MinDurabilityComponent>().let {
+            it?.let {
+                durability.durability = durability.durability.coerceAtLeast(it.minDurability)
+            }
 
             LootyItemDurabilityChangedEvent(this).call()
 
-            if (durability.durability <= it.minDurability) {
-                LootyItemBrokeEvent(this).call()
+            it?.let {
+                if (durability.durability <= it.minDurability) {
+                    LootyItemBrokeEvent(this).call()
+                }
             }
         }
 

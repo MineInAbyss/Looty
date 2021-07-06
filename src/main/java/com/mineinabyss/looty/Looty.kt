@@ -26,8 +26,6 @@ class Looty : JavaPlugin() {
         saveDefaultConfig()
         reloadConfig()
 
-        updateDurabilityLoreMessage()
-
         //Register commands
         LootyCommands()
 
@@ -64,6 +62,11 @@ class Looty : JavaPlugin() {
             }
             loadPrefabs(relicsDir)
         }
+    }
+
+    override fun reloadConfig() {
+        super.reloadConfig()
+        updateDurabilityLoreMessage()
     }
 
     override fun onDisable() {

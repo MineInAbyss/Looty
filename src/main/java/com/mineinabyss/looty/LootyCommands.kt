@@ -18,6 +18,7 @@ import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.events.actions.updateDurabilityLoreMessage
+import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
 import kotlinx.serialization.PolymorphicSerializer

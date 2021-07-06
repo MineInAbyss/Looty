@@ -2,9 +2,8 @@
 
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.ecs.engine.QueryResult
+import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext

@@ -9,4 +9,8 @@ data class PlayerInventoryContext(
     val inventory: PlayerInventory = holder.inventory
 ) {
     val item get() = inventory.getItem(slot)
+
+    fun removeItem() {
+        inventory.setItem(slot, null)
+    }
 }

@@ -1,14 +1,11 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.ecs.engine.QueryResult
+import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.store.decode
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
-import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 import java.util.*
 
 class PlayerInventoryContextTracker : TickingSystem() {

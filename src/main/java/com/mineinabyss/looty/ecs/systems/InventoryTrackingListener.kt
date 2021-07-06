@@ -1,9 +1,11 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
+import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.encodeComponentsTo
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
@@ -26,11 +28,7 @@ object InventoryTrackingListener : Listener {
         val player = inventory.holder as? Player ?: return
 
         gearyOrNull(currItem)?.let { gearyItem ->
-            PeriodicSaveSystem.saveToItem(
-                entity = gearyItem,
-                persisting = gearyItem.get() ?: return,
-                item = currItem,
-            )
+            gearyItem.encodeComponentsTo(currItem)
             debug("Saved item ${currItem.type}")
         }
 
@@ -50,7 +48,6 @@ object InventoryTrackingListener : Listener {
     //TODO
     @EventHandler
     fun PlayerSwapHandItemsEvent.onSwapOffhand() {
-
         /*geary(player).with<ChildItemCache> { itemCache ->
             val mainHandSlot = player.inventory.heldItemSlot
 
@@ -73,11 +70,7 @@ object InventoryTrackingListener : Listener {
     fun PlayerDropItemEvent.onDropItem() {
         val item = itemDrop.itemStack
         val gearyItem = gearyOrNull(item) ?: return
-        PeriodicSaveSystem.saveToItem(
-            entity = gearyItem,
-            persisting = gearyItem.get() ?: return,
-            item = item,
-        )
+        gearyItem.encodeComponentsTo(item)
         gearyItem.removeEntity()
     }
 

@@ -9,5 +9,6 @@ object LootyEventNames {
     const val LEFT_CLICK = "left_click"
     const val LOOTY_ITEM_BROKE = "looty_item_broke"
     const val LOOTY_ITEM_REPAIRED = "looty_item_repaired"
+    const val LOOTY_ITEM_DURABILITY_CHANGED = "durability_changed"
 }
 

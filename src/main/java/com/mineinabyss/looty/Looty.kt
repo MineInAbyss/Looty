@@ -4,6 +4,7 @@ import com.mineinabyss.geary.minecraft.dsl.attachToGeary
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.looty.ecs.components.events.LootyEventListener
+import com.mineinabyss.looty.ecs.components.events.actions.updateDurabilityLoreMessage
 import com.mineinabyss.looty.ecs.systems.*
 import kotlinx.serialization.InternalSerializationApi
 import org.bukkit.entity.Player
@@ -24,6 +25,8 @@ class Looty : JavaPlugin() {
         logger.info("On enable has been called")
         saveDefaultConfig()
         reloadConfig()
+
+        updateDurabilityLoreMessage()
 
         //Register commands
         LootyCommands()

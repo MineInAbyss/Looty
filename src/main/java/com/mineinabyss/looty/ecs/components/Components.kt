@@ -1,7 +1,6 @@
 package com.mineinabyss.looty.ecs.components
 
 import com.mineinabyss.geary.ecs.api.autoscan.AutoscanComponent
-import com.mineinabyss.idofront.serialization.SerializableItemStack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,3 +18,18 @@ data class MinDurabilityComponent(@SerialName("min_durability") val minDurabilit
 @SerialName("looty:durability")
 @AutoscanComponent
 data class DurabilityComponent(var durability: Int)
+
+@Serializable
+@SerialName("looty:show_durability_bar")
+@AutoscanComponent
+data class ShowDurabilityBar(val no_param: Boolean = true)
+
+@Serializable
+@SerialName("looty:show_durability_lore")
+@AutoscanComponent
+data class ShowDurabilityLore(val no_param: Boolean = true)
+
+@Serializable
+@SerialName("looty:show_durability_item")
+@AutoscanComponent
+data class ShowDurabilityItem(val no_param: Boolean = true)

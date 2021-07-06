@@ -7,7 +7,7 @@ object LootyEventNames {
     const val BREAK = "break"
     const val RIGHT_CLICK = "rightClick"
     const val LEFT_CLICK = "leftClick"
-    const val LOOTY_ITEM_BROKE = "itemBroke"
-    const val LOOTY_ITEM_REPAIRED = "itemRepaired"
+    const val LOOTY_ITEM_BROKE = "lootyItemBroke"
+    const val LOOTY_ITEM_REPAIRED = "lootyItemRepaired"
 }
 

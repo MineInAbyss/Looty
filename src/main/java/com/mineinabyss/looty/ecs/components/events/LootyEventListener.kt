@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 
-val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand)
+val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand, this)
 
 object LootyEventListener : Listener {
     @EventHandler

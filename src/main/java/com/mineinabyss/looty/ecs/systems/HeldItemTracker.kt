@@ -2,7 +2,7 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
-import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 
 class HeldItemTracker : TickingSystem() {

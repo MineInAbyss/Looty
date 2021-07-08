@@ -1,4 +1,4 @@
-package com.mineinabyss.looty.ecs.components
+package com.mineinabyss.looty.ecs.components.itemcontexts
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.PlayerInventory

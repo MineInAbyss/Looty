@@ -6,7 +6,7 @@ import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
-import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.entity.Player
 
 /**

@@ -14,9 +14,10 @@ import com.mineinabyss.idofront.commands.arguments.stringArg
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
+import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
-import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
@@ -52,10 +53,15 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 }
 
                 playerAction {
-                    LootyFactory.createFromPrefab(
-                        parent = geary(player),
-                        prefab = PrefabManager[PrefabKey.of(looty, type)] ?: return@playerAction,
-                        context = PlayerInventoryContext(player, player.inventory.firstEmpty())
+                    val slot = player.inventory.firstEmpty()
+                    if(slot == -1) {
+                        player.error("No empty slots in inventory")
+                        return@playerAction
+                    }
+
+                    player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey.of(looty, type)))
+                    LootyFactory.loadFromPlayerInventory(
+                        context = PlayerInventoryContext(player, slot)
                     )
                 }
             }

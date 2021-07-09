@@ -13,20 +13,25 @@ object SingletonItemRemover : TickingSystem() {
 
     override fun QueryResult.tick() {
         var foundHeld = false
-        playerItems.forEach { (prefab, entity) ->
+        // Copy to avoid concurrency exception
+        playerItems.toMap().forEach { (prefab, entity) ->
             entity.with<PlayerSingletonContext> { context ->
-                context.itemSlots.removeIf {
-                    context.inventory.getItem(it)?.itemMeta?.persistentDataContainer?.decodePrefabs()?.first() != prefab
+                if (context.itemSlots.isEmpty()) {
+                    playerItems.unload(prefab)
+                    debug("Removed $prefab from player")
+                    return@forEach
                 }
 
-                when {
-                    context.itemSlots.isEmpty() -> {
-                        playerItems.unload(prefab)
-                        debug("Removed $prefab from player")
-                    }
-                    context.itemSlots.contains(context.inventory.heldItemSlot) -> entity.add<SlotType.Held>()
-                    else -> entity.remove<SlotType.Held>()
+                context.itemSlots.removeIf {
+                    context.inventory.getItem(it)?.itemMeta?.persistentDataContainer?.decodePrefabs()
+                        ?.firstOrNull() != prefab
                 }
+
+                if (!foundHeld && context.itemSlots.contains(context.inventory.heldItemSlot)) {
+                    entity.add<SlotType.Held>()
+                    foundHeld = true
+                } else
+                    entity.remove<SlotType.Held>()
             }
         }
     }

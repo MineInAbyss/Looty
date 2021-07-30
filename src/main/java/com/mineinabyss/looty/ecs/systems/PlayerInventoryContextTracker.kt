@@ -4,7 +4,7 @@ import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.store.decode
 import com.mineinabyss.looty.debug
-import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import java.util.*
 

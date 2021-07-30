@@ -1,15 +1,18 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.PersistingComponent
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.store.encode
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.inventory.ItemStack
 
 object PeriodicSaveSystem : TickingSystem(interval = 100) {
+    init {
+        has<PlayerInventoryContext>()
+    }
     private val QueryResult.persisting by allRelationsWithData<PersistingComponent>()
     private val QueryResult.item by get<ItemStack>()
 

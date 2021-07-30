@@ -4,8 +4,7 @@ import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
-import com.mineinabyss.looty.ecs.components.PlayerInventoryContext
-import com.mineinabyss.looty.encodeComponentsTo
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
@@ -17,7 +16,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
-import org.bukkit.inventory.PlayerInventory
 
 object InventoryTrackingListener : Listener {
     //TODO drag clicking is a separate event
@@ -37,7 +35,6 @@ object InventoryTrackingListener : Listener {
                 PlayerInventoryContext(
                     holder = player,
                     slot = slot,
-                    inventory = player.inventory,
                 ),
                 item = cursor
             )

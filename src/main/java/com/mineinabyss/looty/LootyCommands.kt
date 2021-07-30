@@ -1,11 +1,10 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.api.GearyComponent
+import com.mineinabyss.geary.ecs.helpers.listComponents
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.ecs.serialization.Formats
-import com.mineinabyss.geary.helpers.listComponents
-import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.components.getPrefabsFor
 import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.intArg
@@ -26,7 +25,7 @@ import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -54,7 +53,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
 
                 playerAction {
                     val slot = player.inventory.firstEmpty()
-                    if(slot == -1) {
+                    if (slot == -1) {
                         player.error("No empty slots in inventory")
                         return@playerAction
                     }

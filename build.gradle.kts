@@ -20,6 +20,7 @@ dependencies {
     // From Geary
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
+    compileOnly("com.charleskorn.kaml:kaml")
     compileOnly("com.github.okkero:skedule")
 
     // Shaded

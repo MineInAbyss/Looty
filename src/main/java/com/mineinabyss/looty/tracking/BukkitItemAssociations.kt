@@ -6,8 +6,8 @@ import com.mineinabyss.geary.minecraft.access.geary
 import com.mineinabyss.geary.minecraft.store.decode
 import com.mineinabyss.geary.minecraft.store.decodePrefabs
 import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryPlayer
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory

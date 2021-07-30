@@ -7,6 +7,8 @@ import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.tracking.gearyOrNull
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -14,6 +16,14 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+
+public fun Event.event(entity: GearyEntity?, name: String) {
+    entity?.get<Events>()?.wrapped?.get(name)?.forEach {
+        it.runOn(entity)
+        if (it is CancelEventAction && this is Cancellable)
+            isCancelled = true
+    }
+}
 
 val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand, this)
 

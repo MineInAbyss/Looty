@@ -44,12 +44,10 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
                     repeat(squaresLeft) {
                         append(displayChar)
                     }
-                    append(ChatColor.GRAY)
-                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < 250) {
-                        append(" [✔]")
-                    } else {
-                        append(" [$timeLeft]")
-                    }
+                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < 250) append(
+                        ChatColor.GREEN,
+                        " [✔]"
+                    ) else append(ChatColor.GRAY, " [$timeLeft]")
                 }
             })
         }

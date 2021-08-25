@@ -29,7 +29,8 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
         entity.parent?.with<Player>() { player ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val length = Duration.milliseconds(cooldown.length)
-                val timeLeft = Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))
+                val timeLeft =
+                    Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))
                 val squaresLeft =
                     if (timeLeft.toDouble(DurationUnit.SECONDS) * 20 < INTERVAL) 0 else (timeLeft / length * displayLength).roundToInt()
 
@@ -44,7 +45,11 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
                         append(displayChar)
                     }
                     append(ChatColor.GRAY)
-                    append(" [$timeLeft]")
+                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < 250) {
+                        append(" [✔]")
+                    } else {
+                        append(" [$timeLeft]")
+                    }
                 }
             })
         }

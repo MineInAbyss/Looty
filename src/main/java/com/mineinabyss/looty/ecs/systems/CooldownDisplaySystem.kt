@@ -14,7 +14,7 @@ import kotlin.time.ExperimentalTime
 
 private const val INTERVAL = 3L
 
-object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
+object CooldownDisplaySystem : TickingSystem(1) {
     init {
         has<SlotType.Held>()
     }

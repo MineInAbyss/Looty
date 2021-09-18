@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("looty:recipes")
+@SerialName("looty:discoverRecipe")
 @AutoscanComponent
 class DiscoverRecipe(
     val discoverRecipe: Boolean = false

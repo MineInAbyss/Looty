@@ -17,6 +17,7 @@ class ItemRecipeSystem : TickingSystem(), Listener {
     private val QueryResult.type by get<LootyType>()
     private val QueryResult.prefabKey by get<PrefabKey>()
     private val registeredRecipes = mutableSetOf<NamespacedKey>()
+    private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
     override fun QueryResult.tick() {
         val result = LootyFactory.createFromPrefab(prefabKey) ?: return
@@ -26,14 +27,15 @@ class ItemRecipeSystem : TickingSystem(), Listener {
             val key = NamespacedKey(prefabKey.plugin, "${prefabKey.name}$i")
             registeredRecipes += key
             recipe.toCraftingRecipe(key, result).register()
+            if (recipe.discoverRecipe) discoveredRecipes += key
         }
         entity.remove<RegisterRecipeComponent>()
     }
 
     //TODO these recipes are broken ingame, clicking will put the item type in regardless of NBT
     // Probably best to just show recipes in an online wiki instead.
-//    @EventHandler
-//    fun PlayerJoinEvent.showRecipesOnJoin() {
-//        player.discoverRecipes(registeredRecipes)
-//    }
+    @EventHandler
+    fun PlayerJoinEvent.showRecipesOnJoin() {
+        player.discoverRecipes(discoveredRecipes)
+    }
 }

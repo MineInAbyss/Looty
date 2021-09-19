@@ -5,7 +5,6 @@ import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.idofront.recpies.register
 import com.mineinabyss.looty.LootyFactory
-import com.mineinabyss.looty.ecs.components.DiscoverRecipe
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.RegisterRecipeComponent
 import org.bukkit.NamespacedKey
@@ -15,7 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 class ItemRecipeSystem : TickingSystem(), Listener {
     private val QueryResult.recipes by get<RegisterRecipeComponent>()
-    private val QueryResult.discoverRecipe by get <DiscoverRecipe>()
     private val QueryResult.type by get<LootyType>()
     private val QueryResult.prefabKey by get<PrefabKey>()
     private val registeredRecipes = mutableSetOf<NamespacedKey>()
@@ -29,8 +27,7 @@ class ItemRecipeSystem : TickingSystem(), Listener {
             val key = NamespacedKey(prefabKey.plugin, "${prefabKey.name}$i")
             registeredRecipes += key
             recipe.toCraftingRecipe(key, result).register()
-            if (discoverRecipe.equals(false)) return
-            discoveredRecipes += key
+            if (recipe.discoverRecipe) discoveredRecipes += key
         }
         entity.remove<RegisterRecipeComponent>()
     }

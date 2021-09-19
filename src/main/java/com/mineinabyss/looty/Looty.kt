@@ -10,7 +10,6 @@ import com.mineinabyss.looty.ecs.systems.*
 import com.mineinabyss.looty.ecs.systems.singletonitems.SingletonItemRemover
 import kotlinx.serialization.InternalSerializationApi
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.time.ExperimentalTime
@@ -19,7 +18,7 @@ import kotlin.time.ExperimentalTime
 val looty: Looty by lazy { JavaPlugin.getPlugin(Looty::class.java) }
 
 class Looty : JavaPlugin() {
-    val relicsDir = File(dataFolder, "relics")
+    val itemsDir = File(dataFolder, "items")
 
     @InternalSerializationApi
     @ExperimentalCommandDSL
@@ -64,7 +63,7 @@ class Looty : JavaPlugin() {
                     get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }
             }
-            loadPrefabs(relicsDir)
+            loadPrefabs(itemsDir)
         }
     }
 

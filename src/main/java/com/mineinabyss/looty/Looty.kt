@@ -18,7 +18,7 @@ import kotlin.time.ExperimentalTime
 val looty: Looty by lazy { JavaPlugin.getPlugin(Looty::class.java) }
 
 class Looty : JavaPlugin() {
-    val relicsDir = File(dataFolder, "items")
+    val itemsDir = File(dataFolder, "items")
 
     @InternalSerializationApi
     @ExperimentalCommandDSL
@@ -63,7 +63,7 @@ class Looty : JavaPlugin() {
                     get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }
             }
-            loadPrefabs(relicsDir)
+            loadPrefabs(itemsDir)
         }
     }
 

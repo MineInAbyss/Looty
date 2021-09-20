@@ -3,7 +3,7 @@ package com.mineinabyss.looty.ecs.systems
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
-import com.mineinabyss.idofront.recpies.register
+import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.RegisterRecipeComponent

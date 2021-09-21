@@ -24,7 +24,7 @@ dependencies {
     compileOnly("com.github.okkero:skedule")
 
     // Shaded
-    implementation("com.mineinabyss:idofront:1.17.1-0.6.23")
+   implementation("com.mineinabyss:idofront:1.17.1-0.6.26")
 }
 
 tasks {

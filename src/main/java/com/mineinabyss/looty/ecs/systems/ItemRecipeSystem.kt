@@ -3,10 +3,11 @@ package com.mineinabyss.looty.ecs.systems
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
-import com.mineinabyss.idofront.recpies.register
+import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.RegisterRecipeComponent
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -22,12 +23,16 @@ class ItemRecipeSystem : TickingSystem(), Listener {
     override fun QueryResult.tick() {
         val result = LootyFactory.createFromPrefab(prefabKey) ?: return
 
-        recipes.wrapped.forEachIndexed { i, recipe ->
+        recipes.removeRecipes.forEach {
+            Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+        }
+
+        recipes.recipes.forEachIndexed { i, recipe ->
             @Suppress("DEPRECATION")
             val key = NamespacedKey(prefabKey.plugin, "${prefabKey.name}$i")
             registeredRecipes += key
-            recipe.toCraftingRecipe(key, result).register()
-            if (recipe.discoverRecipe) discoveredRecipes += key
+            recipe.toRecipe(key, result, recipes.group).register()
+            if (recipes.discoverRecipes) discoveredRecipes += key
         }
         entity.remove<RegisterRecipeComponent>()
     }

@@ -12,9 +12,9 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-private const val INTERVAL = 3L
+private const val INTERVAL = 1L
 
-object CooldownDisplaySystem : TickingSystem(1) {
+object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
     init {
         has<SlotType.Held>()
     }
@@ -29,8 +29,7 @@ object CooldownDisplaySystem : TickingSystem(1) {
         entity.parent?.with<Player>() { player ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val length = Duration.milliseconds(cooldown.length)
-                val timeLeft =
-                    Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))
+                val timeLeft = Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))
                 val squaresLeft =
                     if (timeLeft.toDouble(DurationUnit.SECONDS) * 20 < INTERVAL) 0 else (timeLeft / length * displayLength).roundToInt()
 
@@ -44,7 +43,7 @@ object CooldownDisplaySystem : TickingSystem(1) {
                     repeat(squaresLeft) {
                         append(displayChar)
                     }
-                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < 250) append(
+                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < INTERVAL * 1000 / 20) append(
                         ChatColor.GREEN,
                         " [✔]"
                     ) else append(ChatColor.GRAY, " [$timeLeft]")

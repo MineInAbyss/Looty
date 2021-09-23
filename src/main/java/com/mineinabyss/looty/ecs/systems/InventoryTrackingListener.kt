@@ -68,7 +68,7 @@ object InventoryTrackingListener : Listener {
 
         // swap the items from cursor to helmet slot
         currentItem = cursor.clone()
-        this.cursor = currItem
+        view.cursor = currItem
         isCancelled = true
     }
 

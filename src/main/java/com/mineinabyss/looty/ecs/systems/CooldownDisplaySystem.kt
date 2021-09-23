@@ -12,7 +12,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-private const val INTERVAL = 3L
+private const val INTERVAL = 1L
 
 object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
     init {
@@ -43,8 +43,10 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
                     repeat(squaresLeft) {
                         append(displayChar)
                     }
-                    append(ChatColor.GRAY)
-                    append(" [$timeLeft]")
+                    if (timeLeft.toDouble(DurationUnit.MILLISECONDS) < INTERVAL * 1000 / 20) append(
+                        ChatColor.GREEN,
+                        " [✔]"
+                    ) else append(ChatColor.GRAY, " [$timeLeft]")
                 }
             })
         }

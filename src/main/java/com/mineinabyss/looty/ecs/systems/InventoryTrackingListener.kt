@@ -2,7 +2,6 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
-import com.mineinabyss.idofront.messaging.broadcastVal
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.Hat
@@ -50,9 +49,10 @@ object InventoryTrackingListener : Listener {
         if (slotType !== InventoryType.SlotType.ARMOR) return
         if (rawSlot != 5) return
 
+        val cursor = cursor ?: return
         val player = inventory.holder as? Player ?: return
 
-        if (cursor?.itemMeta?.persistentDataContainer?.hasComponentsEncoded != true) return
+        if (!cursor.itemMeta.persistentDataContainer.hasComponentsEncoded) return
 
         val entity = LootyFactory.loadFromPlayerInventory(
             PlayerInventoryContext(
@@ -62,18 +62,14 @@ object InventoryTrackingListener : Listener {
             item = cursor
         ) ?: return
 
-        entity.getComponents().broadcastVal()
-        entity.has<Hat>().broadcastVal("has hat: ")
+        entity.get<Hat>() ?: return
 
-        if (!entity.has<Hat>()) return
-        val currItem = currentItem?.clone()
+        val currItem = currentItem?.clone() ?: return // item will not be null, it will be air
 
-        // set slot to item in cursor
-        player.inventory.setItem(slot, cursor)
-
-        // swap items
-        view.cursor = currItem
-
+        // swap the items from cursor to helmet slot
+        currentItem = cursor.clone()
+        this.cursor = currItem
+        isCancelled = true
     }
 
     //TODO

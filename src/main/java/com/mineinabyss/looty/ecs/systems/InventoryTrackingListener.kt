@@ -2,8 +2,10 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
+import com.mineinabyss.idofront.messaging.broadcastVal
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
+import com.mineinabyss.looty.ecs.components.Hat
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.gearyOrNull
@@ -14,6 +16,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
@@ -40,6 +43,37 @@ object InventoryTrackingListener : Listener {
             )
             debug("Loaded item ${cursor.type}")
         }
+    }
+
+    @EventHandler
+    fun InventoryClickEvent.wearable() {
+        if (slotType !== InventoryType.SlotType.ARMOR) return
+        if (rawSlot != 5) return
+
+        val player = inventory.holder as? Player ?: return
+
+        if (cursor?.itemMeta?.persistentDataContainer?.hasComponentsEncoded != true) return
+
+        val entity = LootyFactory.loadFromPlayerInventory(
+            PlayerInventoryContext(
+                holder = player,
+                slot = slot,
+            ),
+            item = cursor
+        ) ?: return
+
+        entity.getComponents().broadcastVal()
+        entity.has<Hat>().broadcastVal("has hat: ")
+
+        if (!entity.has<Hat>()) return
+        val currItem = currentItem?.clone()
+
+        // set slot to item in cursor
+        player.inventory.setItem(slot, cursor)
+
+        // swap items
+        view.cursor = currItem
+
     }
 
     //TODO

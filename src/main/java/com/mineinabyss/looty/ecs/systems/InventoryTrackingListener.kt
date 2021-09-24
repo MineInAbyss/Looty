@@ -48,6 +48,27 @@ object InventoryTrackingListener : Listener {
     }
 
     @EventHandler
+    fun InventoryClickEvent.shiftClick() {
+        val player = inventory.holder as? Player ?: return
+
+        val entity = LootyFactory.loadFromPlayerInventory(
+            PlayerInventoryContext(
+                holder = player,
+                slot = slot,
+            ),
+            item = currentItem
+        ) ?: return
+        entity.get<Hat>() ?: return
+
+        if (player.inventory.helmet == null && click.isShiftClick) {
+
+            player.inventory.helmet = currentItem
+            currentItem = null
+            isCancelled = true
+        }
+    }
+
+    @EventHandler
     fun InventoryClickEvent.wearable() {
         if (slotType !== InventoryType.SlotType.ARMOR) return
         if (rawSlot != 5) return

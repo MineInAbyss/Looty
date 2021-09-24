@@ -9,6 +9,7 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 object InventoryTrackingListener : Listener {
@@ -52,7 +54,7 @@ object InventoryTrackingListener : Listener {
         val cursor = cursor ?: return
         val player = inventory.holder as? Player ?: return
 
-        if (!cursor.itemMeta.persistentDataContainer.hasComponentsEncoded) return
+        if (cursor.itemMeta?.persistentDataContainer?.hasComponentsEncoded == false) return
 
         val entity = LootyFactory.loadFromPlayerInventory(
             PlayerInventoryContext(
@@ -70,6 +72,29 @@ object InventoryTrackingListener : Listener {
         currentItem = cursor.clone()
         view.cursor = currItem
         isCancelled = true
+    }
+
+    @EventHandler
+    fun PlayerInteractEvent.equipWearable() {
+        val helmSlot = player.inventory.helmet
+        val currItem = player.inventory.itemInMainHand
+
+        if (helmSlot != null) return
+        if (currItem.itemMeta?.persistentDataContainer?.hasComponentsEncoded == false) return
+
+        val entity = LootyFactory.loadFromPlayerInventory(
+            PlayerInventoryContext(
+                holder = player,
+                slot = 5,
+            ),
+            item = currItem
+        ) ?: return
+
+        entity.get<Hat>() ?: return
+
+        player.inventory.helmet = currItem.clone()
+        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
+        currItem.subtract(64)
     }
 
     //TODO

@@ -2,6 +2,7 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
+import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.Hat
@@ -9,7 +10,6 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
-import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.inventory.EquipmentSlot
 
 object InventoryTrackingListener : Listener {
     //TODO drag clicking is a separate event
@@ -76,25 +77,26 @@ object InventoryTrackingListener : Listener {
 
     @EventHandler
     fun PlayerInteractEvent.equipWearable() {
-        val helmSlot = player.inventory.helmet
-        val currItem = player.inventory.itemInMainHand
+        if (hand == EquipmentSlot.OFF_HAND) return //the event is called twice, on for each hand. We want to ignore the offhand call
+        if (!rightClicked) return //only do stuff when player rightclicks
+        if (player.inventory.helmet !== null) return // don't equip if we are wearing a helmet
 
-        if (helmSlot != null) return
+        val currItem = player.inventory.itemInMainHand
         if (currItem.itemMeta?.persistentDataContainer?.hasComponentsEncoded == false) return
 
         val entity = LootyFactory.loadFromPlayerInventory(
             PlayerInventoryContext(
                 holder = player,
-                slot = 5,
+                slot = player.inventory.heldItemSlot,
             ),
             item = currItem
-        ) ?: return
+        ) ?: return // item is not from looty
 
-        entity.get<Hat>() ?: return
+        val hat = entity.get<Hat>() ?: return // item is not a hat
 
         player.inventory.helmet = currItem.clone()
-        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
-        currItem.subtract(64)
+        player.playSound(player.location, hat.sound, 1f, 1f)
+        currItem.subtract(1)
     }
 
     //TODO

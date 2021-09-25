@@ -1,6 +1,7 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.minecraft.dsl.attachToGeary
+
+import com.mineinabyss.geary.minecraft.dsl.gearyAddon
 import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.plugin.registerService
@@ -39,7 +40,7 @@ class Looty : JavaPlugin() {
 
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
 
-        attachToGeary {
+        gearyAddon {
             systems(
                 ItemTrackerSystem,
                 ScreamingSystem,
@@ -54,7 +55,7 @@ class Looty : JavaPlugin() {
             autoscanActions()
             autoscanComponents()
 
-            bukkitEntityAccess {
+            bukkitEntityAssociations {
                 onEntityRegister<Player> {
                     get<Player>()?.let { player -> ItemTrackerSystem.refresh(player) }
                 }

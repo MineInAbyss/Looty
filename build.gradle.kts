@@ -1,8 +1,14 @@
+import Com_mineinabyss_conventions_platform_gradle.Deps
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val idofrontVersion: String by project
+val gearyVersion: String by project
 
 plugins {
     id("com.mineinabyss.conventions.kotlin")
     id("com.mineinabyss.conventions.papermc")
+    id("com.mineinabyss.conventions.slimjar")
+    id("com.mineinabyss.conventions.copyjar")
     id("com.mineinabyss.conventions.publication")
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -14,17 +20,18 @@ repositories {
 
 dependencies {
     // Other plugins
-    compileOnly("com.mineinabyss:geary-platform-papermc:0.7.54")
+    compileOnly("com.mineinabyss:geary-platform-papermc:$gearyVersion")
     compileOnly("com.mineinabyss:geary-commons-papermc:0.1.2")
 
     // From Geary
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
-    compileOnly("com.charleskorn.kaml:kaml")
-    compileOnly("com.github.okkero:skedule")
+
+    compileOnly(Deps.kotlinx.serialization.json)
+    compileOnly(Deps.kotlinx.serialization.kaml)
+    compileOnly(Deps.kotlinx.coroutines)
+    compileOnly(Deps.minecraft.skedule)
 
     // Shaded
-   implementation("com.mineinabyss:idofront:1.17.1-0.6.26")
+   implementation("com.mineinabyss:idofront:$idofrontVersion")
 }
 
 tasks {
@@ -41,7 +48,12 @@ tasks {
 
     withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi")
+            freeCompilerArgs = listOf(
+                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-Xopt-in=kotlin.time.ExperimentalTime",
+                "-Xopt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
+                "-Xopt-in=kotlin.RequiresOptIn"
+            )
         }
     }
 }

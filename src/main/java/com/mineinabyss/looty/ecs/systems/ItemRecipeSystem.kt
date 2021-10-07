@@ -29,7 +29,7 @@ class ItemRecipeSystem : TickingSystem(), Listener {
 
         recipes.recipes.forEachIndexed { i, recipe ->
             @Suppress("DEPRECATION")
-            val key = NamespacedKey(prefabKey.plugin, "${prefabKey.name}$i")
+            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.name}$i")
             registeredRecipes += key
             recipe.toRecipe(key, result, recipes.group).register()
             if (recipes.discoverRecipes) discoveredRecipes += key

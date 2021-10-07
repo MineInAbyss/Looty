@@ -4,6 +4,7 @@ import com.mineinabyss.geary.ecs.api.engine.Engine
 import com.mineinabyss.geary.ecs.api.engine.entity
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.entities.toGeary
+import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.entities.addParent
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
@@ -53,9 +54,9 @@ object LootyFactory {
                     .load(prefab.get() ?: error("Prefab has no key"), gearyPlayer) //TODO shouldnt need to pass parent
                     .apply {
                         val added = getOrSet { PlayerSingletonContext(context.holder) }.itemSlots.add(context.slot)
-                        if (added) with<LootyType> {
+                        if (added) with { type: LootyType ->
                             //Update the loaded item to match the item defined in LootyType
-                            it.item.toItemStack(item)
+                            type.item.toItemStack(item)
                         }
                     }
             }

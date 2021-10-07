@@ -2,10 +2,10 @@ package com.mineinabyss.looty
 
 
 import com.mineinabyss.geary.minecraft.dsl.gearyAddon
-import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.plugin.registerService
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
+import com.mineinabyss.idofront.slimjar.IdofrontSlimjar
 import com.mineinabyss.looty.ecs.components.events.LootyEventListener
 import com.mineinabyss.looty.ecs.systems.*
 import com.mineinabyss.looty.ecs.systems.singletonitems.SingletonItemRemover
@@ -13,19 +13,16 @@ import kotlinx.serialization.InternalSerializationApi
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
-import kotlin.time.ExperimentalTime
 
 /** Gets [Geary] via Bukkit once, then sends that reference back afterwards */
 val looty: Looty by lazy { JavaPlugin.getPlugin(Looty::class.java) }
 
+@OptIn(InternalSerializationApi::class)
 class Looty : JavaPlugin() {
     val itemsDir = File(dataFolder, "items")
 
-    @InternalSerializationApi
-    @ExperimentalCommandDSL
-    @ExperimentalTime
     override fun onEnable() {
-        logger.info("On enable has been called")
+        IdofrontSlimjar.loadGlobally(this)
         saveDefaultConfig()
         reloadConfig()
 
@@ -70,7 +67,6 @@ class Looty : JavaPlugin() {
 
     override fun onDisable() {
         super.onDisable()
-        logger.info("onDisable has been invoked!")
         server.scheduler.cancelTasks(this)
 //        Engine.forEach<ChildItemCache> { it.clear() }
     }

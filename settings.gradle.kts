@@ -11,11 +11,11 @@ pluginManagement {
         kotlin("kapt") version kotlinVersion
     }
 
-    val miaConventionsVersion: String by settings
+    val idofrontConventions: String by settings
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id.startsWith("com.mineinabyss.conventions"))
-                useVersion(miaConventionsVersion)
+                useVersion(idofrontConventions)
         }
     }
 }

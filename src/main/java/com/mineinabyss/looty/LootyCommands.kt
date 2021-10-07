@@ -3,10 +3,7 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.ecs.api.GearyComponent
 import com.mineinabyss.geary.ecs.helpers.listComponents
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
-import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.ecs.serialization.Formats
-import com.mineinabyss.geary.minecraft.components.getPrefabsFor
-import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
@@ -60,7 +57,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         return@playerAction
                     }
 
-                    player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey(type)))
+                    player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey.of(type)))
                     LootyFactory.loadFromPlayerInventory(
                         context = PlayerInventoryContext(player, slot)
                     )

@@ -15,14 +15,14 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 /** Gets [Geary] via Bukkit once, then sends that reference back afterwards */
-val looty: Looty by lazy { JavaPlugin.getPlugin(Looty::class.java) }
+val looty: LootyPlugin by lazy { JavaPlugin.getPlugin(LootyPlugin::class.java) }
 
 @OptIn(InternalSerializationApi::class)
-class Looty : JavaPlugin() {
+class LootyPlugin : JavaPlugin() {
     val itemsDir = File(dataFolder, "items")
 
     override fun onEnable() {
-        IdofrontSlimjar.loadGlobally(this)
+        IdofrontSlimjar.loadToLibraryLoader(this)
         saveDefaultConfig()
         reloadConfig()
 

@@ -1,7 +1,7 @@
 name: Looty
 version: ${plugin_version}
 author: Offz
-main: com.mineinabyss.looty.Looty
+main: com.mineinabyss.looty.LootyPlugin
 api-version: 1.16
 depend: [Geary]
 

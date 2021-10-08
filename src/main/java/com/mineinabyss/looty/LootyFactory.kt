@@ -3,13 +3,12 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.ecs.api.engine.Engine
 import com.mineinabyss.geary.ecs.api.engine.entity
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
-import com.mineinabyss.geary.ecs.api.entities.geary
+import com.mineinabyss.geary.ecs.api.entities.toGeary
+import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.entities.addParent
-import com.mineinabyss.geary.ecs.entities.addPrefab
-import com.mineinabyss.geary.ecs.entities.children
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
-import com.mineinabyss.geary.minecraft.access.gearyOrNull
+import com.mineinabyss.geary.minecraft.access.toGearyOrNull
 import com.mineinabyss.geary.minecraft.store.decodeComponents
 import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
 import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
@@ -44,20 +43,20 @@ object LootyFactory {
     ): GearyEntity? {
         if (item == null) return null
         if (item.type == Material.AIR) return null
-        val gearyPlayer = gearyOrNull(context.holder) ?: return null
+        val gearyPlayer = context.holder.toGearyOrNull() ?: return null
 
         val decoded = item.itemMeta.persistentDataContainer.decodeComponents()
 
         if (decoded.type.size == 1) {
-            val prefab = geary(decoded.type.first())
+            val prefab = decoded.type.first().toGeary()
             if (prefab.has<PlayerInstancedItem>()) {
                 return gearyPlayer.getOrSet { PlayerSingletonItems() }
                     .load(prefab.get() ?: error("Prefab has no key"), gearyPlayer) //TODO shouldnt need to pass parent
                     .apply {
                         val added = getOrSet { PlayerSingletonContext(context.holder) }.itemSlots.add(context.slot)
-                        if (added) with<LootyType> {
+                        if (added) with { type: LootyType ->
                             //Update the loaded item to match the item defined in LootyType
-                            it.item.toItemStack(item)
+                            type.item.toItemStack(item)
                         }
                     }
             }

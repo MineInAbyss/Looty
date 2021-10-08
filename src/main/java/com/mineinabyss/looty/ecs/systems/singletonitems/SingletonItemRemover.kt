@@ -1,5 +1,6 @@
 package com.mineinabyss.looty.ecs.systems.singletonitems
 
+import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.store.decodePrefabs
@@ -15,7 +16,7 @@ object SingletonItemRemover : TickingSystem() {
         var foundHeld = false
         // Copy to avoid concurrency exception
         playerItems.toMap().forEach { (prefab, entity) ->
-            entity.with<PlayerSingletonContext> { context ->
+            entity.with { context: PlayerSingletonContext ->
                 if (context.itemSlots.isEmpty()) {
                     playerItems.unload(prefab)
                     debug("Removed $prefab from player")

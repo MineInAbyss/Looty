@@ -1,5 +1,6 @@
 package com.mineinabyss.looty.ecs.systems
 
+import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.CooldownManager
 import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 private const val INTERVAL = 1L
 
@@ -24,9 +24,8 @@ object CooldownDisplaySystem : TickingSystem(interval = INTERVAL) {
     private const val displayLength = 10
     private const val displayChar = '■'
 
-    @ExperimentalTime
     override fun QueryResult.tick() {
-        entity.parent?.with<Player>() { player ->
+        entity.parent?.with { player: Player ->
             player.sendActionBar(cooldownManager.incompleteCooldowns.entries.joinToString("\n") { (key, cooldown) ->
                 val length = Duration.milliseconds(cooldown.length)
                 val timeLeft = Duration.milliseconds((cooldown.endTime - System.currentTimeMillis()))

@@ -1,7 +1,7 @@
 package com.mineinabyss.looty.ecs.components.events
 
 import com.mineinabyss.geary.ecs.components.Target
-import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.access.toGeary
 import com.mineinabyss.geary.minecraft.components.event
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
@@ -41,7 +41,7 @@ object LootyEventListener : Listener {
         val player = damager as? Player ?: return
         val gearyEntity = player.heldLootyItem ?: return
 
-        gearyEntity.set(Target(geary(entity)))
+        gearyEntity.set(Target(entity.toGeary()))
         event(gearyEntity, "hitEntity")
         gearyEntity.remove<Target>()
     }

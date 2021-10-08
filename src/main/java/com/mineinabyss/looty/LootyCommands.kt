@@ -3,10 +3,7 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.ecs.api.GearyComponent
 import com.mineinabyss.geary.ecs.helpers.listComponents
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
-import com.mineinabyss.geary.ecs.prefab.PrefabManager
 import com.mineinabyss.geary.ecs.serialization.Formats
-import com.mineinabyss.geary.minecraft.components.getPrefabsFor
-import com.mineinabyss.geary.minecraft.components.of
 import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
@@ -17,6 +14,8 @@ import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
+import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.gearyOrNull
 import com.okkero.skedule.schedule
@@ -47,8 +46,8 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
             }
             "item" {
                 //TODO more efficient way of finding the right types
-                val type by optionArg(options = PrefabManager.getPrefabsFor(looty).map { it.name }) {
-                    parseErrorMessage = { "No such entity: $passed" }
+                val type by optionArg(options = LootyTypeQuery.map { it.key.toString() }) {
+                    parseErrorMessage = { "No such item: $passed" }
                 }
 
                 playerAction {
@@ -58,7 +57,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         return@playerAction
                     }
 
-                    player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey.of(looty, type)))
+                    player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey.of(type)))
                     LootyFactory.loadFromPlayerInventory(
                         context = PlayerInventoryContext(player, slot)
                     )
@@ -147,7 +146,12 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
         return when (args.size) {
             2 -> when (args[0]) {
                 "item" -> {
-                    PrefabManager.getPrefabsFor(looty).map { it.name }.filter { it.startsWith(args[1].lowercase()) }
+                    LootyTypeQuery
+                        .filter {
+                            val arg = args[1].lowercase()
+                            it.key.name.startsWith(arg) || it.key.key.startsWith(arg)
+                        }
+                        .map { it.key.toString() }
                 }
                 else -> emptyList()
             }

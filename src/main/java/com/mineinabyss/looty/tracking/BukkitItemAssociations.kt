@@ -2,7 +2,7 @@ package com.mineinabyss.looty.tracking
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
-import com.mineinabyss.geary.minecraft.access.geary
+import com.mineinabyss.geary.minecraft.access.toGeary
 import com.mineinabyss.geary.minecraft.store.decode
 import com.mineinabyss.geary.minecraft.store.decodePrefabs
 import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
@@ -31,7 +31,7 @@ fun gearyOrNull(
     val pdc = item.itemMeta.persistentDataContainer
 
     val prefab = pdc.decodePrefabs().firstOrNull()
-    return prefab?.let { geary(player).get<PlayerSingletonItems>()?.get(it) }
+    return prefab?.let { player.toGeary().get<PlayerSingletonItems>()?.get(it) }
         ?: gearyOrNull(item)
 }
 

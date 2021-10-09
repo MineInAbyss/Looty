@@ -108,7 +108,7 @@ object InventoryTrackingListener : Listener {
         val entity = LootyFactory.loadFromPlayerInventory(
             PlayerInventoryContext(
                 holder = player,
-                slot = player.inventory.heldItemSlot,
+                slot = 5,
             ),
             item = currItem
         ) ?: return // item is not from looty

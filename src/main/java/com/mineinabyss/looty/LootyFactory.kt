@@ -20,7 +20,7 @@ import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
-import com.mineinabyss.looty.tracking.gearyOrNull
+import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -47,6 +47,7 @@ object LootyFactory {
 
         val decoded = item.itemMeta.persistentDataContainer.decodeComponents()
 
+        // Attempt to load player-instanced item into a component on the player
         if (decoded.type.size == 1) {
             val prefab = decoded.type.first().toGeary()
             if (prefab.has<PlayerInstancedItem>()) {
@@ -62,8 +63,10 @@ object LootyFactory {
             }
         }
 
-        if (gearyOrNull(item)?.get<PlayerInventoryContext>()?.slot == context.slot) return null
+        // If the item is already loaded via UUID, and the slot matches, no need to load the item
+        if (item.toGearyFromUUIDOrNull()?.get<PlayerInventoryContext>()?.slot == context.slot) return null
 
+        // If the item wasn't already loaded or slots didn't match, create a new entity
         return Engine.entity {
             addParent(gearyPlayer)
             decodeComponentsFrom(decoded)

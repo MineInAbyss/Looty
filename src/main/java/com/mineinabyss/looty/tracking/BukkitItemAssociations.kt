@@ -13,29 +13,44 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import java.util.*
 
-fun gearyOrNull(
-    item: ItemStack
-): GearyEntity? {
-    if (!item.hasItemMeta()) return null
-    val pdc = item.itemMeta.persistentDataContainer
+/**
+ * Returns a Geary entity if this item has a UUID encoded.
+ *
+ * Use [toGearyOrNull] to support player-instanced items.
+ * Otherwise, this function specifically ignores them.
+ */
+fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? {
+    if (!hasItemMeta()) return null
+    val pdc = itemMeta.persistentDataContainer
 
     val uuid = pdc.decode<UUID>() ?: return null
     return BukkitAssociations[uuid]
 }
 
-fun gearyOrNull(
-    item: ItemStack,
-    player: Player
-): GearyEntity? {
-    if (!item.hasItemMeta()) return null
-    val pdc = item.itemMeta.persistentDataContainer
+/**
+ * Returns a Geary entity if this item has a UUID encoded.
+ *
+ * Otherwise, returns the [player]-instanced entity based on the
+ * first prefab encoded on this item.
+ *
+ * Use [toGearyFromUUIDOrNull] if you wish to ignore player-instanced items.
+ */
+fun ItemStack.toGearyOrNull(player: Player): GearyEntity? {
+    if (!hasItemMeta()) return null
+    val pdc = itemMeta.persistentDataContainer
 
+    // If a UUID is encoded, just return the item
+    pdc.decode<UUID>()?.let { return BukkitAssociations[it] }
+
+    // If no UUID, try to read as a player-instanced item
     val prefab = pdc.decodePrefabs().firstOrNull()
     return prefab?.let { player.toGeary().get<PlayerSingletonItems>()?.get(it) }
-        ?: gearyOrNull(item)
 }
 
-fun PlayerInventory.toNMS() = (this as CraftInventoryPlayer).inventory
+//TODO use idofront-nms
+fun PlayerInventory.toNMS(): net.minecraft.world.entity.player.PlayerInventory =
+    (this as CraftInventoryPlayer).inventory
 
-fun ItemStack.toNMS() = (this as CraftItemStack).handle
+fun ItemStack.toNMS(): net.minecraft.world.item.ItemStack =
+    (this as CraftItemStack).handle
 

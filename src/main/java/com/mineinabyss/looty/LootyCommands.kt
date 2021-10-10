@@ -17,7 +17,7 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
-import com.mineinabyss.looty.tracking.gearyOrNull
+import com.mineinabyss.looty.tracking.toGearyOrNull
 import com.okkero.skedule.schedule
 import kotlinx.serialization.PolymorphicSerializer
 import org.bukkit.Material
@@ -67,7 +67,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
             "debug" {
                 "stone" {
                     playerAction {
-                        gearyOrNull(player.inventory.itemInMainHand)?.get<ItemStack>()?.type = Material.STONE
+                        player.inventory.itemInMainHand.toGearyOrNull(player)?.get<ItemStack>()?.type = Material.STONE
                     }
                 }
                 "reference" {
@@ -94,7 +94,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 "components"{
                     playerAction {
                         sender.info(
-                            gearyOrNull(player.inventory.itemInMainHand)?.listComponents()
+                            player.inventory.itemInMainHand.toGearyOrNull(player)?.listComponents()
                         )
                     }
                     //TODO print static and serialized on separate lines
@@ -109,7 +109,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                                     arguments.joinToString(" ")
                                 )
                             }.onSuccess {
-                                gearyOrNull(player.inventory.itemInMainHand)
+                                player.inventory.itemInMainHand.toGearyOrNull(player)
                                     ?.set(it, it::class)
                             }.onFailure {
                                 player.info(it.message)
@@ -123,7 +123,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                             runCatching {
                                 Formats.getClassFor(name)
                             }.onSuccess {
-                                gearyOrNull(player.inventory.itemInMainHand)
+                                player.inventory.itemInMainHand.toGearyOrNull(player)
                                     ?.remove(it)
                             }.onFailure {
                                 player.info(it.message)

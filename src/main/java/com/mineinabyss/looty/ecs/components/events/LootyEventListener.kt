@@ -5,7 +5,7 @@ import com.mineinabyss.geary.minecraft.access.toGeary
 import com.mineinabyss.geary.minecraft.components.event
 import com.mineinabyss.idofront.entities.leftClicked
 import com.mineinabyss.idofront.entities.rightClicked
-import com.mineinabyss.looty.tracking.gearyOrNull
+import com.mineinabyss.looty.tracking.toGearyOrNull
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 
-val Player.heldLootyItem get() = gearyOrNull(inventory.itemInMainHand, this)
+val Player.heldLootyItem get() = inventory.itemInMainHand.toGearyOrNull(this)
 
 object LootyEventListener : Listener {
     @EventHandler

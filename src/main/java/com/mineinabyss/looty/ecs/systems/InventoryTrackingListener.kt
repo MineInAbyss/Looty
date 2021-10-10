@@ -6,7 +6,7 @@ import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
-import com.mineinabyss.looty.tracking.gearyOrNull
+import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
 import com.okkero.skedule.schedule
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -25,7 +25,7 @@ object InventoryTrackingListener : Listener {
         val currItem = currentItem ?: return
         val player = inventory.holder as? Player ?: return
 
-        gearyOrNull(currItem)?.let { gearyItem ->
+        currItem.toGearyFromUUIDOrNull()?.let { gearyItem ->
             gearyItem.encodeComponentsTo(currItem)
             debug("Saved item ${currItem.type}")
         }
@@ -66,7 +66,7 @@ object InventoryTrackingListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerDropItemEvent.onDropItem() {
         val item = itemDrop.itemStack
-        val gearyItem = gearyOrNull(item) ?: return
+        val gearyItem = item.toGearyFromUUIDOrNull() ?: return
         gearyItem.encodeComponentsTo(item)
         gearyItem.removeEntity()
     }

@@ -1,11 +1,16 @@
+<div align="center">
+
 # Looty
 [![Java CI with Gradle](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml/badge.svg)](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml)
 [![Package](https://badgen.net/maven/v/metadata-url/repo.mineinabyss.com/releases/com/mineinabyss/looty/maven-metadata.xml)](https://repo.mineinabyss.com/releases/com/mineinabyss/looty)
 [![Contribute](https://shields.io/badge/Contribute-e57be5?logo=github%20sponsors&style=flat&logoColor=white)](https://wiki.mineinabyss.com/contribute)
-
+</div>
+  
 ## Overview
 
-Looty is as Spigot plugin that acts as a link between ItemStacks and ECS entities from Geary. It lets you quickly add persisting components to items and have systems that iterate over them. Looty also provides the same powerful configuration system as Geary, which lets you quickly create fancy custom items for Minecraft servers.
+Looty is a PaperMC plugin that acts as a link between ItemStacks and ECS entities from our Entity Component System (ECS) [Geary](https://github.com/MineInAbyss/Geary). It lets you easily persist components on ItemStacks and have systems iterate over them. 
+
+Looty also provides the same powerful configuration system as Geary, which lets you quickly create fancy custom items for Minecraft servers. It even updates item data like models or lore update automatically.
 
 ## Features
 

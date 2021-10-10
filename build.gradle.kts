@@ -21,7 +21,6 @@ repositories {
 dependencies {
     // Other plugins
     compileOnly("com.mineinabyss:geary-platform-papermc:$gearyVersion")
-    compileOnly("com.mineinabyss:geary-commons-papermc:0.1.2")
 
     // From Geary
 

@@ -6,7 +6,6 @@ import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.plugin.registerService
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
 import com.mineinabyss.idofront.slimjar.IdofrontSlimjar
-import com.mineinabyss.looty.ecs.components.events.LootyEventListener
 import com.mineinabyss.looty.ecs.systems.*
 import com.mineinabyss.looty.ecs.systems.singletonitems.SingletonItemRemover
 import kotlinx.serialization.InternalSerializationApi
@@ -30,7 +29,6 @@ class LootyPlugin : JavaPlugin() {
         LootyCommands()
 
         registerEvents(
-            LootyEventListener,
             InventoryTrackingListener,
             LootyTypeItemUpdaterSystem,
         )
@@ -41,7 +39,6 @@ class LootyPlugin : JavaPlugin() {
             systems(
                 ItemTrackerSystem,
                 ScreamingSystem,
-                CooldownDisplaySystem,
                 ItemRecipeSystem(),
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),

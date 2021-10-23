@@ -52,7 +52,7 @@ object LootyFactory {
             val prefab = decoded.type.first().toGeary()
             if (prefab.has<PlayerInstancedItem>()) {
                 return gearyPlayer.getOrSet { PlayerSingletonItems() }
-                    .load(prefab.get() ?: error("Prefab has no key"), gearyPlayer) //TODO shouldnt need to pass parent
+                    .load(prefab.get<PrefabKey>() ?: error("Prefab has no key"), gearyPlayer) //TODO shouldnt need to pass parent
                     .apply {
                         val added = getOrSet { PlayerSingletonContext(context.holder) }.itemSlots.add(context.slot)
                         if (added) with { type: LootyType ->

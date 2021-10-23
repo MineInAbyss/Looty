@@ -30,7 +30,6 @@ class LootyPlugin : JavaPlugin() {
 
         registerEvents(
             InventoryTrackingListener,
-            LootyTypeItemUpdaterSystem,
         )
 
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
@@ -38,6 +37,7 @@ class LootyPlugin : JavaPlugin() {
         gearyAddon {
             systems(
                 ItemTrackerSystem,
+                LootyTypeItemUpdaterSystem,
                 ScreamingSystem,
                 ItemRecipeSystem(),
                 PlayerInventoryContextTracker(),

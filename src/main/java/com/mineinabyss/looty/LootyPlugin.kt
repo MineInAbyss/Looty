@@ -38,7 +38,6 @@ class LootyPlugin : JavaPlugin() {
             systems(
                 ItemTrackerSystem,
                 LootyTypeItemUpdaterSystem,
-                ScreamingSystem,
                 ItemRecipeSystem(),
                 PlayerInventoryContextTracker(),
                 HeldItemTracker(),

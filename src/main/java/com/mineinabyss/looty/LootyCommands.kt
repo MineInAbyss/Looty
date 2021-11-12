@@ -7,7 +7,6 @@ import com.mineinabyss.geary.ecs.serialization.Formats
 import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
-import com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.error
@@ -28,7 +27,6 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@ExperimentalCommandDSL
 class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
     override val commands = commands(looty) {
         "looty" {

@@ -45,8 +45,7 @@ class LootyPlugin : JavaPlugin() {
                 SingletonItemRemover,
             )
 
-            autoscanActions()
-            autoscanComponents()
+            autoscanAll()
 
             bukkitEntityAssociations {
                 onEntityRegister<Player> {

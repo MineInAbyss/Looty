@@ -10,7 +10,6 @@ import com.mineinabyss.looty.debug
 
 //@Serializable
 //@SerialName("looty:player_singleton_items")
-//@AutoscanComponent
 class PlayerSingletonItems(
     internal val loadedEntities: MutableMap<PrefabKey, GearyEntity> = mutableMapOf()
 ) : Map<PrefabKey, GearyEntity> by loadedEntities {

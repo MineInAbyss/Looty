@@ -2,8 +2,9 @@
 
 package com.mineinabyss.looty.ecs.systems
 
+import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.ecs.engine.iteration.QueryResult
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
@@ -21,10 +22,11 @@ import org.bukkit.entity.Player
  * - If an item isn't in our cache, we check the mismatches or deserialize it into the cache.
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
+@AutoScan
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    private val QueryResult.player by get<Player>()
+    private val ResultScope.player by get<Player>()
 
-    override fun QueryResult.tick() {
+    override fun ResultScope.tick() {
         refresh(player)
     }
 

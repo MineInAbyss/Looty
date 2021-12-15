@@ -2,12 +2,11 @@ package com.mineinabyss.looty
 
 
 import com.mineinabyss.geary.minecraft.dsl.gearyAddon
+import com.mineinabyss.idofront.platforms.IdofrontPlatforms
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.plugin.registerService
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
-import com.mineinabyss.idofront.slimjar.IdofrontSlimjar
 import com.mineinabyss.looty.ecs.systems.*
-import com.mineinabyss.looty.ecs.systems.singletonitems.SingletonItemRemover
 import kotlinx.serialization.InternalSerializationApi
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -20,8 +19,11 @@ val looty: LootyPlugin by lazy { JavaPlugin.getPlugin(LootyPlugin::class.java) }
 class LootyPlugin : JavaPlugin() {
     val itemsDir = File(dataFolder, "items")
 
+    override fun onLoad() {
+        IdofrontPlatforms.load(this, "mineinabyss")
+    }
+
     override fun onEnable() {
-        IdofrontSlimjar.loadToLibraryLoader(this)
         saveDefaultConfig()
         reloadConfig()
 
@@ -35,18 +37,7 @@ class LootyPlugin : JavaPlugin() {
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
 
         gearyAddon {
-            systems(
-                ItemTrackerSystem,
-                LootyTypeItemUpdaterSystem,
-                ItemRecipeSystem(),
-                PlayerInventoryContextTracker(),
-                HeldItemTracker(),
-                PeriodicSaveSystem,
-                SingletonItemRemover,
-            )
-
-            autoscanActions()
-            autoscanComponents()
+            autoScanAll()
 
             bukkitEntityAssociations {
                 onEntityRegister<Player> {

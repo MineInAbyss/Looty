@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems.singletonitems
 
 import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.store.decodePrefabs
@@ -9,7 +10,8 @@ import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 
-object SingletonItemRemover : TickingSystem() {
+@AutoScan
+class SingletonItemRemover : TickingSystem() {
     private val ResultScope.playerItems by get<PlayerSingletonItems>()
 
     override fun ResultScope.tick() {

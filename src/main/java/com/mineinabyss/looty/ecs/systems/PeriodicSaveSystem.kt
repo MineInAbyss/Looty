@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.PersistingComponent
 import com.mineinabyss.geary.minecraft.store.encode
@@ -9,7 +10,8 @@ import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.inventory.ItemStack
 
-object PeriodicSaveSystem : TickingSystem(interval = 100) {
+@AutoScan
+class PeriodicSaveSystem : TickingSystem(interval = 100) {
     init {
         has<PlayerInventoryContext>()
     }

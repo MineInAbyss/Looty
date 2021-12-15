@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.idofront.recipes.register
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
+@AutoScan
 class ItemRecipeSystem : TickingSystem(), Listener {
     private val ResultScope.recipes by get<RegisterRecipeComponent>()
     private val ResultScope.prefabKey by get<PrefabKey>()

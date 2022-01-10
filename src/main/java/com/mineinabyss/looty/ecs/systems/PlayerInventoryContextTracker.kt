@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.store.decode
@@ -11,10 +12,10 @@ import java.util.*
 
 @AutoScan
 class PlayerInventoryContextTracker : TickingSystem() {
-    private val ResultScope.context by get<PlayerInventoryContext>()
-    private val ResultScope.uuid by get<UUID>()
+    private val TargetScope.context by get<PlayerInventoryContext>()
+    private val TargetScope.uuid by get<UUID>()
 
-    override fun ResultScope.tick() {
+    override fun TargetScope.tick() {
         val item = context.inventory.getItem(context.slot)
         //TODO more efficient decoding via NMS
         if (item == null || item.itemMeta.persistentDataContainer.decode<UUID>() != uuid) {

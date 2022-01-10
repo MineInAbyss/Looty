@@ -2,7 +2,8 @@
 
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
@@ -24,9 +25,9 @@ import org.bukkit.entity.Player
  */
 @AutoScan
 object ItemTrackerSystem : TickingSystem(interval = 100) {
-    private val ResultScope.player by get<Player>()
+    private val TargetScope.player by get<Player>()
 
-    override fun ResultScope.tick() {
+    override fun TargetScope.tick() {
         refresh(player)
     }
 

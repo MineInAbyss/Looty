@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems.singletonitems
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
@@ -12,9 +13,9 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 
 @AutoScan
 class SingletonItemRemover : TickingSystem() {
-    private val ResultScope.playerItems by get<PlayerSingletonItems>()
+    private val TargetScope.playerItems by get<PlayerSingletonItems>()
 
-    override fun ResultScope.tick() {
+    override fun TargetScope.tick() {
         var foundHeld = false
         // Copy to avoid concurrency exception
         playerItems.toMap().forEach { (prefab, entity) ->

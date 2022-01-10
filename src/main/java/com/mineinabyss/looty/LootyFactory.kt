@@ -1,5 +1,7 @@
 package com.mineinabyss.looty
 
+import com.mineinabyss.geary.ecs.api.GearyComponent
+import com.mineinabyss.geary.ecs.api.GearyType
 import com.mineinabyss.geary.ecs.api.engine.Engine
 import com.mineinabyss.geary.ecs.api.engine.entity
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
@@ -9,10 +11,7 @@ import com.mineinabyss.geary.ecs.entities.addParent
 import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
 import com.mineinabyss.geary.minecraft.access.toGearyOrNull
-import com.mineinabyss.geary.minecraft.store.decodeComponents
-import com.mineinabyss.geary.minecraft.store.decodeComponentsFrom
-import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
-import com.mineinabyss.geary.minecraft.store.encodePrefabs
+import com.mineinabyss.geary.minecraft.store.*
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
@@ -93,6 +92,14 @@ object LootyFactory {
                 40 -> add<SlotType.Offhand>()
             }
             if (context.slot == context.inventory.heldItemSlot) add<SlotType.Held>()
+        }
+    }
+
+    fun itemWithComponents(item: ItemStack, vararg components: GearyComponent) {
+        item.editItemMeta {
+            persistentDataContainer.apply {
+                encodeComponents(components.toList(), GearyType())
+            }
         }
     }
 }

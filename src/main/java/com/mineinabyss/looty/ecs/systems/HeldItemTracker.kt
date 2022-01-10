@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
@@ -12,9 +13,9 @@ class HeldItemTracker : TickingSystem() {
         has<SlotType.Held>()
     }
 
-    private val ResultScope.context by get<PlayerInventoryContext>()
+    private val TargetScope.context by get<PlayerInventoryContext>()
 
-    override fun ResultScope.tick() {
+    override fun TargetScope.tick() {
         if (context.inventory.heldItemSlot != context.slot)
             entity.remove<SlotType.Held>()
     }

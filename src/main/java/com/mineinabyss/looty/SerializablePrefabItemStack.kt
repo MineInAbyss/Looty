@@ -1,7 +1,7 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.store.decodePrefabs
+import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

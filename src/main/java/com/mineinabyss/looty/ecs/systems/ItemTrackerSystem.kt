@@ -3,13 +3,14 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.accessors.TargetScope
-import com.mineinabyss.geary.ecs.accessors.get
+import com.mineinabyss.geary.ecs.accessors.building.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.minecraft.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.entity.Player
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * ItemStack instances are super disposable, they don't represent real items. Additionally, tracking items is
@@ -24,7 +25,7 @@ import org.bukkit.entity.Player
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 @AutoScan
-object ItemTrackerSystem : TickingSystem(interval = 100) {
+object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     private val TargetScope.player by get<Player>()
 
     override fun TargetScope.tick() {

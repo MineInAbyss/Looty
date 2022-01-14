@@ -8,10 +8,10 @@ import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.api.entities.toGeary
 import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.entities.addParent
-import com.mineinabyss.geary.ecs.prefab.PrefabKey
 import com.mineinabyss.geary.minecraft.access.BukkitAssociations
 import com.mineinabyss.geary.minecraft.access.toGearyOrNull
 import com.mineinabyss.geary.minecraft.store.*
+import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem

@@ -1,9 +1,10 @@
 package com.mineinabyss.looty.ecs.queries
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
-import com.mineinabyss.geary.ecs.components.Prefab
-import com.mineinabyss.geary.ecs.prefab.PrefabKey
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.building.get
 import com.mineinabyss.geary.ecs.query.Query
+import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.geary.prefabs.configuration.components.Prefab
 import com.mineinabyss.looty.ecs.components.LootyType
 
 object LootyTypeQuery : Query() {
@@ -12,5 +13,5 @@ object LootyTypeQuery : Query() {
         has<Prefab>()
     }
 
-    val ResultScope.key by get<PrefabKey>()
+    val TargetScope.key by get<PrefabKey>()
 }

@@ -1,9 +1,10 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.ecs.accessors.ResultScope
+import com.mineinabyss.geary.ecs.accessors.TargetScope
+import com.mineinabyss.geary.ecs.accessors.building.get
 import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.ecs.prefab.PrefabKey
+import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.LootyType
@@ -18,12 +19,12 @@ import org.bukkit.inventory.ItemStack
 
 @AutoScan
 class ItemRecipeSystem : TickingSystem(), Listener {
-    private val ResultScope.recipes by get<RegisterRecipeComponent>()
-    private val ResultScope.prefabKey by get<PrefabKey>()
+    private val TargetScope.recipes by get<RegisterRecipeComponent>()
+    private val TargetScope.prefabKey by get<PrefabKey>()
     private val registeredRecipes = mutableSetOf<NamespacedKey>()
     private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
-    override fun ResultScope.tick() {
+    override fun TargetScope.tick() {
         val result: ItemStack = if (entity.has<LootyType>()) {
             LootyFactory.createFromPrefab(prefabKey) ?: return
         } else {

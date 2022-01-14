@@ -4,8 +4,8 @@ import com.mineinabyss.geary.ecs.api.engine.Engine
 import com.mineinabyss.geary.ecs.api.engine.entity
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
 import com.mineinabyss.geary.ecs.entities.addParent
-import com.mineinabyss.geary.ecs.entities.addPrefab
-import com.mineinabyss.geary.ecs.prefab.PrefabKey
+import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.geary.prefabs.helpers.addPrefab
 import com.mineinabyss.looty.debug
 
 //@Serializable

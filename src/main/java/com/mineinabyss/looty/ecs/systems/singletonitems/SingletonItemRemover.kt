@@ -2,10 +2,10 @@ package com.mineinabyss.looty.ecs.systems.singletonitems
 
 import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.minecraft.store.decodePrefabs
+import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType

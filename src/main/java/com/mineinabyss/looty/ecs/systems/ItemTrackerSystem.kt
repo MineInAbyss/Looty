@@ -4,9 +4,12 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
+import com.mineinabyss.geary.autoscan.AutoScan
+import com.mineinabyss.geary.ecs.api.annotations.Handler
+import com.mineinabyss.geary.ecs.api.systems.GearyListener
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.minecraft.hasComponentsEncoded
+import com.mineinabyss.geary.ecs.events.EntityRemoved
+import com.mineinabyss.geary.papermc.hasComponentsEncoded
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.entity.Player
@@ -42,5 +45,28 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
         }
 
         //TODO held item
+    }
+
+    @AutoScan
+    private class TrackOnLogin: GearyListener() {
+        val TargetScope.player by added<Player>()
+
+        @Handler
+        fun TargetScope.track() {
+            ItemTrackerSystem.refresh(player)
+        }
+    }
+
+    @AutoScan
+    private class UntrackOnLogout: GearyListener() {
+        val TargetScope.player by get<Player>()
+        init {
+            event.has<EntityRemoved>()
+        }
+
+        @Handler
+        fun TargetScope.logout() {
+            ItemTrackerSystem.refresh(player)
+        }
     }
 }

@@ -4,11 +4,11 @@ import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.flatten
 import com.mineinabyss.geary.ecs.accessors.building.get
 import com.mineinabyss.geary.ecs.accessors.building.relation
-import com.mineinabyss.geary.ecs.api.autoscan.AutoScan
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.components.PersistingComponent
-import com.mineinabyss.geary.minecraft.store.encode
-import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
+import com.mineinabyss.geary.papermc.store.encode
+import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import org.bukkit.inventory.ItemStack

@@ -1,10 +1,10 @@
 package com.mineinabyss.looty.tracking
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
-import com.mineinabyss.geary.minecraft.access.BukkitAssociations
-import com.mineinabyss.geary.minecraft.access.toGeary
-import com.mineinabyss.geary.minecraft.store.decode
-import com.mineinabyss.geary.minecraft.store.decodePrefabs
+import com.mineinabyss.geary.papermc.GearyMCKoinComponent
+import com.mineinabyss.geary.papermc.access.toGeary
+import com.mineinabyss.geary.papermc.store.decode
+import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
@@ -19,12 +19,12 @@ import java.util.*
  * Use [toGearyOrNull] to support player-instanced items.
  * Otherwise, this function specifically ignores them.
  */
-fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? {
+fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? = GearyMCKoinComponent {
     if (!hasItemMeta()) return null
     val pdc = itemMeta.persistentDataContainer
 
     val uuid = pdc.decode<UUID>() ?: return null
-    return BukkitAssociations[uuid]
+    return uuid2entity[uuid]
 }
 
 /**
@@ -35,12 +35,12 @@ fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? {
  *
  * Use [toGearyFromUUIDOrNull] if you wish to ignore player-instanced items.
  */
-fun ItemStack.toGearyOrNull(player: Player): GearyEntity? {
+fun ItemStack.toGearyOrNull(player: Player): GearyEntity? = GearyMCKoinComponent {
     if (!hasItemMeta()) return null
     val pdc = itemMeta.persistentDataContainer
 
     // If a UUID is encoded, just return the item
-    pdc.decode<UUID>()?.let { return BukkitAssociations[it] }
+    pdc.decode<UUID>()?.let { return uuid2entity[it] }
 
     // If no UUID, try to read as a player-instanced item
     val prefab = pdc.decodePrefabs().firstOrNull()

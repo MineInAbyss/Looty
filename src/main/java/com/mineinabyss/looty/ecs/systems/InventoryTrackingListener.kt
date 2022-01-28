@@ -1,7 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
-import com.mineinabyss.geary.minecraft.hasComponentsEncoded
-import com.mineinabyss.geary.minecraft.store.encodeComponentsTo
+import com.mineinabyss.geary.papermc.hasComponentsEncoded
+import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext

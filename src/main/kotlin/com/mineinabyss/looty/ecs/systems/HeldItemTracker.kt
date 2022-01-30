@@ -9,13 +9,13 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 
 @AutoScan
 class HeldItemTracker : TickingSystem() {
-    init {
+    override suspend fun onStart() {
         has<SlotType.Held>()
     }
 
     private val TargetScope.context by get<PlayerInventoryContext>()
 
-    override fun TargetScope.tick() {
+    override suspend fun TargetScope.tick() {
         if (context.inventory.heldItemSlot != context.slot)
             entity.remove<SlotType.Held>()
     }

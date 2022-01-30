@@ -3,6 +3,7 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
@@ -11,8 +12,9 @@ import org.bukkit.inventory.RecipeChoice
 @Serializable
 @SerialName("looty:item")
 object LootySerializablePrefabItemService : SerializablePrefabItemService {
-    override fun prefabToItem(prefabName: String): ItemStack? =
+    override fun prefabToItem(prefabName: String): ItemStack? = runBlocking {
         LootyFactory.createFromPrefab(PrefabKey.of(prefabName))
+    }
 }
 
 data class LootyRecipeChoice(

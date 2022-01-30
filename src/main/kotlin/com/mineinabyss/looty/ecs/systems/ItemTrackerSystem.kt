@@ -2,9 +2,9 @@
 
 package com.mineinabyss.looty.ecs.systems
 
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.annotations.Handler
 import com.mineinabyss.geary.ecs.api.systems.GearyListener
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
@@ -31,14 +31,13 @@ import kotlin.time.Duration.Companion.seconds
 object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     private val TargetScope.player by get<Player>()
 
-    override fun TargetScope.tick() {
+    override suspend fun TargetScope.tick() {
         refresh(player)
     }
 
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
     // not be tracked. Either we need a GC or make 1000% this never fails.
-    @Synchronized
-    fun refresh(player: Player) {
+    suspend fun refresh(player: Player) {
         player.inventory.forEachIndexed { slot, item ->
             if (item != null && item.hasItemMeta() && item.itemMeta.persistentDataContainer.hasComponentsEncoded)
                 LootyFactory.loadFromPlayerInventory(PlayerInventoryContext(player, slot))
@@ -48,24 +47,25 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     }
 
     @AutoScan
-    private class TrackOnLogin: GearyListener() {
+    private class TrackOnLogin : GearyListener() {
         val TargetScope.player by added<Player>()
 
         @Handler
-        fun TargetScope.track() {
+        suspend fun TargetScope.track() {
             ItemTrackerSystem.refresh(player)
         }
     }
 
     @AutoScan
-    private class UntrackOnLogout: GearyListener() {
+    private class UntrackOnLogout : GearyListener() {
         val TargetScope.player by get<Player>()
-        init {
+
+        override suspend fun onStart() {
             event.has<EntityRemoved>()
         }
 
         @Handler
-        fun TargetScope.logout() {
+        suspend fun TargetScope.logout() {
             ItemTrackerSystem.refresh(player)
         }
     }

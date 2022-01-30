@@ -16,13 +16,14 @@ import kotlin.time.Duration.Companion.seconds
 
 @AutoScan
 class PeriodicSaveSystem : TickingSystem(interval = 5.seconds) {
-    init {
+    override suspend fun onStart() {
         has<PlayerInventoryContext>()
     }
+
     private val TargetScope.persisting by relation<Any, PersistingComponent>().flatten()
     private val TargetScope.item by get<ItemStack>()
 
-    override fun TargetScope.tick() {
+    override suspend fun TargetScope.tick() {
         val forceSave = every(iterations = 100)
 
         if (forceSave) {

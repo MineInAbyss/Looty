@@ -17,7 +17,7 @@ class PlayerSingletonItems(
 ) : Map<PrefabKey, GearyEntity> by loadedEntities, EngineScope {
     override val engine: Engine by inject()
 
-    fun load(prefabKey: PrefabKey, parent: GearyEntity): GearyEntity {
+    suspend fun load(prefabKey: PrefabKey, parent: GearyEntity): GearyEntity {
         return loadedEntities.getOrPut(prefabKey) {
             entity {
                 addPrefab(prefabKey.toEntity() ?: error("No prefab found for key"))
@@ -27,11 +27,11 @@ class PlayerSingletonItems(
         }
     }
 
-    fun unload(element: PrefabKey): Boolean {
+    suspend fun unload(element: PrefabKey): Boolean {
         return loadedEntities.remove(element)?.removeEntity() != null
     }
 
-    fun clear() {
+    suspend fun unloadAll() {
         loadedEntities.values.forEach { it.removeEntity() }
         loadedEntities.clear()
     }

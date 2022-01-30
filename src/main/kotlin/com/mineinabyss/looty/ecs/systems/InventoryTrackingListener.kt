@@ -1,13 +1,19 @@
 package com.mineinabyss.looty.ecs.systems
 
+import com.mineinabyss.geary.papermc.GearyMCKoinComponent
+import com.mineinabyss.geary.papermc.GearyScope
 import com.mineinabyss.geary.papermc.hasComponentsEncoded
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
+import com.mineinabyss.idofront.time.ticks
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
-import com.okkero.skedule.schedule
+import com.okkero.skedule.BukkitDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -17,7 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
-object InventoryTrackingListener : Listener {
+object InventoryTrackingListener : Listener, GearyScope by GearyMCKoinComponent() {
     //TODO drag clicking is a separate event
     @EventHandler
     fun InventoryClickEvent.syncWithLooty() {
@@ -25,20 +31,22 @@ object InventoryTrackingListener : Listener {
         val currItem = currentItem ?: return
         val player = inventory.holder as? Player ?: return
 
-        currItem.toGearyFromUUIDOrNull()?.let { gearyItem ->
-            gearyItem.encodeComponentsTo(currItem)
-            debug("Saved item ${currItem.type}")
-        }
+        runBlocking {
+            currItem.toGearyFromUUIDOrNull()?.let { gearyItem ->
+                gearyItem.encodeComponentsTo(currItem)
+                debug("Saved item ${currItem.type}")
+            }
 
-        if (cursor?.itemMeta?.persistentDataContainer?.hasComponentsEncoded == true) {
-            LootyFactory.loadFromPlayerInventory(
-                PlayerInventoryContext(
-                    holder = player,
-                    slot = slot,
-                ),
-                item = cursor
-            )
-            debug("Loaded item ${cursor.type}")
+            if (cursor?.itemMeta?.persistentDataContainer?.hasComponentsEncoded == true) {
+                LootyFactory.loadFromPlayerInventory(
+                    PlayerInventoryContext(
+                        holder = player,
+                        slot = slot,
+                    ),
+                    item = cursor
+                )
+                debug("Loaded item ${cursor.type}")
+            }
         }
     }
 
@@ -67,8 +75,10 @@ object InventoryTrackingListener : Listener {
     fun PlayerDropItemEvent.onDropItem() {
         val item = itemDrop.itemStack
         val gearyItem = item.toGearyFromUUIDOrNull() ?: return
-        gearyItem.encodeComponentsTo(item)
-        gearyItem.removeEntity()
+        runBlocking {
+            gearyItem.encodeComponentsTo(item)
+            gearyItem.removeEntity()
+        }
     }
 
     //TODO
@@ -76,8 +86,8 @@ object InventoryTrackingListener : Listener {
     fun EntityPickupItemEvent.onPickUpItem() {
         val player = entity as? Player ?: return
         if (item.itemStack.itemMeta.persistentDataContainer.hasComponentsEncoded)
-            looty.schedule {
-                waitFor(1)
+            engine.launch(BukkitDispatcher(looty)) {
+                delay(1.ticks)
                 ItemTrackerSystem.refresh(player)
             }
     }

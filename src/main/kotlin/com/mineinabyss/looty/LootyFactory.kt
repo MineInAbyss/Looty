@@ -26,7 +26,7 @@ import java.util.*
 
 object LootyFactory : GearyMCKoinComponent() {
 
-    fun createFromPrefab(
+    suspend fun createFromPrefab(
         prefabKey: PrefabKey,
     ): ItemStack? {
         val prefab = prefabKey.toEntity() ?: return null
@@ -37,7 +37,7 @@ object LootyFactory : GearyMCKoinComponent() {
         return item
     }
 
-    fun loadFromPlayerInventory(
+    suspend fun loadFromPlayerInventory(
         context: PlayerInventoryContext,
         item: ItemStack? = context.item,
     ): GearyEntity? {
@@ -83,7 +83,7 @@ object LootyFactory : GearyMCKoinComponent() {
         }
     }
 
-    fun addSlotTypeComponent(entity: GearyEntity, context: PlayerInventoryContext) {
+    suspend fun addSlotTypeComponent(entity: GearyEntity, context: PlayerInventoryContext) {
         entity.apply {
             remove<SlotType.Equipped>()
             remove<SlotType.Offhand>()
@@ -97,7 +97,7 @@ object LootyFactory : GearyMCKoinComponent() {
         }
     }
 
-    fun itemWithComponents(item: ItemStack, vararg components: GearyComponent) {
+    suspend fun itemWithComponents(item: ItemStack, vararg components: GearyComponent) {
         item.editItemMeta {
             persistentDataContainer.apply {
                 encodeComponents(components.toList(), GearyType())

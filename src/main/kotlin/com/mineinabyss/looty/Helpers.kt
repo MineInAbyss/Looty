@@ -12,7 +12,7 @@ internal fun debug(message: Any?) {
     if (LootyConfig.data.debug) broadcast(message)
 }
 
-fun GearyEntity.encodeComponentsTo(lootyType: LootyType): ItemStack =
+suspend fun GearyEntity.encodeComponentsTo(lootyType: LootyType): ItemStack =
     lootyType.item.toItemStack().editItemMeta {
         encodeComponentsTo(persistentDataContainer)
     }

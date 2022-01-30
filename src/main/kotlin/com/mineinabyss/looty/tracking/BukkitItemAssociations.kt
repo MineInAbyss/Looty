@@ -35,7 +35,7 @@ fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? = GearyMCKoinComponent {
  *
  * Use [toGearyFromUUIDOrNull] if you wish to ignore player-instanced items.
  */
-fun ItemStack.toGearyOrNull(player: Player): GearyEntity? = GearyMCKoinComponent {
+suspend fun ItemStack.toGearyOrNull(player: Player): GearyEntity? = GearyMCKoinComponent {
     if (!hasItemMeta()) return null
     val pdc = itemMeta.persistentDataContainer
 

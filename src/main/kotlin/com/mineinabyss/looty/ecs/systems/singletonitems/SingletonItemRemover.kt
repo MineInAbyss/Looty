@@ -15,7 +15,7 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 class SingletonItemRemover : TickingSystem() {
     private val TargetScope.playerItems by get<PlayerSingletonItems>()
 
-    override fun TargetScope.tick() {
+    override suspend fun TargetScope.tick() {
         var foundHeld = false
         // Copy to avoid concurrency exception
         playerItems.toMap().forEach { (prefab, entity) ->

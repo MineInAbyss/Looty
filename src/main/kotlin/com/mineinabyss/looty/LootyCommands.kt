@@ -1,12 +1,10 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.ecs.api.GearyComponent
+import com.mineinabyss.geary.ecs.api.engine.runSafely
 import com.mineinabyss.geary.ecs.helpers.listComponents
-import com.mineinabyss.geary.ecs.serialization.Formats
-import com.mineinabyss.geary.papermc.GearyMCKoinComponent
-import com.mineinabyss.geary.papermc.GearyScope
+import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.prefabs.PrefabKey
-import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
@@ -14,26 +12,22 @@ import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.toGearyOrNull
-import com.okkero.skedule.BukkitDispatcher
-import com.okkero.skedule.schedule
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.serialization.PolymorphicSerializer
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by GearyMCKoinComponent() {
+context(GearyMCContext)
+class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
     override val commands = commands(looty) {
         "looty" {
             "reload" {
@@ -44,7 +38,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by Gea
 //                    }
 
                     LootyConfig.reload(sender)
-                    engine.launch {
+                    runSafely {
                         ItemTrackerSystem.doTick()
                     }
                 }
@@ -62,37 +56,18 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by Gea
                         return@playerAction
                     }
 
-                    engine.launch(BukkitDispatcher(looty)) {
-                        player.inventory.setItem(slot, LootyFactory.createFromPrefab(PrefabKey.of(type)))
-                        LootyFactory.loadFromPlayerInventory(
-                            context = PlayerInventoryContext(player, slot)
-                        )
+                    val item = LootyFactory.createFromPrefab(PrefabKey.of(type))
+                    item?.useWithLooty {
+                        PlayerInventorySlotContext(player, slot).loadItem()
                     }
+                    player.inventory.setItem(slot, item)
                 }
             }
 
             "debug" {
                 "stone" {
                     playerAction {
-                        engine.launch(BukkitDispatcher(looty)) {
-                            player.inventory.itemInMainHand.toGearyOrNull(player)?.get<ItemStack>()?.type = Material.STONE
-                        }
-                    }
-                }
-                "reference" {
-                    playerAction {
-                        val item = player.inventory.itemInMainHand
-                        CraftItemStack.asNMSCopy(item).asBukkitMirror().type = Material.STONE
-                    }
-                }
-                "swap" {
-                    val length by intArg()
-                    playerAction {
-                        val item = (player.inventory.itemInMainHand as CraftItemStack).handle
-                        looty.schedule {
-                            waitFor(length.toLong())
-                            item.count += 1
-                        }
+                        player.inventory.itemInMainHand.toGearyOrNull(player)?.get<ItemStack>()?.type = Material.STONE
                     }
                 }
                 "pdc"{
@@ -102,9 +77,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by Gea
                 }
                 "components"{
                     playerAction {
-                        engine.launch(BukkitDispatcher(looty)) {
-                            sender.info(player.inventory.itemInMainHand.toGearyOrNull(player)?.listComponents())
-                        }
+                        sender.info(player.inventory.itemInMainHand.toGearyOrNull(player)?.listComponents())
                     }
                     //TODO print static and serialized on separate lines
                 }
@@ -113,15 +86,13 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by Gea
                         action {
                             val player = sender as? Player ?: return@action
                             runCatching {
-                                Formats.jsonFormat.decodeFromString(
+                                formats.jsonFormat.decodeFromString(
                                     PolymorphicSerializer(GearyComponent::class),
                                     arguments.joinToString(" ")
                                 )
                             }.onSuccess {
-                                engine.launch(BukkitDispatcher(looty)) {
-                                    player.inventory.itemInMainHand.toGearyOrNull(player)
-                                        ?.set(it, it::class)
-                                }
+                                player.inventory.itemInMainHand.toGearyOrNull(player)
+                                    ?.set(it, it::class)
                             }.onFailure {
                                 player.info(it.message)
                             }
@@ -132,12 +103,10 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter, GearyScope by Gea
                         val name by stringArg()
                         playerAction {
                             runCatching {
-                                Formats.getClassFor(name)
+                                formats.getClassFor(name)
                             }.onSuccess {
-                                engine.launch(BukkitDispatcher(looty)) {
-                                    player.inventory.itemInMainHand.toGearyOrNull(player)
-                                        ?.remove(it)
-                                }
+                                player.inventory.itemInMainHand.toGearyOrNull(player)
+                                    ?.remove(it)
                             }.onFailure {
                                 player.info(it.message)
                             }

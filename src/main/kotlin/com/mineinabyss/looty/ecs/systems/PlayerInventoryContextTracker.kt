@@ -7,15 +7,15 @@ import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.papermc.store.decode
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
 import java.util.*
 
 @AutoScan
 class PlayerInventoryContextTracker : TickingSystem() {
-    private val TargetScope.context by get<PlayerInventoryContext>()
+    private val TargetScope.context by get<PlayerInventorySlotContext>()
     private val TargetScope.uuid by get<UUID>()
 
-    override suspend fun TargetScope.tick() {
+    override fun TargetScope.tick() {
         val item = context.inventory.getItem(context.slot)
         //TODO more efficient decoding via NMS
         if (item == null || item.itemMeta.persistentDataContainer.decode<UUID>() != uuid) {

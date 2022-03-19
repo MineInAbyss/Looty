@@ -1,21 +1,23 @@
 package com.mineinabyss.looty.ecs.systems.singletonitems
 
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.entities.with
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
+import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.looty.debug
-import com.mineinabyss.looty.ecs.components.PlayerSingletonItems
+import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 
+context(GearyMCContext)
 @AutoScan
 class SingletonItemRemover : TickingSystem() {
-    private val TargetScope.playerItems by get<PlayerSingletonItems>()
+    private val TargetScope.playerItems by get<PlayerInstancedItems>()
 
-    override suspend fun TargetScope.tick() {
+    override fun TargetScope.tick() {
         var foundHeld = false
         // Copy to avoid concurrency exception
         playerItems.toMap().forEach { (prefab, entity) ->

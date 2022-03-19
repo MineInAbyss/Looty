@@ -24,7 +24,7 @@ class ItemRecipeSystem : TickingSystem(), Listener {
     private val registeredRecipes = mutableSetOf<NamespacedKey>()
     private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
-    override suspend fun TargetScope.tick() {
+    override fun TargetScope.tick() {
         val result: ItemStack = if (entity.has<LootyType>()) {
             LootyFactory.createFromPrefab(prefabKey) ?: return
         } else {

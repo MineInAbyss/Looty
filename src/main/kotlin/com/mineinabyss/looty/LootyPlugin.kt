@@ -24,9 +24,6 @@ class LootyPlugin : JavaPlugin() {
         saveDefaultConfig()
         reloadConfig()
 
-        //Register commands
-        LootyCommands()
-
         registerEvents(
             InventoryTrackingListener,
         )
@@ -35,8 +32,8 @@ class LootyPlugin : JavaPlugin() {
 
         gearyAddon {
             autoScanAll()
-
             loadPrefabs(itemsDir)
+            LootyCommands() //Register commands
         }
     }
 

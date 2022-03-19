@@ -1,22 +1,24 @@
 package com.mineinabyss.looty
 
+import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
+import org.bukkit.inventory.meta.ItemMeta
 
 @Serializable
 @SerialName("looty:item")
 object LootySerializablePrefabItemService : SerializablePrefabItemService {
-    override fun prefabToItem(prefabName: String): ItemStack? = runBlocking {
-        LootyFactory.createFromPrefab(PrefabKey.of(prefabName))
+    override fun encodeFromPrefab(item: ItemStack, meta: ItemMeta, prefabName: String) {
+        LootyFactory.encodeFromPrefab(item, meta, PrefabKey.of(prefabName)) //TODO encode
     }
 }
 
+context(GearyMCContext)
 data class LootyRecipeChoice(
     val item: ItemStack
 ) : RecipeChoice {

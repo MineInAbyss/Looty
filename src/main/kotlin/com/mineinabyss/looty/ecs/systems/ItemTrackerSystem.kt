@@ -9,9 +9,10 @@ import com.mineinabyss.geary.ecs.api.annotations.Handler
 import com.mineinabyss.geary.ecs.api.systems.GearyListener
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.events.EntityRemoved
-import com.mineinabyss.geary.papermc.hasComponentsEncoded
-import com.mineinabyss.looty.LootyFactory
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventoryContext
+import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
+import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
+import com.mineinabyss.looty.loadItem
 import org.bukkit.entity.Player
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,20 +28,22 @@ import kotlin.time.Duration.Companion.seconds
  * - If an item isn't in our cache, we check the mismatches or deserialize it into the cache.
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
+context(GearyMCContext)
 @AutoScan
 object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     private val TargetScope.player by get<Player>()
 
-    override suspend fun TargetScope.tick() {
+    override fun TargetScope.tick() {
         refresh(player)
     }
 
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
     // not be tracked. Either we need a GC or make 1000% this never fails.
-    suspend fun refresh(player: Player) {
+    fun refresh(player: Player) {
         player.inventory.forEachIndexed { slot, item ->
-            if (item != null && item.hasItemMeta() && item.itemMeta.persistentDataContainer.hasComponentsEncoded)
-                LootyFactory.loadFromPlayerInventory(PlayerInventoryContext(player, slot))
+            item.useWithLooty {
+                PlayerInventorySlotContext(player, slot).loadItem()
+            }
         }
 
         //TODO held item
@@ -51,7 +54,7 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
         val TargetScope.player by added<Player>()
 
         @Handler
-        suspend fun TargetScope.track() {
+        fun TargetScope.track() {
             ItemTrackerSystem.refresh(player)
         }
     }
@@ -60,12 +63,12 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     private class UntrackOnLogout : GearyListener() {
         val TargetScope.player by get<Player>()
 
-        override suspend fun onStart() {
+        override fun onStart() {
             event.has<EntityRemoved>()
         }
 
         @Handler
-        suspend fun TargetScope.logout() {
+        fun TargetScope.logout() {
             ItemTrackerSystem.refresh(player)
         }
     }

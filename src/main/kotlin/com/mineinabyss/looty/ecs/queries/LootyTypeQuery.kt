@@ -8,7 +8,7 @@ import com.mineinabyss.geary.prefabs.configuration.components.Prefab
 import com.mineinabyss.looty.ecs.components.LootyType
 
 object LootyTypeQuery : Query() {
-    override suspend fun onStart() {
+    override fun onStart() {
         has<LootyType>()
         has<Prefab>()
     }

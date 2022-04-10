@@ -8,7 +8,6 @@ import com.mineinabyss.geary.ecs.engine.INSTANCEOF
 import com.mineinabyss.geary.ecs.engine.hasRole
 import com.mineinabyss.geary.ecs.entities.RegenerateUUIDOnClash
 import com.mineinabyss.geary.ecs.entities.addParent
-import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.access.toGeary
 import com.mineinabyss.geary.papermc.store.decodeComponents
 import com.mineinabyss.geary.papermc.store.decodeComponentsFrom
@@ -30,7 +29,6 @@ import java.util.*
 /**
  * Many helper functions related to creating Looty items.
  */
-context(GearyMCContext)
 object LootyFactory {
     /** Creates an ItemStack from a [prefabKey], encoding relevant information to it. */
     fun createFromPrefab(
@@ -50,8 +48,7 @@ object LootyFactory {
     }
 
 
-    context(PlayerInventorySlotContext)
-    fun addSlotTypeComponent(entity: GearyEntity) {
+    fun addSlotTypeComponent(context: PlayerInventorySlotContext, entity: GearyEntity) = with(context) {
         entity.apply {
             remove<SlotType.Equipped>()
             remove<SlotType.Offhand>()
@@ -67,9 +64,8 @@ object LootyFactory {
 }
 
 /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
-context(ProcessingItemContext, GearyMCContext)
-fun PlayerInventorySlotContext.loadItem(): GearyEntity? {
-    if (!hasComponentsEncoded) return null
+fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext, ): GearyEntity? = with(context) {
+//    if (!hasComponentsEncoded) return null
     val gearyPlayer = holder.toGeary()
     val decoded = meta.persistentDataContainer.decodeComponents()
 
@@ -100,9 +96,9 @@ fun PlayerInventorySlotContext.loadItem(): GearyEntity? {
         decodeComponentsFrom(decoded)
         getOrSetPersisting<UUID> { UUID.randomUUID() }
         set<PlayerInventorySlotContext>(this@loadItem)
-        LootyFactory.addSlotTypeComponent(this)
+        LootyFactory.addSlotTypeComponent(this@loadItem, this)
         encodeComponentsTo(meta)
-        debug("Creating item in slot ${slot}")
+        debug("Creating item in slot $slot")
         val item = updateMeta()
         set<ItemStack>(item)
         debug("Loaded item $item")

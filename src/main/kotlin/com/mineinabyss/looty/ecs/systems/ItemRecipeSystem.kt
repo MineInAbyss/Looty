@@ -1,9 +1,10 @@
 package com.mineinabyss.looty.ecs.systems
 
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.accessors.TargetScope
 import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
+import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory

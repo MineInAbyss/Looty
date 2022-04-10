@@ -15,7 +15,6 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotCont
 import org.bukkit.inventory.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
-context(GearyMCContext)
 @AutoScan
 class PeriodicSaveSystem : TickingSystem(interval = 5.seconds) {
     override fun onStart() {

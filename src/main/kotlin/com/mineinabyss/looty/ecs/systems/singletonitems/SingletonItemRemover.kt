@@ -12,7 +12,6 @@ import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 
-context(GearyMCContext)
 @AutoScan
 class SingletonItemRemover : TickingSystem() {
     private val TargetScope.playerItems by get<PlayerInstancedItems>()

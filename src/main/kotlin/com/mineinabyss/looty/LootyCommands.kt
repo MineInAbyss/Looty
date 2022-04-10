@@ -1,9 +1,8 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.api.GearyComponent
 import com.mineinabyss.geary.ecs.api.engine.runSafely
 import com.mineinabyss.geary.ecs.helpers.listComponents
-import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
@@ -18,15 +17,12 @@ import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
 import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.toGearyOrNull
-import kotlinx.serialization.PolymorphicSerializer
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-context(GearyMCContext)
 class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
     override val commands = commands(looty) {
         "looty" {
@@ -57,8 +53,8 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     }
 
                     val item = LootyFactory.createFromPrefab(PrefabKey.of(type))
-                    item?.useWithLooty {
-                        PlayerInventorySlotContext(player, slot).loadItem()
+                    item.useWithLooty {
+                        PlayerInventorySlotContext(player, slot).loadItem(this)
                     }
                     player.inventory.setItem(slot, item)
                 }
@@ -82,28 +78,28 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     //TODO print static and serialized on separate lines
                 }
                 "component" {
-                    "add" {
-                        action {
-                            val player = sender as? Player ?: return@action
-                            runCatching {
-                                formats.jsonFormat.decodeFromString(
-                                    PolymorphicSerializer(GearyComponent::class),
-                                    arguments.joinToString(" ")
-                                )
-                            }.onSuccess {
-                                player.inventory.itemInMainHand.toGearyOrNull(player)
-                                    ?.set(it, it::class)
-                            }.onFailure {
-                                player.info(it.message)
-                            }
-                        }
-                    }
+//                    "add" {
+//                        action {
+//                            val player = sender as? Player ?: return@action
+//                            runCatching {
+//                                globalContextMC.formats.getFormat("json").decodeFromString(
+//                                    PolymorphicSerializer(GearyComponent::class),
+//                                    arguments.joinToString(" ")
+//                                )
+//                            }.onSuccess {
+//                                player.inventory.itemInMainHand.toGearyOrNull(player)
+//                                    ?.set(it, it::class)
+//                            }.onFailure {
+//                                player.info(it.message)
+//                            }
+//                        }
+//                    }
 
                     "remove" {
                         val name by stringArg()
                         playerAction {
                             runCatching {
-                                formats.getClassFor(name)
+                                globalContextMC.formats.getClassFor(name)
                             }.onSuccess {
                                 player.inventory.itemInMainHand.toGearyOrNull(player)
                                     ?.remove(it)

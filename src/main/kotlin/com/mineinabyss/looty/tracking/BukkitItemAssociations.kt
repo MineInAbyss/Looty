@@ -1,8 +1,8 @@
 package com.mineinabyss.looty.tracking
 
 import com.mineinabyss.geary.ecs.api.entities.GearyEntity
-import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.access.toGeary
+import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.decode
 import com.mineinabyss.geary.papermc.store.decodePrefabs
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
@@ -17,16 +17,14 @@ import java.util.*
  * Use [toGearyOrNull] to support player-instanced items.
  * Otherwise, this function specifically ignores them.
  */
-context(GearyMCContext)
 fun ItemStack.toGearyFromUUIDOrNull(): GearyEntity? {
     if (!hasItemMeta()) return null
     return itemMeta.toGearyFromUUIDOrNull()
 }
 
-context(GearyMCContext)
 fun ItemMeta.toGearyFromUUIDOrNull(): GearyEntity? {
     val uuid = persistentDataContainer.decode<UUID>() ?: return null
-    return uuid2entity[uuid]
+    return globalContextMC.uuid2entity[uuid]
 }
 
 /**
@@ -37,13 +35,12 @@ fun ItemMeta.toGearyFromUUIDOrNull(): GearyEntity? {
  *
  * Use [toGearyFromUUIDOrNull] if you wish to ignore player-instanced items.
  */
-context(GearyMCContext)
 fun ItemStack.toGearyOrNull(player: Player): GearyEntity? {
     if (!hasItemMeta()) return null
     val pdc = itemMeta.persistentDataContainer
 
     // If a UUID is encoded, just return the item
-    pdc.decode<UUID>()?.let { return uuid2entity[it] }
+    pdc.decode<UUID>()?.let { return globalContextMC.uuid2entity[it] }
 
     // If no UUID, try to read as a player-instanced item
     val prefab = pdc.decodePrefabs().firstOrNull()

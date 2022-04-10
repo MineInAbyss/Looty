@@ -10,6 +10,7 @@ import com.mineinabyss.geary.ecs.api.systems.GearyListener
 import com.mineinabyss.geary.ecs.api.systems.TickingSystem
 import com.mineinabyss.geary.ecs.events.EntityRemoved
 import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.geary.papermc.GearyMCContextKoin
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.loadItem
@@ -28,9 +29,8 @@ import kotlin.time.Duration.Companion.seconds
  * - If an item isn't in our cache, we check the mismatches or deserialize it into the cache.
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
-context(GearyMCContext)
 @AutoScan
-object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
+object ItemTrackerSystem : TickingSystem(interval = 5.seconds), GearyMCContext by GearyMCContextKoin() {
     private val TargetScope.player by get<Player>()
 
     override fun TargetScope.tick() {
@@ -42,7 +42,7 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds) {
     fun refresh(player: Player) {
         player.inventory.forEachIndexed { slot, item ->
             item.useWithLooty {
-                PlayerInventorySlotContext(player, slot).loadItem()
+                PlayerInventorySlotContext(player, slot).loadItem(this)
             }
         }
 

@@ -13,7 +13,6 @@ import org.koin.core.component.inject
 
 //@Serializable
 //@SerialName("looty:player_singleton_items")
-context(GearyMCContext)
 class PlayerInstancedItems(
     internal val loadedEntities: MutableMap<PrefabKey, GearyEntity> = mutableMapOf()
 ) : Map<PrefabKey, GearyEntity> by loadedEntities, EngineContext {

@@ -13,7 +13,6 @@ internal fun debug(message: Any?) {
     if (LootyConfig.data.debug) broadcast(message)
 }
 
-context(GearyMCContext)
 fun GearyEntity.encodeComponentsTo(lootyType: LootyType): ItemStack =
     lootyType.createItem().editItemMeta {
         encodeComponentsTo(persistentDataContainer)

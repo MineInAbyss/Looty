@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.geary.papermc.GearyMCContextKoin
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.geary.papermc.store.hasComponentsEncoded
 import com.mineinabyss.looty.debug
@@ -20,8 +21,7 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.PlayerInventory
 
-context(GearyMCContext)
-object InventoryTrackingListener : Listener {
+object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoin() {
     //TODO drag clicking is a separate event
     @EventHandler
     fun InventoryClickEvent.syncWithLooty() {
@@ -37,7 +37,7 @@ object InventoryTrackingListener : Listener {
 
 
         cursor?.useWithLooty {
-            PlayerInventorySlotContext(player, slot, inventory).loadItem()
+            PlayerInventorySlotContext(player, slot, inventory).loadItem(this)
         }
     }
 
@@ -61,7 +61,6 @@ object InventoryTrackingListener : Listener {
         }*/
     }
 
-    //TODO
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerDropItemEvent.onDropItem() {
         val item = itemDrop.itemStack

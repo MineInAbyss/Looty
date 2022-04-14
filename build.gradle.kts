@@ -51,7 +51,6 @@ tasks {
                 "-Xopt-in=kotlin.time.ExperimentalTime",
                 "-Xopt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
                 "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xcontext-receivers"
             )
         }
     }

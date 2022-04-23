@@ -15,6 +15,7 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotCont
 import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.loadItem
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -40,8 +41,8 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds), GearyMCContext b
     //TODO If an entity is ever not removed properly from ECS but is removed from the cache, it will forever exist but
     // not be tracked. Either we need a GC or make 1000% this never fails.
     fun refresh(player: Player) {
-        player.inventory.forEachIndexed { slot, item ->
-            item.useWithLooty {
+        player.inventory.forEachIndexed { slot, item: ItemStack? ->
+            item?.useWithLooty {
                 PlayerInventorySlotContext(player, slot).loadItem(this)
             }
         }

@@ -30,7 +30,7 @@ class LootyPlugin : JavaPlugin() {
 
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
 
-        gearyAddon {
+        gearyAddon(autoscanPackage = "com.mineinabyss") {
             autoScanAll()
             loadPrefabs(itemsDir)
             LootyCommands() //Register commands

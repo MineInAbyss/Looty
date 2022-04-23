@@ -27,7 +27,7 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
     fun InventoryClickEvent.syncWithLooty() {
         val cursor = cursor
         val currItem = currentItem ?: return
-        val inventory = inventory as? PlayerInventory ?: return
+        val inventory = clickedInventory as? PlayerInventory ?: return
         val player = inventory.holder as Player
 
         currItem.toGearyFromUUIDOrNull()?.let { gearyItem ->

@@ -12,7 +12,7 @@ class ProcessingItemContext(
     val gearyItem by lazy { meta.toGearyFromUUIDOrNull() }
 
     fun updateMeta(): ItemStack {
-        item.setItemMeta(meta)
+        item.itemMeta = meta
         return item
     }
 

@@ -36,17 +36,16 @@ object LootyFactory {
     ): ItemStack {
         val item = ItemStack(Material.STICK)
         item.editMeta { meta ->
-            encodeFromPrefab(item, meta, prefabKey)
+            updateItemFromPrefab(item, meta, prefabKey)
         }
         return item
     }
 
-    fun encodeFromPrefab(item: ItemStack, meta: ItemMeta, prefabKey: PrefabKey) {
+    fun updateItemFromPrefab(item: ItemStack, meta: ItemMeta, prefabKey: PrefabKey) {
         val prefab = prefabKey.toEntity() ?: return
         prefab.get<LootyType>()?.item?.updateMeta(item, meta)
         meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
     }
-
 
     fun addSlotTypeComponent(context: PlayerInventorySlotContext, entity: GearyEntity) = with(context) {
         entity.apply {
@@ -64,7 +63,7 @@ object LootyFactory {
 }
 
 /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
-fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext, ): GearyEntity? = with(context) {
+fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEntity? = with(context) {
 //    if (!hasComponentsEncoded) return null
     val gearyPlayer = holder.toGeary()
     val decoded = meta.persistentDataContainer.decodeComponents()
@@ -95,12 +94,12 @@ fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext, ): Geary
         add<RegenerateUUIDOnClash>()
         decodeComponentsFrom(decoded)
         getOrSetPersisting<UUID> { UUID.randomUUID() }
-        set<PlayerInventorySlotContext>(this@loadItem)
         LootyFactory.addSlotTypeComponent(this@loadItem, this)
         encodeComponentsTo(meta)
+        set<PlayerInventorySlotContext>(this@loadItem)
         debug("Creating item in slot $slot")
         val item = updateMeta()
         set<ItemStack>(item)
-        debug("Loaded item $item")
+        debug("Loaded item ${get<PrefabKey>()}")
     }
 }

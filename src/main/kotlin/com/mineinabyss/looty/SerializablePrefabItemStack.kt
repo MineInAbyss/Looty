@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta
 @SerialName("looty:item")
 object LootySerializablePrefabItemService : SerializablePrefabItemService, GearyMCContext by GearyMCContextKoin() {
     override fun encodeFromPrefab(item: ItemStack, meta: ItemMeta, prefabName: String) {
-        LootyFactory.encodeFromPrefab(item, meta, PrefabKey.of(prefabName)) //TODO encode
+        LootyFactory.updateItemFromPrefab(item, meta, PrefabKey.of(prefabName)) //TODO encode
     }
 }
 

@@ -1,13 +1,13 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.api.engine.entity
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
-import com.mineinabyss.geary.ecs.api.entities.toGeary
-import com.mineinabyss.geary.ecs.api.entities.with
-import com.mineinabyss.geary.ecs.engine.INSTANCEOF
-import com.mineinabyss.geary.ecs.engine.hasRole
-import com.mineinabyss.geary.ecs.entities.RegenerateUUIDOnClash
-import com.mineinabyss.geary.ecs.entities.addParent
+import com.mineinabyss.geary.components.RegenerateUUIDOnClash
+import com.mineinabyss.geary.datatypes.GearyEntity
+import com.mineinabyss.geary.datatypes.INSTANCEOF
+import com.mineinabyss.geary.datatypes.hasRole
+import com.mineinabyss.geary.helpers.addParent
+import com.mineinabyss.geary.helpers.entity
+import com.mineinabyss.geary.helpers.toGeary
+import com.mineinabyss.geary.helpers.with
 import com.mineinabyss.geary.papermc.access.toGeary
 import com.mineinabyss.geary.papermc.store.decodeComponents
 import com.mineinabyss.geary.papermc.store.decodeComponentsFrom

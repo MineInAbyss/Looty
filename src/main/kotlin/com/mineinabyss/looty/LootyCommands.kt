@@ -1,7 +1,7 @@
 package com.mineinabyss.looty
 
-import com.mineinabyss.geary.ecs.api.engine.runSafely
-import com.mineinabyss.geary.ecs.helpers.listComponents
+import com.mineinabyss.geary.helpers.listComponents
+import com.mineinabyss.geary.helpers.runSafely
 import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.commands.arguments.optionArg
@@ -99,7 +99,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         val name by stringArg()
                         playerAction {
                             runCatching {
-                                globalContextMC.formats.getClassFor(name)
+                                globalContextMC.serializers.getClassFor(name)
                             }.onSuccess {
                                 player.inventory.itemInMainHand.toGearyOrNull(player)
                                     ?.remove(it)

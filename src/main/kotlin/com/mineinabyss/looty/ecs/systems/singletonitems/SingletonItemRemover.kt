@@ -1,12 +1,11 @@
 package com.mineinabyss.looty.ecs.systems.singletonitems
 
-import com.mineinabyss.geary.autoscan.AutoScan
-import com.mineinabyss.geary.ecs.accessors.TargetScope
-import com.mineinabyss.geary.ecs.accessors.building.get
-import com.mineinabyss.geary.ecs.api.entities.with
-import com.mineinabyss.geary.ecs.api.systems.TickingSystem
-import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.geary.annotations.AutoScan
+import com.mineinabyss.geary.helpers.with
 import com.mineinabyss.geary.papermc.store.decodePrefabs
+import com.mineinabyss.geary.systems.TickingSystem
+import com.mineinabyss.geary.systems.accessors.TargetScope
+import com.mineinabyss.geary.systems.accessors.get
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
 import com.mineinabyss.looty.ecs.components.inventory.SlotType

@@ -1,6 +1,6 @@
 package com.mineinabyss.looty.tracking
 
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
+import com.mineinabyss.geary.datatypes.GearyEntity
 import com.mineinabyss.geary.papermc.access.toGeary
 import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.decode

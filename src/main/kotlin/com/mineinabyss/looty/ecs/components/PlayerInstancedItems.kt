@@ -1,18 +1,15 @@
 package com.mineinabyss.looty.ecs.components
 
-import com.mineinabyss.geary.ecs.api.engine.Engine
-import com.mineinabyss.geary.ecs.api.engine.EngineContext
-import com.mineinabyss.geary.ecs.api.engine.entity
-import com.mineinabyss.geary.ecs.api.entities.GearyEntity
-import com.mineinabyss.geary.ecs.entities.addParent
-import com.mineinabyss.geary.papermc.GearyMCContext
+import com.mineinabyss.geary.context.EngineContext
+import com.mineinabyss.geary.datatypes.GearyEntity
+import com.mineinabyss.geary.engine.Engine
+import com.mineinabyss.geary.helpers.addParent
+import com.mineinabyss.geary.helpers.entity
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.prefabs.helpers.addPrefab
 import com.mineinabyss.looty.debug
 import org.koin.core.component.inject
 
-//@Serializable
-//@SerialName("looty:player_singleton_items")
 class PlayerInstancedItems(
     internal val loadedEntities: MutableMap<PrefabKey, GearyEntity> = mutableMapOf()
 ) : Map<PrefabKey, GearyEntity> by loadedEntities, EngineContext {

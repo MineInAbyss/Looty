@@ -31,7 +31,7 @@ class LootyPlugin : JavaPlugin() {
         LootyCommands() //Register commands
 
         gearyAddon {
-            autoscan("com.mineinayss") {
+            autoscan("com.mineinabyss") {
                 all()
             }
         }

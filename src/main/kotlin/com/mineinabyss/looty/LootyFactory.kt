@@ -41,9 +41,10 @@ object LootyFactory {
         return item
     }
 
-    fun updateItemFromPrefab(item: ItemStack, meta: ItemMeta, prefabKey: PrefabKey) {
+    fun updateItemFromPrefab(item: ItemStack, meta: ItemMeta?, prefabKey: PrefabKey) {
         val prefab = prefabKey.toEntity() ?: return
         prefab.get<LootyType>()?.item?.updateMeta(item, meta)
+        if(meta == null) return
         meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
     }
 

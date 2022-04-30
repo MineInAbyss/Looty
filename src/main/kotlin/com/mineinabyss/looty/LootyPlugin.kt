@@ -1,7 +1,7 @@
 package com.mineinabyss.looty
 
 
-import com.mineinabyss.geary.api.addon.autoscan
+import com.mineinabyss.geary.addon.autoscan
 import com.mineinabyss.geary.papermc.dsl.gearyAddon
 import com.mineinabyss.idofront.platforms.IdofrontPlatforms
 import com.mineinabyss.idofront.plugin.registerEvents

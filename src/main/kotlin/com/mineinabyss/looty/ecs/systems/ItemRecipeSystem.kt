@@ -26,10 +26,10 @@ class ItemRecipeSystem : TickingSystem(), Listener {
 
     override fun TargetScope.tick() {
         val result: ItemStack = if (entity.has<LootyType>()) {
-            LootyFactory.createFromPrefab(prefabKey) ?: return
+            LootyFactory.createFromPrefab(prefabKey)
         } else {
             recipes.result?.toItemStack() ?: run {
-                looty.logger.warning("Recipe ${prefabKey.name} is missing result item")
+                looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
                 return
             }
         }
@@ -40,7 +40,7 @@ class ItemRecipeSystem : TickingSystem(), Listener {
 
         recipes.recipes.forEachIndexed { i, recipe ->
             @Suppress("DEPRECATION")
-            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.name}$i")
+            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
             registeredRecipes += key
             recipe.toRecipe(key, result, recipes.group).register()
             if (recipes.discoverRecipes) discoveredRecipes += key

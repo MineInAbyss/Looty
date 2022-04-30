@@ -127,7 +127,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     LootyTypeQuery
                         .filter {
                             val arg = args[1].lowercase()
-                            it.key.name.startsWith(arg) || it.key.key.startsWith(arg)
+                            it.key.key.startsWith(arg) || it.key.full.startsWith(arg)
                         }
                         .map { it.key.toString() }
                 }

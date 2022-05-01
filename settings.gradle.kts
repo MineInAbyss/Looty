@@ -29,9 +29,8 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs {
-        create("libs") {
-            from("com.mineinabyss:catalog:$idofrontVersion")
-        }
+        create("libs").from("com.mineinabyss:catalog:$idofrontVersion")
+        create("lootylibs").from(files("gradle/lootylibs.versions.toml"))
     }
 }
 

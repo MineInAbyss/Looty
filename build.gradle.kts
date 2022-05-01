@@ -19,17 +19,17 @@ repositories {
 
 dependencies {
     // Other plugins
-    compileOnly("com.mineinabyss:geary-papermc-core:$gearyVersion")
+    compileOnly(lootylibs.geary.papermc.core)
 
     // From Geary
 
     compileOnly(libs.kotlinx.serialization.json)
     compileOnly(libs.kotlinx.serialization.kaml)
     compileOnly(libs.kotlinx.coroutines)
-    compileOnly(libs.minecraft.skedule)
+    compileOnly(libs.minecraft.mccoroutine)
 
     // Shaded
-   implementation("com.mineinabyss:idofront:$idofrontVersion")
+   implementation(libs.idofront.core)
 }
 
 tasks {

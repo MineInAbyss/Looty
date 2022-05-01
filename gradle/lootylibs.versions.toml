@@ -1,0 +1,5 @@
+[versions]
+geary = "0.15.89"
+
+[libraries]
+geary-papermc-core = { module = "com.mineinabyss:geary-papermc-core", version.ref = "geary" }

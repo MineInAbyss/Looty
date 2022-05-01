@@ -1,16 +1,18 @@
 package com.mineinabyss.looty.ecs.systems
 
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.GearyMCContextKoin
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.geary.papermc.store.hasComponentsEncoded
+import com.mineinabyss.idofront.time.ticks
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.loadItem
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
-import com.okkero.skedule.schedule
+import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -74,8 +76,8 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
     fun EntityPickupItemEvent.onPickUpItem() {
         val player = entity as? Player ?: return
         if (item.itemStack.itemMeta.persistentDataContainer.hasComponentsEncoded)
-            looty.schedule {
-                waitFor(1)
+            looty.launch {
+                delay(1.ticks)
                 ItemTrackerSystem.refresh(player)
             }
     }

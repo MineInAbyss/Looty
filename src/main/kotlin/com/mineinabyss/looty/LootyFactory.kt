@@ -23,7 +23,6 @@ import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.ProcessingItemContext
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 import java.util.*
 
 /**
@@ -33,19 +32,18 @@ object LootyFactory {
     /** Creates an ItemStack from a [prefabKey], encoding relevant information to it. */
     fun createFromPrefab(
         prefabKey: PrefabKey,
-    ): ItemStack {
-        val item = ItemStack(Material.STICK)
-        item.editMeta { meta ->
-            updateItemFromPrefab(item, meta, prefabKey)
-        }
-        return item
+    ): ItemStack? {
+        val item = ItemStack(Material.AIR)
+        updateItemFromPrefab(item, prefabKey)
+        return item.takeIf { it.type != Material.AIR }
     }
 
-    fun updateItemFromPrefab(item: ItemStack, meta: ItemMeta?, prefabKey: PrefabKey) {
+    fun updateItemFromPrefab(item: ItemStack, prefabKey: PrefabKey) {
         val prefab = prefabKey.toEntity() ?: return
-        prefab.get<LootyType>()?.item?.updateMeta(item, meta)
-        if(meta == null) return
-        meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
+        prefab.get<LootyType>()?.item?.toItemStack(item)
+        item.editMeta {
+            it.persistentDataContainer.encodePrefabs(listOf(prefabKey))
+        }
     }
 
     fun addSlotTypeComponent(context: PlayerInventorySlotContext, entity: GearyEntity) = with(context) {
@@ -81,7 +79,7 @@ fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEn
                     val added = getOrSet { PlayerSingletonContext(holder) }.itemSlots.add(slot)
                     if (added) with { type: LootyType ->
                         //Update the loaded item to match the item defined in LootyType
-                        type.updateItem(meta)
+                        type.updateItem(updateMeta())
                     }
                 }
         }

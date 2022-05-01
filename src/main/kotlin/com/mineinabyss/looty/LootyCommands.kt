@@ -53,6 +53,11 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     }
 
                     val item = LootyFactory.createFromPrefab(PrefabKey.of(type))
+                    if (item == null) {
+                        player.error("$type exists but is not an item.")
+                        return@playerAction
+                    }
+
                     item.useWithLooty {
                         PlayerInventorySlotContext(player, slot).loadItem(this)
                     }
@@ -66,12 +71,12 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         player.inventory.itemInMainHand.toGearyOrNull(player)?.get<ItemStack>()?.type = Material.STONE
                     }
                 }
-                "pdc"{
+                "pdc" {
                     playerAction {
                         sender.info(player.inventory.itemInMainHand.itemMeta!!.persistentDataContainer.keys)
                     }
                 }
-                "components"{
+                "components" {
                     playerAction {
                         sender.info(player.inventory.itemInMainHand.toGearyOrNull(player)?.listComponents())
                     }

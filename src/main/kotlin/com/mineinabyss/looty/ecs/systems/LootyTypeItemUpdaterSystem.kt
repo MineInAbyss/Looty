@@ -14,6 +14,6 @@ class LootyTypeItemUpdaterSystem : GearyListener() {
 
     @Handler
     fun TargetScope.updateItem() {
-        lootyType.item.updateMeta(item, item.itemMeta)
+        lootyType.item.toItemStack(item)
     }
 }

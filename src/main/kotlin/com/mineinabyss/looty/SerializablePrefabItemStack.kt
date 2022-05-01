@@ -9,13 +9,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
-import org.bukkit.inventory.meta.ItemMeta
 
 @Serializable
 @SerialName("looty:item")
 object LootySerializablePrefabItemService : SerializablePrefabItemService, GearyMCContext by GearyMCContextKoin() {
-    override fun encodeFromPrefab(item: ItemStack, meta: ItemMeta?, prefabName: String) {
-        LootyFactory.updateItemFromPrefab(item, meta, PrefabKey.of(prefabName)) //TODO encode
+    override fun encodeFromPrefab(item: ItemStack, prefabName: String) {
+        LootyFactory.updateItemFromPrefab(item, PrefabKey.of(prefabName)) //TODO encode
     }
 }
 

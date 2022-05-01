@@ -25,13 +25,12 @@ class ItemRecipeSystem : TickingSystem(), Listener {
     private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
     override fun TargetScope.tick() {
-        val result: ItemStack = if (entity.has<LootyType>()) {
+        val result: ItemStack? = if (entity.has<LootyType>()) {
             LootyFactory.createFromPrefab(prefabKey)
-        } else {
-            recipes.result?.toItemStack() ?: run {
-                looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
-                return
-            }
+        } else recipes.result?.toItemStack()
+        if (result == null) {
+            looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
+            return
         }
 
         recipes.removeRecipes.forEach {

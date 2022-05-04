@@ -63,7 +63,7 @@ object LootyFactory {
 
 /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
 fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEntity? = with(context) {
-//    if (!hasComponentsEncoded) return null
+    if (!hasComponentsEncoded) return null
     val gearyPlayer = holder.toGeary()
     val decoded = meta.persistentDataContainer.decodeComponents()
 

@@ -69,6 +69,7 @@ fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEn
     if (!hasComponentsEncoded) {
         if (!LootyConfig.data.migrateByCustomModelData) return null
         val item = updateMeta()
+        if (!item.itemMeta.hasCustomModelData()) return null
         val prefab = CustomModelDataToPrefabMap[CustomItem(item.type, item.itemMeta.customModelData)] ?: return null
         meta.persistentDataContainer.encodePrefabs(listOf(prefab))
     }

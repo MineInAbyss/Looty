@@ -14,6 +14,7 @@ import com.mineinabyss.geary.papermc.store.decodeComponentsFrom
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.geary.papermc.store.encodePrefabs
 import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
@@ -21,6 +22,8 @@ import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.ProcessingItemContext
+import com.mineinabyss.looty.migration.custommodeldata.CustomItem
+import com.mineinabyss.looty.migration.custommodeldata.CustomModelDataToPrefabMap
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -63,7 +66,12 @@ object LootyFactory {
 
 /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
 fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEntity? = with(context) {
-    if (!hasComponentsEncoded) return null
+    if (!hasComponentsEncoded) {
+        if (!LootyConfig.data.migrateByCustomModelData) return null
+        val item = updateMeta()
+        val prefab = CustomModelDataToPrefabMap[CustomItem(item.type, item.itemMeta.customModelData)] ?: return null
+        meta.persistentDataContainer.encodePrefabs(listOf(prefab))
+    }
     val gearyPlayer = holder.toGeary()
     val decoded = meta.persistentDataContainer.decodeComponents()
 

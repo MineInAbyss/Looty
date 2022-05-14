@@ -29,7 +29,7 @@ dependencies {
     compileOnly(libs.minecraft.mccoroutine)
 
     // Shaded
-   implementation(libs.idofront.core)
+    implementation(libs.idofront.core)
 }
 
 tasks {
@@ -47,10 +47,10 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf(
-                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                "-Xopt-in=kotlin.time.ExperimentalTime",
-                "-Xopt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
-                "-Xopt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-opt-in=kotlin.time.ExperimentalTime",
+                "-opt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
+                "-opt-in=kotlin.RequiresOptIn",
             )
         }
     }

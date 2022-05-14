@@ -4,7 +4,6 @@ import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.papermc.store.decode
 import com.mineinabyss.geary.systems.TickingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
-import com.mineinabyss.geary.systems.accessors.get
 import com.mineinabyss.looty.debug
 import com.mineinabyss.looty.ecs.components.inventory.SlotType
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext

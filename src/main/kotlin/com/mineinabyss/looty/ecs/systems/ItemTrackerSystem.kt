@@ -4,16 +4,14 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.annotations.Handler
-import com.mineinabyss.geary.datatypes.family.family
 import com.mineinabyss.geary.components.events.EntityRemoved
-import com.mineinabyss.geary.datatypes.family.MutableFamilyOperations.Companion.has
+import com.mineinabyss.geary.datatypes.family.family
 import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.GearyMCContextKoin
 import com.mineinabyss.geary.systems.GearyListener
 import com.mineinabyss.geary.systems.TickingSystem
 import com.mineinabyss.geary.systems.accessors.EventScope
 import com.mineinabyss.geary.systems.accessors.TargetScope
-import com.mineinabyss.geary.systems.accessors.get
 import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
 import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.loadItem
@@ -59,7 +57,7 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds), GearyMCContext b
 
         @Handler
         fun TargetScope.track() {
-            ItemTrackerSystem.refresh(player)
+            refresh(player)
         }
     }
 
@@ -70,7 +68,7 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds), GearyMCContext b
 
         @Handler
         fun TargetScope.logout() {
-            ItemTrackerSystem.refresh(player)
+            refresh(player)
         }
     }
 }

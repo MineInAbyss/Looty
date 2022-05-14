@@ -4,7 +4,6 @@ import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.TickingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
-import com.mineinabyss.geary.systems.accessors.get
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.LootyType

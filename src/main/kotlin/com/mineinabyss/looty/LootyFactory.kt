@@ -2,6 +2,7 @@ package com.mineinabyss.looty
 
 import com.mineinabyss.geary.components.RegenerateUUIDOnClash
 import com.mineinabyss.geary.datatypes.GearyEntity
+import com.mineinabyss.geary.datatypes.GearyType
 import com.mineinabyss.geary.datatypes.INSTANCEOF
 import com.mineinabyss.geary.datatypes.hasRole
 import com.mineinabyss.geary.helpers.addParent
@@ -9,10 +10,7 @@ import com.mineinabyss.geary.helpers.entity
 import com.mineinabyss.geary.helpers.toGeary
 import com.mineinabyss.geary.helpers.with
 import com.mineinabyss.geary.papermc.access.toGeary
-import com.mineinabyss.geary.papermc.store.decodeComponents
-import com.mineinabyss.geary.papermc.store.decodeComponentsFrom
-import com.mineinabyss.geary.papermc.store.encodeComponentsTo
-import com.mineinabyss.geary.papermc.store.encodePrefabs
+import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
@@ -66,11 +64,12 @@ object LootyFactory {
 
 /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
 fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEntity? = with(context) {
-    if (!hasComponentsEncoded) {
+    if (!hasComponentsEncoded || meta.persistentDataContainer.decodePrefabs().isEmpty()) {
         if (!LootyConfig.data.migrateByCustomModelData) return null
         val item = updateMeta()
         if (!item.itemMeta.hasCustomModelData()) return null
         val prefab = CustomModelDataToPrefabMap[CustomItem(item.type, item.itemMeta.customModelData)] ?: return null
+        meta.persistentDataContainer.encodeComponents(setOf(), GearyType())
         meta.persistentDataContainer.encodePrefabs(listOf(prefab))
     }
     val gearyPlayer = holder.toGeary()

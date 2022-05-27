@@ -4,6 +4,7 @@ import com.mineinabyss.geary.helpers.listComponents
 import com.mineinabyss.geary.helpers.runSafely
 import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.idofront.commands.arguments.intArg
 import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
@@ -44,6 +45,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                 val type by optionArg(options = LootyTypeQuery.map { it.key.toString() }) {
                     parseErrorMessage = { "No such item: $passed" }
                 }
+                val amount by intArg { default = 1 }
 
                 playerAction {
                     val slot = player.inventory.firstEmpty()
@@ -61,7 +63,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                     item.useWithLooty {
                         PlayerInventorySlotContext(player, slot).loadItem(this)
                     }
-                    player.inventory.setItem(slot, item)
+                    player.inventory.addItem(item.asQuantity(amount))
                 }
             }
 
@@ -136,6 +138,10 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         }
                         .map { it.key.toString() }
                 }
+                else -> emptyList()
+            }
+            3 -> when (args[0]) {
+                "item" -> listOf("1", "64")
                 else -> emptyList()
             }
             else -> emptyList()

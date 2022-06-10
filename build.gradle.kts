@@ -4,16 +4,17 @@ val idofrontVersion: String by project
 val gearyVersion: String by project
 
 plugins {
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     id("com.mineinabyss.conventions.kotlin")
     id("com.mineinabyss.conventions.papermc")
     id("com.mineinabyss.conventions.nms")
     id("com.mineinabyss.conventions.copyjar")
     id("com.mineinabyss.conventions.publication")
-    kotlin("jvm")
-    kotlin("plugin.serialization")
 }
 
 repositories {
+    mavenLocal()
     maven("https://jitpack.io")
 }
 

@@ -14,7 +14,6 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     maven("https://jitpack.io")
 }
 

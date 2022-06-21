@@ -1,7 +1,7 @@
 package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.annotations.AutoScan
-import com.mineinabyss.geary.components.Persists
+import com.mineinabyss.geary.components.relations.Persists
 import com.mineinabyss.geary.datatypes.family.family
 import com.mineinabyss.geary.papermc.store.encode
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @AutoScan
 class PeriodicSaveSystem : TickingSystem(interval = 5.seconds) {
-    private val TargetScope.persisting by relation<Any, Persists>().flatten()
+    private val TargetScope.persisting by getRelations<Persists, Any>().flatten()
     private val TargetScope.item by get<ItemStack>()
     private val TargetScope.inInventory by family { has<PlayerInventorySlotContext>() }
 
@@ -28,12 +28,11 @@ class PeriodicSaveSystem : TickingSystem(interval = 5.seconds) {
         }
 
         item.editItemMeta {
-            persisting
-            persisting.forEach { (key, persistingInfo) ->
-                val newHash = key.hashCode()
-                if (newHash != persistingInfo.hash) {
-                    persistingInfo.hash = newHash
-                    persistentDataContainer.encode(key)
+            persisting.forEach {
+                val newHash = it.targetData.hashCode()
+                if (newHash != it.data.hash) {
+                    it.data.hash = newHash
+                    persistentDataContainer.encode(it.targetData)
                 }
             }
         }

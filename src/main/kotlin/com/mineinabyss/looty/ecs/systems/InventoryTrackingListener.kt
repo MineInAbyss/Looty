@@ -28,11 +28,11 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
     @EventHandler
     fun InventoryClickEvent.syncWithLooty() {
         val cursor = cursor
-        val currItem = currentItem ?: return
+        val currItem = currentItem
         val inventory = clickedInventory as? PlayerInventory ?: return
         val player = inventory.holder as Player
 
-        currItem.toGearyFromUUIDOrNull()?.let { gearyItem ->
+        currItem?.toGearyFromUUIDOrNull()?.let { gearyItem ->
             gearyItem.encodeComponentsTo(currItem)
             debug("Saved item ${currItem.type}")
         }

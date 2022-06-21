@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack
 
 @AutoScan
 class LootyTypeItemUpdaterSystem : GearyListener() {
-    val TargetScope.item by added<ItemStack>()
-    val TargetScope.lootyType by added<LootyType>()
+    val TargetScope.item by onSet<ItemStack>()
+    val TargetScope.lootyType by onSet<LootyType>()
 
     @Handler
     fun TargetScope.updateItem() {

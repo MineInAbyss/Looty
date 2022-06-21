@@ -35,8 +35,6 @@ dependencies {
 tasks {
     shadowJar {
         archiveBaseName.set("Looty")
-//        relocate("com.derongan.minecraft.guiy", "${project.group}.${project.name}.guiy".toLowerCase())
-//        relocate("com.mineinabyss.idofront", "${project.group}.${project.name}.idofront".toLowerCase())
         minimize()
     }
 

@@ -2,8 +2,6 @@ package com.mineinabyss.looty
 
 import com.mineinabyss.geary.components.RegenerateUUIDOnClash
 import com.mineinabyss.geary.datatypes.GearyEntity
-import com.mineinabyss.geary.datatypes.INSTANCEOF
-import com.mineinabyss.geary.datatypes.hasRole
 import com.mineinabyss.geary.helpers.addParent
 import com.mineinabyss.geary.helpers.entity
 import com.mineinabyss.geary.helpers.toGeary
@@ -68,7 +66,7 @@ fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEn
     val decoded = meta.persistentDataContainer.decodeComponents()
 
     // Attempt to load player-instanced item into a component on the player
-    val prefabs = decoded.type.filter { it.hasRole(INSTANCEOF) }
+    val prefabs = decoded.type.prefabs
     if (prefabs.size == 1) {
         val prefab = prefabs.first().toGeary()
         if (prefab.has<PlayerInstancedItem>()) {

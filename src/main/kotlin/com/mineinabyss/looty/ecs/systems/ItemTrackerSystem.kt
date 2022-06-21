@@ -53,7 +53,7 @@ object ItemTrackerSystem : TickingSystem(interval = 5.seconds), GearyMCContext b
 
     @AutoScan
     private class TrackOnLogin : GearyListener() {
-        val TargetScope.player by added<Player>()
+        val TargetScope.player by onSet<Player>()
 
         @Handler
         fun TargetScope.track() {

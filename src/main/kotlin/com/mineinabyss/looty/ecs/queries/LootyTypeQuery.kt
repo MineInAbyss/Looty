@@ -9,8 +9,6 @@ import com.mineinabyss.looty.ecs.components.LootyType
 
 object LootyTypeQuery : GearyQuery() {
     val TargetScope.key by get<PrefabKey>()
-    val TargetScope.isLooty by family {
-        has<LootyType>()
-        has<Prefab>()
-    }
+    val TargetScope.type by get<LootyType>()
+    val TargetScope.isPrefab by family { has<Prefab>() }
 }

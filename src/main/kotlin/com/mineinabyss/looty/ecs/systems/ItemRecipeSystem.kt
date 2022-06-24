@@ -40,7 +40,8 @@ class ItemRecipeSystem : TickingSystem(), Listener {
             @Suppress("DEPRECATION")
             val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
             registeredRecipes += key
-            recipe.toRecipe(key, result, recipes.group).register()
+            // Register recipe only if not present
+            Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
             if (recipes.discoverRecipes) discoveredRecipes += key
         }
         entity.remove<RegisterRecipeComponent>()

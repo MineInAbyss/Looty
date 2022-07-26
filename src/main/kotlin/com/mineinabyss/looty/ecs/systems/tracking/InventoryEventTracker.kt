@@ -1,4 +1,5 @@
-package com.mineinabyss.looty.ecs.systems
+/*
+package com.mineinabyss.looty.ecs.systems.tracking
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.mineinabyss.geary.papermc.GearyMCContext
@@ -7,8 +8,8 @@ import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.geary.papermc.store.hasComponentsEncoded
 import com.mineinabyss.idofront.time.ticks
 import com.mineinabyss.looty.debug
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
-import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
+import com.mineinabyss.looty.ecs.components.itemcontexts.ItemLocation
+import com.mineinabyss.looty.ecs.helpers.useWithLooty
 import com.mineinabyss.looty.loadItem
 import com.mineinabyss.looty.looty
 import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
@@ -23,7 +24,12 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.PlayerInventory
 
-object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoin() {
+*/
+/**
+ * Keeps inventory in sync with geary entities by listening to related events.
+ *//*
+
+object InventoryEventTracker : Listener, GearyMCContext by GearyMCContextKoin() {
     //TODO drag clicking is a separate event
     @EventHandler
     fun InventoryClickEvent.syncWithLooty() {
@@ -37,16 +43,16 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
             debug("Saved item ${currItem.type}")
         }
 
-
         cursor?.useWithLooty {
-            PlayerInventorySlotContext(player, slot, inventory).loadItem(this)
+            loadItem(ItemLocation(player, slot, inventory))
         }
     }
 
     //TODO
     @EventHandler
     fun PlayerSwapHandItemsEvent.onSwapOffhand() {
-        /*geary(player).with<ChildItemCache> { itemCache ->
+        */
+/*geary(player).with<ChildItemCache> { itemCache ->
             val mainHandSlot = player.inventory.heldItemSlot
 
             itemCache.swap(mainHandSlot, offHandSlot)
@@ -60,7 +66,8 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
                 add<SlotType.Offhand>()
                 remove<SlotType.Held>()
             }
-        }*/
+        }*//*
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -82,3 +89,4 @@ object InventoryTrackingListener : Listener, GearyMCContext by GearyMCContextKoi
             }
     }
 }
+*/

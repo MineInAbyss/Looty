@@ -30,6 +30,7 @@ dependencies {
 
     // Shaded
     implementation(libs.idofront.core)
+    implementation(libs.idofront.nms)
 }
 
 tasks {
@@ -47,6 +48,7 @@ tasks {
             freeCompilerArgs = listOf(
                 "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
                 "-opt-in=kotlin.time.ExperimentalTime",
+                "-opt-in=kotlin.ExperimentalUnsignedTypes",
                 "-opt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
                 "-opt-in=kotlin.RequiresOptIn",
             )

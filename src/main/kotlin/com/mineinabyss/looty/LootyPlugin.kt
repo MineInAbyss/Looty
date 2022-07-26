@@ -4,7 +4,6 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.addon.autoscan
 import com.mineinabyss.geary.papermc.dsl.gearyAddon
 import com.mineinabyss.idofront.platforms.IdofrontPlatforms
-import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.plugin.registerService
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
 import com.mineinabyss.looty.ecs.systems.*
@@ -21,10 +20,6 @@ class LootyPlugin : JavaPlugin() {
     override fun onEnable() {
         saveDefaultConfig()
         reloadConfig()
-
-        registerEvents(
-            InventoryTrackingListener,
-        )
 
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
 

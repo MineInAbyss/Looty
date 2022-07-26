@@ -6,22 +6,20 @@ import com.mineinabyss.geary.datatypes.GearyType
 import com.mineinabyss.geary.helpers.addParent
 import com.mineinabyss.geary.helpers.entity
 import com.mineinabyss.geary.helpers.toGeary
-import com.mineinabyss.geary.helpers.with
-import com.mineinabyss.geary.papermc.access.toGeary
+import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.idofront.nms.aliases.NMSItemStack
 import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
-import com.mineinabyss.looty.ecs.components.PlayerInstancedItems
-import com.mineinabyss.looty.ecs.components.inventory.SlotType
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerSingletonContext
-import com.mineinabyss.looty.ecs.components.itemcontexts.ProcessingItemContext
 import com.mineinabyss.looty.migration.custommodeldata.CustomItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomModelDataToPrefabMap
+import net.minecraft.world.item.Items
 import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataContainer
 import java.util.*
 
 /**
@@ -38,73 +36,94 @@ object LootyFactory {
     }
 
     fun updateItemFromPrefab(item: ItemStack, prefabKey: PrefabKey) {
-        val prefab = prefabKey.toEntity() ?: return
+        val prefab = prefabKey.toEntityOrNull() ?: return
         prefab.get<LootyType>()?.item?.toItemStack(item)
         item.editMeta {
             it.persistentDataContainer.encodePrefabs(listOf(prefabKey))
         }
     }
 
-    fun addSlotTypeComponent(context: PlayerInventorySlotContext, entity: GearyEntity) = with(context) {
-        entity.apply {
-            remove<SlotType.Equipped>()
-            remove<SlotType.Offhand>()
-            remove<SlotType.Held>()
+//    fun addSlotTypeComponent(context: ItemLocation, entity: GearyEntity) = with(context) {
+//        entity.apply {
+//            remove<SlotType.Equipped>()
+//            remove<SlotType.Offhand>()
+//            remove<SlotType.Held>()
+//
+//            when (slot) {
+//                in 36..39 -> add<SlotType.Equipped>()
+//                40 -> add<SlotType.Offhand>()
+//            }
+//            if (slot == inventory.heldItemSlot) add<SlotType.Held>()
+//        }
+//    }
 
-            when (slot) {
-                in 36..39 -> add<SlotType.Equipped>()
-                40 -> add<SlotType.Offhand>()
-            }
-            if (slot == inventory.heldItemSlot) add<SlotType.Held>()
+    sealed class ItemState {
+        open val entity: GearyEntity? = null
+
+        class Loaded(override val entity: GearyEntity, val slot: Int, val pdc: PersistentDataContainer) : ItemState()
+        class Empty : ItemState()
+        class NotLoaded(val pdc: PersistentDataContainer) : ItemState()
+    }
+
+    private fun updateOldLootyItem(pdc: PersistentDataContainer, item: NMSItemStack) {
+        val tag = item.tag ?: return
+        if (!tag.contains("CustomModelData")) return
+        if (!pdc.hasComponentsEncoded || pdc.decodePrefabs().isEmpty()) {
+            val prefab = CustomModelDataToPrefabMap[CustomItem(
+                CraftMagicNumbers.getMaterial(item.item),
+                tag.getInt("CustomModelData")
+            )] ?: return
+            pdc.encodeComponents(setOf(), GearyType())
+            pdc.encodePrefabs(listOf(prefab))
         }
     }
-}
 
-/** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
-fun PlayerInventorySlotContext.loadItem(context: ProcessingItemContext): GearyEntity? = with(context) {
-    if (!hasComponentsEncoded || meta.persistentDataContainer.decodePrefabs().isEmpty()) {
-        if (!LootyConfig.data.migrateByCustomModelData) return null
-        val item = updateMeta()
-        if (!item.itemMeta.hasCustomModelData()) return null
-        val prefab = CustomModelDataToPrefabMap[CustomItem(item.type, item.itemMeta.customModelData)] ?: return null
-        meta.persistentDataContainer.encodeComponents(setOf(), GearyType())
-        meta.persistentDataContainer.encodePrefabs(listOf(prefab))
+    //TODO maybe if the prefab has PlayerInstancedItem added to it, we should remove id?
+    fun getItemState(pdc: PersistentDataContainer?, slot: Int, item: NMSItemStack): ItemState {
+        if(pdc == null || item.item == Items.AIR) return ItemState.Empty()
+        if (LootyConfig.data.migrateByCustomModelData) {
+            updateOldLootyItem(pdc, item)
+        }
+        val prefabs = pdc.decodePrefabs()
+        if (prefabs.size == 1) {
+            val prefab = prefabs.first().toEntity()
+            return if (prefab.has<PlayerInstancedItem>()) {
+                pdc.remove<UUID>()
+                ItemState.Loaded(prefab, slot, pdc)
+            } else ItemState.NotLoaded(pdc)
+        }
+        val uuid = pdc.decode<UUID>()
+        if (uuid != null) {
+            val entity = globalContextMC.uuid2entity[uuid] ?: return ItemState.NotLoaded(pdc)
+            return ItemState.Loaded(entity, slot, pdc)
+        }
+        return ItemState.Empty()
     }
-    val gearyPlayer = holder.toGeary()
-    val decoded = meta.persistentDataContainer.decodeComponents()
 
-    // Attempt to load player-instanced item into a component on the player
-    val prefabs = decoded.type.prefabs
-    if (prefabs.size == 1) {
-        val prefab = prefabs.first().toGeary()
-        if (prefab.has<PlayerInstancedItem>()) {
-            return gearyPlayer.getOrSet { PlayerInstancedItems() }
-                .load(prefab.get<PrefabKey>() ?: error("Prefab has no key"), gearyPlayer)
-                .apply {
-                    // Make sure the context is set on the shared entity, and add the slot of this item to it.
-                    val added = getOrSet { PlayerSingletonContext(holder) }.itemSlots.add(slot)
-                    if (added) with { type: LootyType ->
-                        //Update the loaded item to match the item defined in LootyType
-                        type.updateItem(updateMeta())
-                    }
-                }
+    //TODO return the instance of prefab for PlayerInstanced
+    /** Gets or creates a [GearyEntity] based on a given item and the context it is in. */
+    fun loadItem(holder: GearyEntity, pdc: PersistentDataContainer/*, cache: PlayerItemCache*/): GearyEntity {
+        val decoded = pdc.decodeComponents()
+
+        // Attempt to load player-instanced item into a component on the player
+        val prefabs = decoded.type.prefabs
+        if (prefabs.size == 1) {
+            val prefab = prefabs.first().toGeary()
+            return prefab
+//            cache.getInstance(prefab)?.let { return it }
+        }
+
+        // If the item wasn't already loaded or slots didn't match, create a new entity
+        return entity {
+            addParent(holder)
+            add<RegenerateUUIDOnClash>()
+            loadComponentsFrom(decoded)
+            getOrSetPersisting<UUID> { UUID.randomUUID() }
+//            addSlotTypeComponent(itemLocation, this)
+            encodeComponentsTo(pdc)
+//            debug("Loaded item ${get<PrefabKey>()} in slot ${itemLocation.slot}")
+            debug("Loaded new instance of prefab ${get<PrefabKey>()} on $holder")
         }
     }
-    // If the item is already loaded via UUID, and the slot matches, no need to load the item
-    if (gearyItem?.get<PlayerInventorySlotContext>()?.slot == slot) return null
 
-    // If the item wasn't already loaded or slots didn't match, create a new entity
-    return entity {
-        addParent(gearyPlayer)
-        add<RegenerateUUIDOnClash>()
-        decodeComponentsFrom(decoded)
-        getOrSetPersisting<UUID> { UUID.randomUUID() }
-        LootyFactory.addSlotTypeComponent(this@loadItem, this)
-        encodeComponentsTo(meta)
-        set<PlayerInventorySlotContext>(this@loadItem)
-        debug("Creating item in slot $slot")
-        val item = updateMeta()
-        set<ItemStack>(item)
-        debug("Loaded item ${get<PrefabKey>()}")
-    }
 }

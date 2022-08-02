@@ -96,9 +96,4 @@ class PlayerInstancedItems(val parent: GearyEntity) {
         if (removeEntity) instance.toGeary().removeEntity()
         return true
     }
-
-    fun unloadAll() {
-        prefab2InstanceMap.values.forEach { it.toGeary().removeEntity() }
-        prefab2InstanceMap.clear()
-    }
 }

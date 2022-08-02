@@ -124,8 +124,7 @@ class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
                     }
                     val currId = currEntity.id.toLong()
                     if (currId != 0L) toRemove[currId] = toRemove[currId].setBit(slot)
-                }
-                if (itemState is Loaded) {
+                } else if (itemState is Loaded) {
                     // Update ItemStack component to always lead to an up-to-date reference
                     cache.updateItem(itemState.entity, item)
                 }

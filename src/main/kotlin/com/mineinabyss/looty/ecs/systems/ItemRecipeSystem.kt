@@ -4,7 +4,6 @@ import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.TickingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
-import com.mineinabyss.geary.systems.accessors.get
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
 import com.mineinabyss.looty.ecs.components.LootyType
@@ -41,7 +40,8 @@ class ItemRecipeSystem : TickingSystem(), Listener {
             @Suppress("DEPRECATION")
             val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
             registeredRecipes += key
-            recipe.toRecipe(key, result, recipes.group).register()
+            // Register recipe only if not present
+            Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
             if (recipes.discoverRecipes) discoveredRecipes += key
         }
         entity.remove<RegisterRecipeComponent>()

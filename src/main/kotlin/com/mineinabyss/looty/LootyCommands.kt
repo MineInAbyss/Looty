@@ -1,7 +1,6 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.helpers.listComponents
-import com.mineinabyss.geary.helpers.runSafely
 import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.commands.arguments.intArg
@@ -12,11 +11,8 @@ import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
 import com.mineinabyss.looty.config.LootyConfig
-import com.mineinabyss.looty.ecs.components.itemcontexts.PlayerInventorySlotContext
-import com.mineinabyss.looty.ecs.components.itemcontexts.useWithLooty
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
-import com.mineinabyss.looty.ecs.systems.ItemTrackerSystem
 import com.mineinabyss.looty.tracking.toGearyOrNull
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -35,9 +31,6 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
 //                    }
 
                     LootyConfig.reload(sender)
-                    runSafely {
-                        ItemTrackerSystem.doTick()
-                    }
                 }
             }
             "item" {
@@ -59,11 +52,8 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
                         player.error("$type exists but is not an item.")
                         return@playerAction
                     }
-
-                    item.useWithLooty {
-                        PlayerInventorySlotContext(player, slot).loadItem(this)
-                    }
-                    player.inventory.addItem(item.asQuantity(amount))
+                    item.amount = amount
+                    player.inventory.addItem(item)
                 }
             }
 

@@ -29,14 +29,13 @@ dependencies {
     compileOnly(libs.minecraft.mccoroutine)
 
     // Shaded
-   implementation(libs.idofront.core)
+    implementation(libs.idofront.core)
+    implementation(libs.idofront.nms)
 }
 
 tasks {
     shadowJar {
         archiveBaseName.set("Looty")
-//        relocate("com.derongan.minecraft.guiy", "${project.group}.${project.name}.guiy".toLowerCase())
-//        relocate("com.mineinabyss.idofront", "${project.group}.${project.name}.idofront".toLowerCase())
         minimize()
     }
 
@@ -47,10 +46,11 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf(
-                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                "-Xopt-in=kotlin.time.ExperimentalTime",
-                "-Xopt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
-                "-Xopt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-opt-in=kotlin.time.ExperimentalTime",
+                "-opt-in=kotlin.ExperimentalUnsignedTypes",
+                "-opt-in=com.mineinabyss.idofront.commands.execution.ExperimentalCommandDSL",
+                "-opt-in=kotlin.RequiresOptIn",
             )
         }
     }

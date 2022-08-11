@@ -7,7 +7,6 @@ import com.mineinabyss.geary.annotations.Handler
 import com.mineinabyss.geary.datatypes.forEachBit
 import com.mineinabyss.geary.datatypes.pop1
 import com.mineinabyss.geary.datatypes.setBit
-import com.mineinabyss.geary.helpers.NO_ENTITY
 import com.mineinabyss.geary.helpers.toGeary
 import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.GearyMCContextKoin
@@ -92,6 +91,7 @@ class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
             // Set of new items looking for a possible old item to fill their heart :)
 //            val toMatch = mutableSetOf<Loaded>()
             val toMatch = Array<Loaded?>(64) { null }
+            val toAdd = mutableSetOf<NotLoaded>()
 
             fun attemptMove(loaded: Loaded): Boolean {
                 val id = loaded.entity.id.toLong()
@@ -111,22 +111,23 @@ class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
             }
 
             fun calculateForItem(item: NMSItemStack, slot: Int) {
+//                val currItem = cache.getItem(slot)
+//                if (currItem == item && item != ItemStack.EMPTY) return
                 val pdc = item.fastPDC
                 // Get uuid or prefab entity
                 val itemState = LootyFactory.getItemState(pdc, slot, item)
                 val currEntity = cache[slot]
                 // Based on them, check whether the item has changed
+                when (itemState) {
+                    is Empty -> {}
+                    is Loaded ->
+                        if (currEntity != itemState.entity) toMatch[slot] = itemState
+                        else cache.updateItem(slot, item) // Update ItemStack component to always lead to an up-to-date reference
+                    is NotLoaded -> toAdd += itemState
+                }
                 if (currEntity != itemState.entity) {
-                    when (itemState) {
-                        is Empty -> if (currEntity == NO_ENTITY) return
-                        is Loaded -> toMatch[slot] = itemState
-                        is NotLoaded -> cache[slot] = LootyFactory.loadItem(player.toGeary(), itemState.pdc)
-                    }
                     val currId = currEntity.id.toLong()
                     if (currId != 0L) toRemove[currId] = toRemove[currId].setBit(slot)
-                } else if (itemState is Loaded) {
-                    // Update ItemStack component to always lead to an up-to-date reference
-                    cache.updateItem(itemState.entity, item)
                 }
             }
 
@@ -138,6 +139,7 @@ class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
 
             // Consider cursor item as last slot
             calculateForItem(player.toNMS().containerMenu.carried, 63)
+
             // Try to match any changes with removed items, otherwise load them and update cache
             for (loaded in toMatch) {
                 if (loaded == null) continue
@@ -154,7 +156,11 @@ class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
                     //TODO display entity name
                         debug("Removed $entity from ${player.name}")
                 }
+            }
 
+            // Add queued up items
+            toAdd.forEach {
+                cache[it.slot] = LootyFactory.loadItem(player.toGeary(), it.pdc)
             }
 
             // Set held item

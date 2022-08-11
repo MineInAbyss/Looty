@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.ecs.components
 
 import com.mineinabyss.geary.datatypes.GearyEntity
+import com.mineinabyss.geary.helpers.NO_ENTITY
 import com.mineinabyss.geary.helpers.toGeary
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack
 // TODO bad pattern, passing entity into component, move into event
 class PlayerItemCache(parent: GearyEntity) {
     private val entities = ULongArray(64)
+    private val cachedItems = Array<NMSItemStack?>(64) { null }
     private val playerInstanced = PlayerInstancedItems(parent)
 
     fun swap(firstSlot: Int, secondSlot: Int) {
@@ -47,6 +49,7 @@ class PlayerItemCache(parent: GearyEntity) {
         val entity = entities[slot].toGeary()
         if (entity.id == 0uL) return false
         entities[slot] = 0uL
+        cachedItems[slot] = null
         return if (entity.has<PlayerInstancedItem>())
             playerInstanced.unsetSlot(entity, slot, removeEntity)
         else if (removeEntity) {
@@ -65,10 +68,17 @@ class PlayerItemCache(parent: GearyEntity) {
 
     fun getInstance(prefab: GearyEntity) = playerInstanced[prefab]
 
-    fun updateItem(entity: GearyEntity, item: NMSItemStack) {
+    fun updateItem(slot: Int, item: NMSItemStack) {
         // Get the instance of the prefab if the entity is a prefab
 
+        cachedItems[slot] = item
+        val entity = entities[slot].toGeary()
+        if(entity == NO_ENTITY) return
         val prefab = playerInstanced[entity]
         (prefab ?: entity).set<ItemStack>(CraftItemStack.asCraftMirror(item))
+    }
+
+    fun getItem(slot: Int): NMSItemStack? {
+        return cachedItems[slot]
     }
 }

@@ -3,6 +3,7 @@ package com.mineinabyss.looty
 import com.mineinabyss.geary.components.RegenerateUUIDOnClash
 import com.mineinabyss.geary.datatypes.GearyEntity
 import com.mineinabyss.geary.datatypes.GearyType
+import com.mineinabyss.geary.helpers.NO_ENTITY
 import com.mineinabyss.geary.helpers.addParent
 import com.mineinabyss.geary.helpers.entity
 import com.mineinabyss.geary.helpers.toGeary
@@ -43,26 +44,16 @@ object LootyFactory {
         }
     }
 
-//    fun addSlotTypeComponent(context: ItemLocation, entity: GearyEntity) = with(context) {
-//        entity.apply {
-//            remove<SlotType.Equipped>()
-//            remove<SlotType.Offhand>()
-//            remove<SlotType.Held>()
-//
-//            when (slot) {
-//                in 36..39 -> add<SlotType.Equipped>()
-//                40 -> add<SlotType.Offhand>()
-//            }
-//            if (slot == inventory.heldItemSlot) add<SlotType.Held>()
-//        }
-//    }
-
     sealed class ItemState {
-        open val entity: GearyEntity? = null
+        abstract val entity: GearyEntity
 
         class Loaded(override val entity: GearyEntity, val slot: Int, val pdc: PersistentDataContainer) : ItemState()
-        class Empty : ItemState()
-        class NotLoaded(val pdc: PersistentDataContainer) : ItemState()
+        class Empty : ItemState() {
+            override val entity: GearyEntity = NO_ENTITY
+        }
+        class NotLoaded(val slot: Int, val pdc: PersistentDataContainer) : ItemState() {
+            override val entity: GearyEntity = NO_ENTITY
+        }
     }
 
     private fun updateOldLootyItem(pdc: PersistentDataContainer, item: NMSItemStack) {
@@ -80,21 +71,23 @@ object LootyFactory {
 
     //TODO maybe if the prefab has PlayerInstancedItem added to it, we should remove id?
     fun getItemState(pdc: PersistentDataContainer?, slot: Int, item: NMSItemStack): ItemState {
-        if(pdc == null || item.item == Items.AIR) return ItemState.Empty()
+        if (pdc == null || item.item == Items.AIR) return ItemState.Empty()
         if (LootyConfig.data.migrateByCustomModelData) {
             updateOldLootyItem(pdc, item)
         }
         val prefabs = pdc.decodePrefabs()
         if (prefabs.size == 1) {
             val prefab = prefabs.first().toEntity()
-            return if (prefab.has<PlayerInstancedItem>()) {
+            if (prefab.has<PlayerInstancedItem>()) {
                 pdc.remove<UUID>()
-                ItemState.Loaded(prefab, slot, pdc)
-            } else ItemState.NotLoaded(pdc)
+                return ItemState.Loaded(prefab, slot, pdc)
+            } else if(pdc.decode<UUID>() == null) {
+                return ItemState.NotLoaded(slot, pdc)
+            }
         }
         val uuid = pdc.decode<UUID>()
         if (uuid != null) {
-            val entity = globalContextMC.uuid2entity[uuid] ?: return ItemState.NotLoaded(pdc)
+            val entity = globalContextMC.uuid2entity[uuid] ?: return ItemState.NotLoaded(slot, pdc)
             return ItemState.Loaded(entity, slot, pdc)
         }
         return ItemState.Empty()
@@ -109,7 +102,7 @@ object LootyFactory {
         val prefabs = decoded.type.prefabs
         if (prefabs.size == 1) {
             val prefab = prefabs.first().toGeary()
-            return prefab
+            if (prefab.has<PlayerInstancedItem>()) return prefab
 //            cache.getInstance(prefab)?.let { return it }
         }
 

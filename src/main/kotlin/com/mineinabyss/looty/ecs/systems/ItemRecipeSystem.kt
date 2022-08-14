@@ -2,7 +2,7 @@ package com.mineinabyss.looty.ecs.systems
 
 import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.prefabs.PrefabKey
-import com.mineinabyss.geary.systems.TickingSystem
+import com.mineinabyss.geary.systems.RepeatingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
 @AutoScan
-class ItemRecipeSystem : TickingSystem(), Listener {
+class ItemRecipeSystem : RepeatingSystem(), Listener {
     private val TargetScope.recipes by get<RegisterRecipeComponent>()
     private val TargetScope.prefabKey by get<PrefabKey>()
     private val registeredRecipes = mutableSetOf<NamespacedKey>()

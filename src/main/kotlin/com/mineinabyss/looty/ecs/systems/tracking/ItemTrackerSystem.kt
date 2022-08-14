@@ -12,7 +12,7 @@ import com.mineinabyss.geary.papermc.GearyMCContext
 import com.mineinabyss.geary.papermc.GearyMCContextKoin
 import com.mineinabyss.geary.papermc.access.toGeary
 import com.mineinabyss.geary.systems.GearyListener
-import com.mineinabyss.geary.systems.TickingSystem
+import com.mineinabyss.geary.systems.RepeatingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
 import com.mineinabyss.idofront.nms.aliases.toNMS
@@ -38,7 +38,7 @@ import org.bukkit.entity.Player
  * - All valid items get re-serialized TODO in the future there should be some form of dirty tag so we aren't unnecessarily serializing things
  */
 @AutoScan
-class ItemTrackerSystem : TickingSystem(interval = 1.ticks) {
+class ItemTrackerSystem : RepeatingSystem(interval = 1.ticks) {
     private val TargetScope.player by get<Player>()
     private val TargetScope.itemCache by get<PlayerItemCache>()
 

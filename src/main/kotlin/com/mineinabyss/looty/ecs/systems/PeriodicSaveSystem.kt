@@ -4,7 +4,7 @@ import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.components.relations.Persists
 import com.mineinabyss.geary.papermc.store.encode
 import com.mineinabyss.geary.papermc.store.encodeComponentsTo
-import com.mineinabyss.geary.systems.TickingSystem
+import com.mineinabyss.geary.systems.RepeatingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.geary.systems.accessors.building.flatten
 import com.mineinabyss.idofront.items.editItemMeta
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
 @AutoScan
-class PeriodicSaveSystem : TickingSystem(interval = 5.seconds) {
+class PeriodicSaveSystem : RepeatingSystem(interval = 5.seconds) {
     private val TargetScope.persisting by getRelations<Persists, Any>().flatten()
     private val TargetScope.item by get<ItemStack>()
 

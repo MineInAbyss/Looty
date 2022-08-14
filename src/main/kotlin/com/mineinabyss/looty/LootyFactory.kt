@@ -2,7 +2,7 @@ package com.mineinabyss.looty
 
 import com.mineinabyss.geary.components.RegenerateUUIDOnClash
 import com.mineinabyss.geary.datatypes.GearyEntity
-import com.mineinabyss.geary.datatypes.GearyType
+import com.mineinabyss.geary.datatypes.GearyEntityType
 import com.mineinabyss.geary.helpers.NO_ENTITY
 import com.mineinabyss.geary.helpers.addParent
 import com.mineinabyss.geary.helpers.entity
@@ -64,7 +64,7 @@ object LootyFactory {
                 CraftMagicNumbers.getMaterial(item.item),
                 tag.getInt("CustomModelData")
             )] ?: return
-            pdc.encodeComponents(setOf(), GearyType())
+            pdc.encodeComponents(setOf(), GearyEntityType())
             pdc.encodePrefabs(listOf(prefab))
         }
     }

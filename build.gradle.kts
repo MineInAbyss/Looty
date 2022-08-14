@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     // Other plugins
-    compileOnly(lootylibs.geary.papermc.core)
+    compileOnly(lootyLibs.geary.papermc.core)
 
     // From Geary
 

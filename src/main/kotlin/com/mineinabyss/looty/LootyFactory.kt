@@ -77,7 +77,7 @@ object LootyFactory {
         }
         val prefabs = pdc.decodePrefabs()
         if (prefabs.size == 1) {
-            val prefab = prefabs.first().toEntity()
+            val prefab = prefabs.first().toEntityOrNull() ?: return ItemState.Empty()
             if (prefab.has<PlayerInstancedItem>()) {
                 pdc.remove<UUID>()
                 return ItemState.Loaded(prefab, slot, pdc)

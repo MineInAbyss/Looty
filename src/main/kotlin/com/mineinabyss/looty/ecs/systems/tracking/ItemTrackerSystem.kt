@@ -57,29 +57,6 @@ class ItemTrackerSystem : RepeatingSystem(interval = 1.ticks) {
         }
     }
 
-//    @AutoScan
-//    private class TrackOnLogin : GearyListener() {
-//        val TargetScope.player by onSet<Player>()
-//        val TargetScope.itemCache by onSet<PlayerItemCache>()
-//
-//        @Handler
-//        fun TargetScope.track() {
-//            refresh(player, itemCache)
-//        }
-//    }
-
-//    @AutoScan
-//    private class UntrackOnLogout : GearyListener() {
-//        val TargetScope.player by get<Player>()
-//        val EventScope.removedEntity by family { has<EntityRemoved>() }
-//        val TargetScope.itemCache by onSet<PlayerItemCache>()
-//
-//        @Handler
-//        fun TargetScope.logout() {
-//            refresh(player, itemCache)
-//        }
-//    }
-
     companion object : GearyMCContext by GearyMCContextKoin() {
         // Avoids bukkit items since ItemMeta does a lot of copying which adds overhead
         fun refresh(player: Player, cache: PlayerItemCache) {

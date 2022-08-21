@@ -27,9 +27,7 @@ class PotionMixRecipeSystem : RepeatingSystem() {
                 looty.logger.warning("PotionMix $key is missing result item")
                 return@forEachIndexed
             }
-
             looty.server.potionBrewer.addPotionMix(potionmix.toPotionMix(key, result))
         }
-
     }
 }

@@ -6,7 +6,6 @@ import com.mineinabyss.geary.systems.RepeatingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.LootyFactory
-import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.RegisterRecipeComponent
 import com.mineinabyss.looty.looty
 import org.bukkit.Bukkit
@@ -24,9 +23,7 @@ class ItemRecipeSystem : RepeatingSystem(), Listener {
     private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
     override fun TargetScope.tick() {
-        val result: ItemStack? = if (entity.has<LootyType>()) {
-            LootyFactory.createFromPrefab(prefabKey)
-        } else recipes.result?.toItemStack()
+        val result: ItemStack? = recipes.result?.toItemStack() ?: LootyFactory.createFromPrefab(this.prefabKey)
         if (result == null) {
             looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
             return

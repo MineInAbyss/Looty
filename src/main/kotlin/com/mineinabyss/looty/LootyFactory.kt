@@ -56,10 +56,10 @@ object LootyFactory {
         }
     }
 
-    private fun updateOldLootyItem(pdc: PersistentDataContainer, item: NMSItemStack) {
+    private fun updateOldLootyItem(pdc: PersistentDataContainer, prefabs: Set<PrefabKey>, item: NMSItemStack) {
         val tag = item.tag ?: return
         if (!tag.contains("CustomModelData")) return
-        if (!pdc.hasComponentsEncoded || pdc.decodePrefabs().isEmpty()) {
+        if (prefabs.isEmpty()) {
             val prefab = CustomModelDataToPrefabMap[CustomItem(
                 CraftMagicNumbers.getMaterial(item.item),
                 tag.getInt("CustomModelData")
@@ -71,11 +71,11 @@ object LootyFactory {
 
     //TODO maybe if the prefab has PlayerInstancedItem added to it, we should remove id?
     fun getItemState(pdc: PersistentDataContainer?, slot: Int, item: NMSItemStack): ItemState {
-        if (pdc == null || item.item == Items.AIR) return ItemState.Empty()
-        if (LootyConfig.data.migrateByCustomModelData) {
-            updateOldLootyItem(pdc, item)
-        }
+        if (pdc == null || item.item == Items.AIR || !pdc.hasComponentsEncoded) return ItemState.Empty()
         val prefabs = pdc.decodePrefabs()
+        if (LootyConfig.data.migrateByCustomModelData) {
+            updateOldLootyItem(pdc, prefabs, item)
+        }
         if (prefabs.size == 1) {
             val prefab = prefabs.first().toEntityOrNull() ?: return ItemState.Empty()
             if (prefab.has<PlayerInstancedItem>()) {

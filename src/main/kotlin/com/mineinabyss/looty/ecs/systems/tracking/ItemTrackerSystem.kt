@@ -109,7 +109,7 @@ class ItemTrackerSystem : RepeatingSystem(interval = 1.ticks) {
             }
 
             nmsInv.compartments.forEach { comp ->
-                comp.forEach itemLoop@{ item ->
+                comp.forEach { item ->
                     calculateForItem(item, slot++)
                 }
             }

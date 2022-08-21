@@ -70,7 +70,8 @@ class PlayerItemCache(parent: GearyEntity) {
 
     fun updateItem(slot: Int, item: NMSItemStack) {
         // Get the instance of the prefab if the entity is a prefab
-
+        val cached = cachedItems[slot]
+        if(cached === item) return
         cachedItems[slot] = item
         val entity = entities[slot].toGeary()
         if(entity == NO_ENTITY) return

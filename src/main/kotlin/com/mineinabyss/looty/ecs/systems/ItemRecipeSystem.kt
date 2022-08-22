@@ -23,29 +23,25 @@ class ItemRecipeSystem : RepeatingSystem(), Listener {
     private val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
     override fun TargetScope.tick() {
-        val result: ItemStack? = recipes.result?.toItemStack() ?: LootyFactory.createFromPrefab(this.prefabKey)
-        if (result == null) {
-            looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
-            return
-        }
+        val result: ItemStack? = recipes.result?.toItemStackOrNull()
+            ?: LootyFactory.createFromPrefab(this.prefabKey)
 
-        recipes.removeRecipes.forEach {
-            Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
-        }
+        if (result != null) {
+            recipes.removeRecipes.forEach {
+                Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+            }
 
-        recipes.recipes.forEachIndexed { i, recipe ->
-            @Suppress("DEPRECATION")
-            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
-            registeredRecipes += key
-            // Register recipe only if not present
-            Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
-            if (recipes.discoverRecipes) discoveredRecipes += key
-        }
-        entity.remove<RegisterRecipeComponent>()
+            recipes.recipes.forEachIndexed { i, recipe ->
+                val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
+                registeredRecipes += key
+                // Register recipe only if not present
+                Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
+                if (recipes.discoverRecipes) discoveredRecipes += key
+            }
+            entity.remove<RegisterRecipeComponent>()
+        } else looty.logger.warning("Recipe ${prefabKey.key} is missing result item")
     }
 
-    //TODO these recipes are broken ingame, clicking will put the item type in regardless of NBT
-    // Probably best to just show recipes in an online wiki instead.
     @EventHandler
     fun PlayerJoinEvent.showRecipesOnJoin() {
         player.discoverRecipes(discoveredRecipes)

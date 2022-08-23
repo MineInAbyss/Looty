@@ -21,6 +21,9 @@ class LootyPlugin : JavaPlugin() {
         saveDefaultConfig()
         reloadConfig()
 
+        //Reset to avoid duplicates and clear mixes that have been removed
+        looty.server.potionBrewer.resetPotionMixes()
+
         registerService<SerializablePrefabItemService>(LootySerializablePrefabItemService)
 
         LootyCommands() //Register commands

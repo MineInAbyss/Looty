@@ -1,6 +1,7 @@
 package com.mineinabyss.looty
 
 
+import com.mineinabyss.geary.addon.GearyLoadPhase
 import com.mineinabyss.geary.addon.autoscan
 import com.mineinabyss.geary.papermc.dsl.gearyAddon
 import com.mineinabyss.idofront.platforms.IdofrontPlatforms
@@ -31,6 +32,11 @@ class LootyPlugin : JavaPlugin() {
         gearyAddon {
             autoscan("com.mineinabyss") {
                 all()
+            }
+            startup {
+                GearyLoadPhase.ENABLE {
+                    ResourcepackGeneration().generateDefaultAssets()
+                }
             }
         }
     }

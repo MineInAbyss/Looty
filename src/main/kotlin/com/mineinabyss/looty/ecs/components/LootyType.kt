@@ -9,4 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("looty:type")
-class LootyType(val item: SerializableItemStack, val modelPath: String = "")
+class LootyType(val item: SerializableItemStack)

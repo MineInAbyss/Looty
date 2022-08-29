@@ -4,7 +4,14 @@ import com.destroystokyo.paper.MaterialTags
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.idofront.messaging.logVal
 import com.mineinabyss.idofront.serialization.SerializableItemStack
+import com.mineinabyss.idofront.serialization.toSerializable
+import com.mineinabyss.looty.ecs.components.LootyPack
+import com.mineinabyss.looty.ecs.queries.LootyResourcepackQuery
+import com.mineinabyss.looty.ecs.queries.LootyResourcepackQuery.pack
+import com.mineinabyss.looty.ecs.queries.LootyResourcepackQuery.packKey
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.type
 import okio.Path.Companion.toPath
@@ -68,7 +75,8 @@ class ResourcepackGeneration {
 
         textures.addProperty("layer0", this.getVanillaTextureName(false) + if(itemMeta is PotionMeta) "_overlay" else "")
 
-        textures.addProperty("layer1", this.getVanillaTextureName(false) + if(itemMeta is LeatherArmorMeta) "_overlay" else "")
+        if(itemMeta is LeatherArmorMeta)
+            textures.addProperty("layer1", this.getVanillaTextureName(false) + "_overlay")
 
         if (itemMeta is PotionMeta)
             textures.addProperty("layer1", this.getVanillaTextureName(false))
@@ -117,14 +125,14 @@ class ResourcepackGeneration {
     }
 
     private fun SerializableItemStack.getModelPath(): String {
-        return LootyTypeQuery.firstOrNull { it.type.item.prefab == this.prefab }?.type?.modelPath ?: ""
+        return LootyResourcepackQuery.firstOrNull { it.packKey.getSerializableItemStack() == this }?.pack?.getModelPath() ?: ""
     }
 
     private fun String.toJsonObject(): JsonObject {
         return JsonParser.parseString(this).asJsonObject
     }
 
-    private fun getOverrides(property: String, propertyValue: Int, model: String): JsonObject? {
+    private fun getOverrides(property: String, propertyValue: Int, model: String): JsonObject {
         return getOverrides(JsonObject(), property, propertyValue, model)
     }
 
@@ -138,5 +146,37 @@ class ResourcepackGeneration {
         override.add("predicate", predicate)
         override.addProperty("model", model)
         return override
+    }
+
+    fun generateLootyItemAssets() {
+        LootyResourcepackQuery.forEach {
+            val generateModel: Boolean = it.pack.model.isBlank()
+            val (namespace, filePath) = it.pack.getModelPath().logVal("modelpath: ").split(":")
+
+            if (generateModel) {
+                val json = JsonObject()
+                val textures = JsonObject()
+
+                json.addProperty("parent", "item/generated")
+                textures.addProperty("layer0", "${namespace}:$filePath")
+                json.add("textures", textures)
+
+                val modelFile = "${looty.dataFolder.absolutePath}/assets/$namespace/models/$filePath.json".toPath().toFile()
+                modelFile.parentFile.mkdirs()
+                modelFile.createNewFile()
+                modelFile.writeText(json.toString(), Charset.defaultCharset())
+            }
+        }
+    }
+
+    private fun LootyPack.getModelPath(): String {
+        val modelPath = model.ifBlank { texture }
+        val namespace = modelPath.substringBefore(":", "minecraft")
+        val file = modelPath.substringAfter(":", modelPath)
+        return "$namespace:$file"
+    }
+
+    private fun PrefabKey.getSerializableItemStack(): SerializableItemStack? {
+        return LootyFactory.createFromPrefab(this)?.toSerializable()
     }
 }

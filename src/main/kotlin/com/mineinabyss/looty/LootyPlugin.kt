@@ -36,6 +36,7 @@ class LootyPlugin : JavaPlugin() {
             startup {
                 GearyLoadPhase.ENABLE {
                     ResourcepackGeneration().generateDefaultAssets()
+                    ResourcepackGeneration().generateLootyItemAssets()
                 }
             }
         }

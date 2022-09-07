@@ -8,6 +8,7 @@ import com.mineinabyss.idofront.platforms.IdofrontPlatforms
 import com.mineinabyss.idofront.plugin.registerService
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
 import com.mineinabyss.looty.ecs.systems.*
+import com.mineinabyss.looty.packgen.ResourcepackGeneration
 import org.bukkit.plugin.java.JavaPlugin
 
 /** Gets [Geary] via Bukkit once, then sends that reference back afterwards */

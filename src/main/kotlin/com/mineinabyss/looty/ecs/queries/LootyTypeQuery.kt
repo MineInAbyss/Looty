@@ -5,7 +5,7 @@ import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.prefabs.configuration.components.Prefab
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.geary.systems.query.GearyQuery
-import com.mineinabyss.looty.ecs.components.LootyPack
+import com.mineinabyss.looty.ecs.components.LootyPackGen
 import com.mineinabyss.looty.ecs.components.LootyType
 
 object LootyTypeQuery : GearyQuery() {
@@ -16,6 +16,6 @@ object LootyTypeQuery : GearyQuery() {
 
 object LootyResourcepackQuery : GearyQuery() {
     val TargetScope.packKey by get<PrefabKey>()
-    val TargetScope.pack by get<LootyPack>()
+    val TargetScope.pack by get<LootyPackGen>()
     val TargetScope.isResourcepack by family { has<Prefab>() }
 }

@@ -48,6 +48,6 @@ fun ItemStack.toGearyOrNull(player: Player): GearyEntity? {
     pdc.decode<UUID>()?.let { return globalContextMC.uuid2entity[it] }
 
     // If no UUID, try to read as a player-instanced item
-    val prefab = pdc.decodePrefabs().firstOrNull() ?: return null
-    return player.toGeary().get<PlayerItemCache>()?.getInstance(prefab.toEntity())
+    val prefab = pdc.decodePrefabs().firstOrNull()?.toEntityOrNull() ?: return null
+    return player.toGeary().get<PlayerItemCache>()?.getInstance(prefab)
 }

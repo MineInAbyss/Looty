@@ -11,6 +11,7 @@ plugins {
     id("com.mineinabyss.conventions.nms")
     id("com.mineinabyss.conventions.copyjar")
     id("com.mineinabyss.conventions.publication")
+    id("com.mineinabyss.conventions.autoversion")
 }
 
 repositories {
@@ -29,7 +30,7 @@ dependencies {
     compileOnly(libs.minecraft.mccoroutine)
 
     // Shaded
-    implementation(libs.idofront.core)
+    implementation(libs.bundles.idofront.core)
     implementation(libs.idofront.nms)
 }
 

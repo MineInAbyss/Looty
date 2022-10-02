@@ -8,9 +8,9 @@ import com.mineinabyss.idofront.commands.arguments.optionArg
 import com.mineinabyss.idofront.commands.arguments.stringArg
 import com.mineinabyss.idofront.commands.execution.IdofrontCommandExecutor
 import com.mineinabyss.idofront.commands.extensions.actions.playerAction
+import com.mineinabyss.idofront.config.config
 import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
-import com.mineinabyss.looty.config.LootyConfig
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
 import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
 import com.mineinabyss.looty.tracking.toGearyOrNull
@@ -25,12 +25,7 @@ class LootyCommands : IdofrontCommandExecutor(), TabCompleter {
         "looty" {
             "reload" {
                 action {
-                    // Re-register all items in every player's inventory
-//                    Engine.forEach<ChildItemCache> {
-//                        it.clear()
-//                    }
-
-                    LootyConfig.reload(sender)
+                    looty.config = config("config") { looty.fromPluginPath(loadDefault = true) }
                 }
             }
             "item" {

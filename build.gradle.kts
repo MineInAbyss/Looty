@@ -35,11 +35,6 @@ dependencies {
 }
 
 tasks {
-    shadowJar {
-        archiveBaseName.set("Looty")
-        minimize()
-    }
-
     build {
         dependsOn(shadowJar)
     }

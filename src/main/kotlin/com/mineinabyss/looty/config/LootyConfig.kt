@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 val lootyConfig get() = looty.config.data
 @Serializable
-class LootyConfig(
+data class LootyConfig(
     val debug: Boolean = false,
     val migrateByCustomModelData: Boolean = false
 )

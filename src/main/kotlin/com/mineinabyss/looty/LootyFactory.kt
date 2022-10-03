@@ -11,7 +11,7 @@ import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
-import com.mineinabyss.looty.config.LootyConfig
+import com.mineinabyss.looty.config.lootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomItem
@@ -73,7 +73,7 @@ object LootyFactory {
     fun getItemState(pdc: PersistentDataContainer?, slot: Int, item: NMSItemStack): ItemState {
         if (pdc == null || item.item == Items.AIR || !pdc.hasComponentsEncoded) return ItemState.Empty()
         val prefabs = pdc.decodePrefabs()
-        if (LootyConfig.data.migrateByCustomModelData) {
+        if (lootyConfig.migrateByCustomModelData) {
             updateOldLootyItem(pdc, prefabs, item)
         }
         if (prefabs.size == 1) {

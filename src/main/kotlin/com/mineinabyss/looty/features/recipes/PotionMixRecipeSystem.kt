@@ -1,11 +1,10 @@
-package com.mineinabyss.looty.ecs.systems
+package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.RepeatingSystem
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.looty.LootyFactory
-import com.mineinabyss.looty.ecs.components.RegisterPotionMixComponent
 import com.mineinabyss.looty.looty
 import org.bukkit.NamespacedKey
 

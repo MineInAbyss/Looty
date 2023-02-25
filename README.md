@@ -7,49 +7,72 @@
 [![Contribute](https://shields.io/badge/Contribute-e57be5?logo=github%20sponsors&style=flat&logoColor=white)](https://wiki.mineinabyss.com/contribute)
 </div>
 
-## Overview
-
-Looty is a PaperMC plugin that acts as a link between ItemStacks and ECS entities from our Entity Component System (
-ECS) [Geary](https://github.com/MineInAbyss/Geary). It lets you easily persist components on ItemStacks and have systems
-iterate over them.
-
-Looty also provides the same powerful configuration system as Geary, which lets you quickly create fancy custom items
-for Minecraft servers. It even updates item data like models or lore update automatically.
+Looty is a [Paper](https://papermc.io/) plugin for creating custom items with config files. We use [Geary](https://github.com/MineInAbyss/geary-papermc) to break down items into small components. We provide many components to modify vanilla behaviour, for new game features check out [Geary-addons](https://github.com/MineInAbyss/Geary-addons).
 
 ## Features
 
-### Modular behaviours
+- Automatically updates item name, lore, and custom models when the config changes
+- Support for custom recipes
+- Write configs in yaml, json, and more.
 
-ECS allows us to deconstruct complex item behaviours into individual components or actions. It makes code easier to
-maintain and behaviours more reusable!
+## Usage
+Coming soon
 
-### Easy serialization
+## Examples
 
-Thanks to kotlinx.serialization all our components are automatically serializable without reflection! Looty will
-automatically save persisting components to the item itself.
+### Custom item from our server
 
-### Prefabs and config files
+`star-compass.yml`
+```yaml
+# Make items in the same inventory share one entity
+- !<looty:player_instanced_item>
 
-Looty uses the same prefab system as Geary. It also adds item-related events so you can configure Geary actions to fire
-on left click, or when an item is equipped.
+# Specify item name, model, and lore,
+# if this ever changes, Looty will update existing items
+- !<looty:type>
+  item:
+    type: PAPER
+    customModelData: 125
+    displayName: <dark_aqua>Star Compass
+    lore:
+      - <aqua>Points towards the center of the <green>Abyss
 
-Coders can focus on coding interesting components and systems while designers can tweak numbers and combine things
-together without messing with your precious code!
+# Add a recipe using other custom items
+- !<looty:recipes>
+  discoverRecipes: true
+  recipes:
+    - !<shapeless>
+      items:
+        - prefab: mineinabyss:star_compass_needle
+        - prefab: mineinabyss:titanjaw_pearl
 
-### Item tracking
 
-Looty will automatically keep track of item entities for you. You can go between the two using: `gearyOrNull(itemStack)`
-and `gearyEntity.get<ItemStack>()`. Looty essentially ensures the ItemStack component on this entity always references
-the true ItemStack (i.e. modifying it modifies the item in inventory.)
+# A component provided another plugin
+- !<mineinabyss:starcompass>
 
-Currently, we plan on keeping track of items in player inventories and when thrown on the ground. We may also allow
-specifically marked mobs to keep track of custom items in their inventory (doing this for all mobs would likely be
-unnecessarily slow).
+```
 
-## Biggest issues
+### Custom recipe for a vanilla item
 
-- Some more caching and optimizations should be done for the item tracking system. We haven't tested it large-scale yet.
-- There are many design questions regarding how the config system should work and how to handle some complex behaviours.
-  Things may change.
-- There is no data migration for items, though using prefabs, most item components can be static and not serialized to
-  the item itself. This means once the prefab config is updated, the item itself works again.
+`lead.yml`
+```yaml
+- !<looty:recipes>
+  discoverRecipes: true
+  result:
+    type: LEAD
+    amount: 2
+  removeRecipes:
+    - minecraft:lead
+  group: "looty:lead"
+  recipes:
+    - !<shaped>
+      items:
+        S:
+          prefab: mineinabyss:silkfang_silk
+        Z:
+          prefab: mineinabyss:abyssal_snail_gunk
+      configuration: |-
+        |ZZ |
+        |ZS |
+        |  Z|
+```

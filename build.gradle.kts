@@ -3,10 +3,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val idofrontVersion: String by project
 val gearyVersion: String by project
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    id("com.mineinabyss.conventions.kotlin")
+    alias(libs.plugins.kotlinx.serialization)
+    id("com.mineinabyss.conventions.kotlin.jvm")
     id("com.mineinabyss.conventions.papermc")
     id("com.mineinabyss.conventions.nms")
     id("com.mineinabyss.conventions.copyjar")
@@ -20,7 +20,8 @@ repositories {
 
 dependencies {
     // Other plugins
-    compileOnly(lootyLibs.geary.papermc.core)
+    compileOnly(lootyLibs.geary.papermc)
+    compileOnly(gearyLibs.autoscan)
 
     // From Geary
 

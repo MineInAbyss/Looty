@@ -1,10 +1,10 @@
-package com.mineinabyss.looty.ecs.systems
+package com.mineinabyss.looty.features.migration
 
-import com.mineinabyss.geary.annotations.AutoScan
 import com.mineinabyss.geary.annotations.Handler
+import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.systems.GearyListener
 import com.mineinabyss.geary.systems.accessors.TargetScope
-import com.mineinabyss.looty.ecs.components.LootyType
+import com.mineinabyss.looty.initializers.LootyType
 import org.bukkit.inventory.ItemStack
 
 /**

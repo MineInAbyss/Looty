@@ -1,13 +1,8 @@
-package com.mineinabyss.looty.migration.custommodeldata
+package com.mineinabyss.looty.features.migration
 
 import com.mineinabyss.geary.prefabs.PrefabKey
-import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
+import com.mineinabyss.looty.features.type.LootyTypeQuery
 import org.bukkit.Material
-
-data class CustomItem(
-    val material: Material,
-    val customModelData: Int
-)
 
 /**
  * Assists in migrating old items which only have custom model data to define their item type.

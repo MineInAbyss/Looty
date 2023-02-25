@@ -11,8 +11,8 @@ import com.mineinabyss.idofront.commands.extensions.actions.playerAction
 import com.mineinabyss.idofront.config.config
 import com.mineinabyss.idofront.messaging.error
 import com.mineinabyss.idofront.messaging.info
-import com.mineinabyss.looty.ecs.queries.LootyTypeQuery
-import com.mineinabyss.looty.ecs.queries.LootyTypeQuery.key
+import com.mineinabyss.looty.features.type.LootyTypeQuery
+import com.mineinabyss.looty.features.type.LootyTypeQuery.key
 import com.mineinabyss.looty.tracking.toGearyOrNull
 import org.bukkit.Material
 import org.bukkit.command.Command

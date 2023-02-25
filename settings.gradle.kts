@@ -5,13 +5,6 @@ pluginManagement {
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 
-    plugins {
-        val kotlinVersion: String by settings
-        kotlin("jvm") version kotlinVersion
-        kotlin("plugin.serialization") version kotlinVersion
-        kotlin("kapt") version kotlinVersion
-    }
-
     val idofrontVersion: String by settings
     resolutionStrategy {
         eachPlugin {
@@ -23,6 +16,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     val idofrontVersion: String by settings
+    val gearyVersion: String by settings
 
     repositories {
         maven("https://repo.mineinabyss.com/releases")
@@ -31,6 +25,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs").from("com.mineinabyss:catalog:$idofrontVersion")
         create("lootyLibs").from(files("gradle/lootyLibs.versions.toml"))
+        create("gearyLibs").from("com.mineinabyss:geary-catalog:$gearyVersion")
     }
 }
 

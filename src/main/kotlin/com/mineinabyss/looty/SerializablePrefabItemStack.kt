@@ -20,7 +20,7 @@ object LootySerializablePrefabItemService : SerializablePrefabItemService, Geary
 
 data class LootyRecipeChoice(
     val item: ItemStack
-) : RecipeChoice, GearyMCContext by GearyMCContextKoin() {
+) : RecipeChoice {
     val prefabs = item.itemMeta.persistentDataContainer.decodePrefabs()
 
     override fun test(itemStack: ItemStack): Boolean {

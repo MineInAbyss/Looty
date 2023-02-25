@@ -1,4 +1,4 @@
-package com.mineinabyss.looty.ecs.components
+package com.mineinabyss.looty.initializers
 
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import kotlinx.serialization.SerialName

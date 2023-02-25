@@ -1,11 +1,10 @@
 package com.mineinabyss.looty
 
 import com.mineinabyss.geary.datatypes.GearyEntity
-import com.mineinabyss.geary.papermc.store.encodeComponentsTo
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.messaging.broadcast
 import com.mineinabyss.looty.config.lootyConfig
-import com.mineinabyss.looty.ecs.components.LootyType
+import com.mineinabyss.looty.initializers.LootyType
 import org.bukkit.inventory.ItemStack
 
 internal fun debug(message: Any?) {

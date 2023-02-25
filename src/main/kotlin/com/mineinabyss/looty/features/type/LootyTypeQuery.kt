@@ -1,11 +1,11 @@
-package com.mineinabyss.looty.ecs.queries
+package com.mineinabyss.looty.features.type
 
 import com.mineinabyss.geary.datatypes.family.family
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.prefabs.configuration.components.Prefab
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.geary.systems.query.GearyQuery
-import com.mineinabyss.looty.ecs.components.LootyType
+import com.mineinabyss.looty.initializers.LootyType
 
 object LootyTypeQuery : GearyQuery() {
     val TargetScope.key by get<PrefabKey>()

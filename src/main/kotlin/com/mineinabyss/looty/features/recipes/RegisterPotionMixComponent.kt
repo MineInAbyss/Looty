@@ -1,4 +1,4 @@
-package com.mineinabyss.looty.ecs.components
+package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import com.mineinabyss.idofront.serialization.recipes.PotionMixRecipeIngredients

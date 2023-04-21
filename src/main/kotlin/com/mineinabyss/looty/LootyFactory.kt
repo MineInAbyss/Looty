@@ -11,13 +11,16 @@ import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
+import com.mineinabyss.idofront.textcomponents.serialize
 import com.mineinabyss.looty.config.lootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
+import com.mineinabyss.looty.ecs.components.OriginalDisplayName
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomModelDataToPrefabMap
 import net.minecraft.world.item.Items
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
@@ -27,6 +30,8 @@ import java.util.*
  * Many helper functions related to creating Looty items.
  */
 object LootyFactory {
+    private val originalDisplayName = NamespacedKey.fromString("looty:original_display_name")!!
+
     /** Creates an ItemStack from a [prefabKey], encoding relevant information to it. */
     fun createFromPrefab(
         prefabKey: PrefabKey,
@@ -38,9 +43,13 @@ object LootyFactory {
 
     fun updateItemFromPrefab(item: ItemStack, prefabKey: PrefabKey) {
         val prefab = prefabKey.toEntityOrNull() ?: return
+        val originalDisplayName = prefab.get<OriginalDisplayName>()?.originalDisplayName
+        val displayName = if (originalDisplayName != item.displayName().serialize()) item.displayName() else null
+
         prefab.get<LootyType>()?.item?.toItemStack(item)
-        item.editMeta {
-            it.persistentDataContainer.encodePrefabs(listOf(prefabKey))
+        item.editMeta { meta ->
+            displayName?.let { meta.displayName(it) } ?: meta.displayName()?.let { prefab.setPersisting(OriginalDisplayName(it.serialize())) }
+            meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
         }
     }
 
@@ -51,6 +60,7 @@ object LootyFactory {
         class Empty : ItemState() {
             override val entity: GearyEntity = NO_ENTITY
         }
+
         class NotLoaded(val slot: Int, val pdc: PersistentDataContainer) : ItemState() {
             override val entity: GearyEntity = NO_ENTITY
         }
@@ -81,7 +91,7 @@ object LootyFactory {
             if (prefab.has<PlayerInstancedItem>()) {
                 pdc.remove<UUID>()
                 return ItemState.Loaded(prefab, slot, pdc)
-            } else if(pdc.decode<UUID>() == null) {
+            } else if (pdc.decode<UUID>() == null) {
                 return ItemState.NotLoaded(slot, pdc)
             }
         }

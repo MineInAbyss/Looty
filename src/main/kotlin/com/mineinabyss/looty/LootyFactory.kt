@@ -11,16 +11,13 @@ import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
-import com.mineinabyss.idofront.textcomponents.serialize
 import com.mineinabyss.looty.config.lootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
-import com.mineinabyss.looty.ecs.components.OriginalDisplayName
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomModelDataToPrefabMap
 import net.minecraft.world.item.Items
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
@@ -30,8 +27,6 @@ import java.util.*
  * Many helper functions related to creating Looty items.
  */
 object LootyFactory {
-    private val originalDisplayName = NamespacedKey.fromString("looty:original_display_name")!!
-
     /** Creates an ItemStack from a [prefabKey], encoding relevant information to it. */
     fun createFromPrefab(
         prefabKey: PrefabKey,
@@ -42,13 +37,8 @@ object LootyFactory {
     }
 
     fun updateItemFromPrefab(item: ItemStack, prefabKey: PrefabKey) {
-        val prefab = prefabKey.toEntityOrNull() ?: return
-        val originalDisplayName = prefab.get<OriginalDisplayName>()?.originalDisplayName
-        val displayName = if (originalDisplayName != item.displayName().serialize()) item.displayName() else null
-
-        prefab.get<LootyType>()?.item?.toItemStack(item)
+        prefabKey.toEntityOrNull()?.get<LootyType>()?.item?.toItemStack(item) ?: return
         item.editMeta { meta ->
-            displayName?.let { meta.displayName(it) } ?: meta.displayName()?.let { prefab.setPersisting(OriginalDisplayName(it.serialize())) }
             meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
         }
     }

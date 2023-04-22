@@ -1,6 +1,8 @@
 package com.mineinabyss.looty.ecs.components
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class OriginalDisplayName(val originalDisplayName: String?)
+@SerialName("looty:original_display_name")
+class OriginalDisplayName(var originalDisplayName: String?)

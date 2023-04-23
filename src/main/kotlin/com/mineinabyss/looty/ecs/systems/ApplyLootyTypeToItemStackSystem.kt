@@ -6,6 +6,7 @@ import com.mineinabyss.geary.systems.GearyListener
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.textcomponents.serialize
+import com.mineinabyss.looty.LootyFactory.removeItalics
 import com.mineinabyss.looty.ecs.components.LootyType
 import com.mineinabyss.looty.ecs.components.OriginalDisplayName
 import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
@@ -22,14 +23,15 @@ class ApplyLootyTypeToItemStackSystem : GearyListener() {
     @Handler
     fun TargetScope.updateItem() {
         val originalDisplayName = item.toGearyFromUUIDOrNull()?.get<OriginalDisplayName>()?.originalDisplayName
-        val oldDisplayName = item.itemMeta.displayName()
+        val oldDisplayName = item.itemMeta?.displayName()
 
-        lootyType.item.toItemStack(item)
+        val baseDisplayName = lootyType.item.apply { toItemStack(item) }.displayName?.removeItalics()
+
 
         item.editItemMeta {
             if (originalDisplayName != oldDisplayName?.serialize())
-                displayName(oldDisplayName)
-            else displayName(lootyType.item.displayName)
-        }.toGearyFromUUIDOrNull()?.setPersisting(OriginalDisplayName(lootyType.item.displayName?.serialize()))
+                displayName(oldDisplayName?.removeItalics())
+            else displayName(baseDisplayName)
+        }.toGearyFromUUIDOrNull()?.setPersisting(OriginalDisplayName(baseDisplayName?.serialize()))
     }
 }

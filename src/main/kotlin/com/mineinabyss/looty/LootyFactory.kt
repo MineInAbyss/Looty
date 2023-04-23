@@ -10,12 +10,18 @@ import com.mineinabyss.geary.helpers.toGeary
 import com.mineinabyss.geary.papermc.globalContextMC
 import com.mineinabyss.geary.papermc.store.*
 import com.mineinabyss.geary.prefabs.PrefabKey
+import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.nms.aliases.NMSItemStack
+import com.mineinabyss.idofront.textcomponents.serialize
 import com.mineinabyss.looty.config.lootyConfig
 import com.mineinabyss.looty.ecs.components.LootyType
+import com.mineinabyss.looty.ecs.components.OriginalDisplayName
 import com.mineinabyss.looty.ecs.components.PlayerInstancedItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomItem
 import com.mineinabyss.looty.migration.custommodeldata.CustomModelDataToPrefabMap
+import com.mineinabyss.looty.tracking.toGearyFromUUIDOrNull
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.world.item.Items
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers
@@ -37,11 +43,23 @@ object LootyFactory {
     }
 
     fun updateItemFromPrefab(item: ItemStack, prefabKey: PrefabKey) {
-        prefabKey.toEntityOrNull()?.get<LootyType>()?.item?.toItemStack(item) ?: return
-        item.editMeta { meta ->
-            meta.persistentDataContainer.encodePrefabs(listOf(prefabKey))
+        prefabKey.toEntityOrNull()?.get<LootyType>()?.let {lootyType ->
+            val originalDisplayName = item.toGearyFromUUIDOrNull()?.get<OriginalDisplayName>()?.originalDisplayName
+            val oldDisplayName = item.itemMeta?.displayName()
+            val baseDisplayName = lootyType.item.apply { toItemStack(item) }.displayName?.removeItalics()
+
+            item.editItemMeta {
+                if (originalDisplayName != oldDisplayName?.serialize())
+                    displayName(oldDisplayName?.removeItalics())
+                else displayName(baseDisplayName)
+                persistentDataContainer.encodePrefabs(listOf(prefabKey))
+                persistentDataContainer.encode(OriginalDisplayName(baseDisplayName?.serialize()))
+            }
         }
     }
+
+    fun Component.removeItalics() =
+        Component.text().decoration(TextDecoration.ITALIC, false).build().append(this)
 
     sealed class ItemState {
         abstract val entity: GearyEntity

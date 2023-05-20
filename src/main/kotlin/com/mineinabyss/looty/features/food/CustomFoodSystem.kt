@@ -34,6 +34,6 @@ class CustomFoodSystem : Listener {
         }
 
         player.foodLevel += minOf(gearyFood.hunger, 20)
-        player.saturation += minOf(gearyFood.saturation, 20)
+        player.saturation += minOf(gearyFood.saturation, 20.0).toFloat()
     }
 }

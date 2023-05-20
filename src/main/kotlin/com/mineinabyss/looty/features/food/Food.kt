@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffect
 @SerialName("looty:food")
 class Food(
     val hunger: Int,
-    val saturation: Int,
+    val saturation: Double,
     val replacement: SerializableItemStack? = null,
     val effectChance: Double = 1.0,
     val effectList: List<@Serializable(with = PotionEffectSerializer::class) PotionEffect> = emptyList(),

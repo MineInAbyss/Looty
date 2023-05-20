@@ -1,9 +1,10 @@
 package com.mineinabyss.looty.config
 
-import com.mineinabyss.looty.looty
+import com.mineinabyss.idofront.di.DI
 import kotlinx.serialization.Serializable
 
-val lootyConfig get() = looty.config.data
+val lootyConfig by DI.observe<LootyConfig>()
+
 @Serializable
 data class LootyConfig(
     val debug: Boolean = false,

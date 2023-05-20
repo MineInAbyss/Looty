@@ -1,31 +1,30 @@
 package com.mineinabyss.looty.features.food
 
-import com.mineinabyss.geary.papermc.tracking.items.gearyItemInMainHand
-import com.mineinabyss.geary.papermc.tracking.items.gearyItemInOffhand
+import com.mineinabyss.geary.papermc.tracking.items.toGeary
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.inventory.EquipmentSlot
 import kotlin.random.Random
 
 class CustomFoodSystem : Listener {
-
     @EventHandler
     fun PlayerItemConsumeEvent.onConsumeFood() {
-        val inv = player.inventory
+        val gearyInventory = player.inventory.toGeary() ?: return
 
-        val (item, entity) = if (inv.itemInMainHand.isSimilar(item)) {
-            inv.itemInMainHand to player.gearyItemInMainHand
-        } else {
-            inv.itemInOffHand to player.gearyItemInOffhand
-        }
+        val entity = if (hand == EquipmentSlot.HAND)
+            gearyInventory.itemInMainHand
+        else gearyInventory.itemInOffhand ?: return
+
         val gearyFood = entity?.get<Food>() ?: return
+
         val replacement = gearyFood.replacement?.toItemStack()
         isCancelled = true // Cancel vanilla behaviour
 
         if (player.gameMode != GameMode.CREATIVE) {
             if (replacement != null) {
-                if (player.inventory.firstEmpty() != -1) inv.addItem(replacement)
+                if (player.inventory.firstEmpty() != -1) player.inventory.addItem(replacement)
                 else player.world.dropItemNaturally(player.location, replacement)
             }
             item.subtract()

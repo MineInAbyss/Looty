@@ -6,11 +6,10 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 /**
- * `geary:soulbound`
  * Prevents an item from dropping on death when held by its [owner].
  */
 @Serializable
-@SerialName("geary:soulbound")
+@SerialName("looty:soulbound")
 class Soulbound(
     var owner: @Serializable(with = UUIDSerializer::class) UUID,
 )

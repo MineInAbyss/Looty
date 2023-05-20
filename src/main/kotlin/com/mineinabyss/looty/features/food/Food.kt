@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 import org.bukkit.potion.PotionEffect
 
 /**
- * `geary:food`
  * Lets an item have custom food properties.
  *
  * @param hunger The amount of hunger this item restores.
@@ -17,7 +16,7 @@ import org.bukkit.potion.PotionEffect
  * @param effectList The effects this item can give.
  */
 @Serializable
-@SerialName("geary:food")
+@SerialName("looty:food")
 class Food(
     val hunger: Int,
     val saturation: Int,

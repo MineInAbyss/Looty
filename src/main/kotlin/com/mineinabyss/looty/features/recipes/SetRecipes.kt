@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("looty:recipes")
-class RegisterRecipeComponent(
+class SetRecipes(
     val recipes: List<SerializableRecipeIngredients>,
     val discoverRecipes: Boolean = false,
     val group: String = "",

@@ -1,3 +1,5 @@
+rootProject.name = "looty"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -16,7 +18,6 @@ pluginManagement {
 
 dependencyResolutionManagement {
     val idofrontVersion: String by settings
-    val gearyVersion: String by settings
 
     repositories {
         maven("https://repo.mineinabyss.com/releases")
@@ -24,10 +25,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("libs").from("com.mineinabyss:catalog:$idofrontVersion")
-        create("lootyLibs").from(files("gradle/lootyLibs.versions.toml"))
-        create("gearyLibs").from("com.mineinabyss:geary-catalog:$gearyVersion")
+        create("myLibs").from(files("gradle/myLibs.versions.toml"))
     }
 }
 
-
-rootProject.name = "looty"

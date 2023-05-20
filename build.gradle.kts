@@ -15,13 +15,13 @@ plugins {
 }
 
 repositories {
+    maven("https://repo.mineinabyss.com/snapshots")
     maven("https://jitpack.io")
 }
 
 dependencies {
     // Other plugins
-    compileOnly(lootyLibs.geary.papermc)
-    compileOnly(gearyLibs.autoscan)
+    compileOnly(myLibs.geary.papermc)
 
     // From Geary
 

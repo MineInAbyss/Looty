@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("looty:potion_mixes")
-class RegisterPotionMixComponent(
+class SetPotionMixes(
     val result: SerializableItemStack? = null,
     val potionmixes: List<PotionMixRecipeIngredients> = emptyList(),
 )

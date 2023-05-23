@@ -1,7 +1,5 @@
 package com.mineinabyss.looty.features.migration
 
-import com.mineinabyss.geary.prefabs.PrefabKey
-
 /**
  * Assists in migrating old items which only have custom model data to define their item type.
  */

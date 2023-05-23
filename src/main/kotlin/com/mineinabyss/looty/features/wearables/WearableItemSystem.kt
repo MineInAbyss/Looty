@@ -14,13 +14,12 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.inventory.PlayerInventory
 
 class WearableItemSystem : Listener {
     @EventHandler
     fun InventoryClickEvent.shiftClickToWear() {
         if (!click.isShiftClick) return
-        if(inventory !is CraftInventoryCrafting) return // Only support shift clicking when only player inventory is open
+        if (inventory !is CraftInventoryCrafting) return // Only support shift clicking when only player inventory is open
         val player = inventory.holder as? Player ?: return
         player.inventory.toGeary()?.get(slot)?.with { _: Hat ->
             if (player.inventory.helmet == null) {

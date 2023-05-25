@@ -9,6 +9,7 @@ import com.mineinabyss.idofront.plugin.listeners
 import com.mineinabyss.idofront.plugin.service
 import com.mineinabyss.idofront.serialization.SerializablePrefabItemService
 import com.mineinabyss.looty.config.LootyModule
+import com.mineinabyss.looty.features.backpack.BackpackListener
 import com.mineinabyss.looty.features.wearables.WearableItemSystem
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -32,7 +33,8 @@ class LootyPlugin : JavaPlugin() {
         LootyCommands() //Register commands
 
         listeners(
-            WearableItemSystem()
+            WearableItemSystem(),
+            BackpackListener()
         )
     }
 

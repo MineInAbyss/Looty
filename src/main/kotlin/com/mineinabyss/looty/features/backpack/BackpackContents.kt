@@ -7,4 +7,4 @@ import org.bukkit.inventory.ItemStack
 
 @Serializable
 @SerialName("looty:backpack_contents")
-class BackpackContents(val contents: List<@Serializable(ItemStackSerializer::class) ItemStack>)
+class BackpackContents(val contents: List<@Serializable(ItemStackSerializer::class) ItemStack> = emptyList())

@@ -2,6 +2,9 @@ package com.mineinabyss.looty.features.backpack
 
 import com.mineinabyss.geary.papermc.tracking.entities.toGearyOrNull
 import com.mineinabyss.geary.papermc.tracking.items.toGeary
+import com.mineinabyss.idofront.entities.rightClicked
+import com.mineinabyss.idofront.messaging.broadcastVal
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -10,6 +13,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -22,17 +26,45 @@ class BackpackListener : Listener {
 
     private fun isBackpack(player: Player, slot: EquipmentSlot) = getBackpack(player, slot) != null
     private fun getBackpack(player: Player, slot: EquipmentSlot) = player.inventory.toGeary()?.get(slot)
+    private fun getBackpack(player: Player, slot: Int) = player.inventory.toGeary()?.get(slot)
+    private fun BackpackContents.openBackpack(player: Player, title: Component) {
+        val inventory = Bukkit.createInventory(player, InventoryType.CHEST, title)
+        inventory.contents = this.contents.toTypedArray()
+        player.openInventory(inventory)
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PlayerInteractEvent.onBackpackOpen() {
+        rightClicked || return
         val (item, hand) = (item ?: return) to (hand ?: return)
-        val backpack = getBackpack(player, hand) ?: return
-
+        val backpack = getBackpack(player, hand)?.getOrSetPersisting { BackpackContents() } ?: return
         val title = if (item.itemMeta.hasDisplayName()) item.itemMeta.displayName()!! else item.displayName()
-        val content = backpack.get<BackpackContents>()?.contents
-        val inventory = Bukkit.createInventory(player, InventoryType.CHEST, title)
-        content?.let { inventory.contents = it.toTypedArray() }
-        player.openInventory(inventory)
+        backpack.openBackpack(player, title)
+    }
+
+    @EventHandler
+    fun InventoryClickEvent.onOpenInInventory() {
+        if (!click.isRightClick) return
+        val player = whoClicked as? Player ?: return
+        val gearyEntity = getBackpack(player, slot) ?: return
+        val backpack = gearyEntity.get<Backpack>() ?: return
+
+        val contents = gearyEntity.getOrSetPersisting { BackpackContents() }
+        val title = if (currentItem?.itemMeta?.hasDisplayName() == true) currentItem?.itemMeta?.displayName()!! else currentItem?.displayName()
+
+        clickedInventory?.type.broadcastVal()
+
+        when (clickedInventory?.type ?: return) {
+            InventoryType.PLAYER -> {
+                if (backpack.canOpenInInventory) {
+                    isCancelled = true
+                    contents.openBackpack(player, title ?: Component.text("Backpack"))
+                    player.updateInventory()
+                }
+            }
+
+            else -> return
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

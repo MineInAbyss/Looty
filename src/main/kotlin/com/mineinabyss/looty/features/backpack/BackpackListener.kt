@@ -44,13 +44,15 @@ class BackpackListener : Listener {
 
     @EventHandler
     fun InventoryClickEvent.onOpenInInventory() {
-        if (!click.isRightClick) return
+        if (!click.isRightClick || slotType == InventoryType.SlotType.OUTSIDE) return
         val player = whoClicked as? Player ?: return
         val gearyEntity = getBackpack(player, slot) ?: return
         val backpack = gearyEntity.get<Backpack>() ?: return
 
         val contents = gearyEntity.getOrSetPersisting { BackpackContents() }
-        val title = if (currentItem?.itemMeta?.hasDisplayName() == true) currentItem?.itemMeta?.displayName()!! else currentItem?.displayName()
+        val title =
+            if (currentItem?.itemMeta?.hasDisplayName() == true) currentItem?.itemMeta?.displayName()!! else currentItem?.displayName()
+                ?: Component.text("Backpack")
 
         clickedInventory?.type.broadcastVal()
 
@@ -58,8 +60,8 @@ class BackpackListener : Listener {
             InventoryType.PLAYER -> {
                 if (backpack.canOpenInInventory) {
                     isCancelled = true
-                    contents.openBackpack(player, title ?: Component.text("Backpack"))
                     player.updateInventory()
+                    contents.openBackpack(player, title)
                 }
             }
 
@@ -81,7 +83,11 @@ class BackpackListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PlayerSwapHandItemsEvent.onSwapBackpack() {
-        if (isBackpack(player, EquipmentSlot.HAND) || isBackpack(player, EquipmentSlot.OFF_HAND)) player.closeInventory()
+        if (isBackpack(player, EquipmentSlot.HAND) || isBackpack(
+                player,
+                EquipmentSlot.OFF_HAND
+            )
+        ) player.closeInventory()
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

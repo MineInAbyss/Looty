@@ -54,9 +54,8 @@ class WearableItemSystem : Listener {
         if (hand == EquipmentSlot.OFF_HAND) return //the event is called twice, on for each hand. We want to ignore the offhand call
         if (!rightClicked) return //only do stuff when player rightclicks
         if (player.inventory.helmet !== null) return // don't equip if we are wearing a helmet
-        val gearyInventory = player.inventory.toGeary() ?: return
 
-        val entityInMainHand = gearyInventory.itemInMainHand ?: return
+        val entityInMainHand = player.inventory.toGeary()?.itemInMainHand ?: return
         val hat = entityInMainHand.get<Hat>() ?: return
 
         player.inventory.helmet = player.inventory.itemInMainHand

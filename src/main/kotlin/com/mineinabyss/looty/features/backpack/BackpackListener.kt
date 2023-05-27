@@ -3,7 +3,6 @@ package com.mineinabyss.looty.features.backpack
 import com.mineinabyss.geary.papermc.tracking.entities.toGearyOrNull
 import com.mineinabyss.geary.papermc.tracking.items.toGeary
 import com.mineinabyss.idofront.entities.rightClicked
-import com.mineinabyss.idofront.messaging.broadcastVal
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -24,7 +23,7 @@ import org.bukkit.inventory.ItemStack
 
 class BackpackListener : Listener {
 
-    private fun isBackpack(player: Player, slot: EquipmentSlot) = getBackpack(player, slot) != null
+    private fun isBackpack(player: Player, slot: EquipmentSlot) = getBackpack(player, slot)?.has<Backpack>() == true
     private fun getBackpack(player: Player, slot: EquipmentSlot) = player.inventory.toGeary()?.get(slot)
     private fun getBackpack(player: Player, slot: Int) = player.inventory.toGeary()?.get(slot)
     private fun BackpackContents.openBackpack(player: Player, title: Component) {
@@ -33,13 +32,15 @@ class BackpackListener : Listener {
         player.openInventory(inventory)
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun PlayerInteractEvent.onBackpackOpen() {
-        rightClicked || return
+        if (!rightClicked || player.isSneaking) return
         val (item, hand) = (item ?: return) to (hand ?: return)
-        val backpack = getBackpack(player, hand)?.getOrSetPersisting { BackpackContents() } ?: return
+        val backpack = getBackpack(player, hand) ?: return
+        if (!backpack.has<Backpack>()) return
         val title = if (item.itemMeta.hasDisplayName()) item.itemMeta.displayName()!! else item.displayName()
-        backpack.openBackpack(player, title)
+        backpack.getOrSetPersisting { BackpackContents() }.openBackpack(player, title)
+        isCancelled = true
     }
 
     @EventHandler
@@ -53,8 +54,6 @@ class BackpackListener : Listener {
         val title =
             if (currentItem?.itemMeta?.hasDisplayName() == true) currentItem?.itemMeta?.displayName()!! else currentItem?.displayName()
                 ?: Component.text("Backpack")
-
-        clickedInventory?.type.broadcastVal()
 
         when (clickedInventory?.type ?: return) {
             InventoryType.PLAYER -> {
@@ -72,7 +71,7 @@ class BackpackListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun InventoryCloseEvent.onCloseBackpack() {
         val player = player as Player
-        val backpack = getBackpack(player, EquipmentSlot.HAND) ?: getBackpack(player, EquipmentSlot.OFF_HAND) ?: return
+        val backpack = getBackpack(player, EquipmentSlot.HAND)  ?: getBackpack(player, EquipmentSlot.OFF_HAND) ?: return
         backpack.setPersisting(BackpackContents(inventory.contents.toList().map { it ?: ItemStack(Material.AIR) }))
     }
 
@@ -93,7 +92,7 @@ class BackpackListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun PlayerDeathEvent.onDeath() = player.closeInventory()
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun BlockPlaceEvent.onPlaceBackpack() {
         if (isBackpack(player, EquipmentSlot.HAND) || isBackpack(player, EquipmentSlot.OFF_HAND)) isCancelled = true
     }

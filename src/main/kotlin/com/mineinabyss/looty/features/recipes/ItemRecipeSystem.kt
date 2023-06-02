@@ -1,11 +1,10 @@
 package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.geary.annotations.Handler
-import com.mineinabyss.geary.autoscan.AutoScan
 import com.mineinabyss.geary.papermc.tracking.items.itemTracking
 import com.mineinabyss.geary.prefabs.PrefabKey
-import com.mineinabyss.geary.systems.GearyListener
 import com.mineinabyss.geary.systems.accessors.TargetScope
+import com.mineinabyss.geary.systems.query.Query
 import com.mineinabyss.idofront.recipes.register
 import com.mineinabyss.looty.config.looty
 import org.bukkit.Bukkit
@@ -15,21 +14,18 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
-@AutoScan
-class ItemRecipeSystem : GearyListener(), Listener {
-    private val TargetScope.recipes by onSet<SetRecipes>()
-    private val TargetScope.prefabKey by onSet<PrefabKey>()
-    private val registeredRecipes = mutableSetOf<NamespacedKey>()
-    private val discoveredRecipes = mutableSetOf<NamespacedKey>()
+class ItemRecipeQuery : Query(), Listener {
+    private val TargetScope.recipes by get<SetRecipes>()
+    private val TargetScope.prefabKey by get<PrefabKey>()
 
-    @Handler
-    fun TargetScope.onAdded() {
+    fun TargetScope.registerRecipes(): Set<NamespacedKey> {
+        val discoveredRecipes = mutableSetOf<NamespacedKey>()
         val result: ItemStack? = recipes.result?.toItemStackOrNull()
             ?: itemTracking.provider.serializePrefabToItemStack(prefabKey)
 
         if (result == null) {
             looty.plugin.logger.warning("Recipe ${prefabKey.key} is missing result item")
-            return
+            return emptySet()
         }
 
         recipes.removeRecipes.forEach {
@@ -38,14 +34,17 @@ class ItemRecipeSystem : GearyListener(), Listener {
 
         recipes.recipes.forEachIndexed { i, recipe ->
             val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
-            registeredRecipes += key
             // Register recipe only if not present
             Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
             if (recipes.discoverRecipes) discoveredRecipes += key
         }
-        entity.remove<SetRecipes>()
+        return discoveredRecipes
     }
+}
 
+class RecipeDiscoverySystem(
+    val discoveredRecipes: List<NamespacedKey>
+): Listener {
     @EventHandler
     fun PlayerJoinEvent.showRecipesOnJoin() {
         player.discoverRecipes(discoveredRecipes)

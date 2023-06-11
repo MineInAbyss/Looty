@@ -1,6 +1,6 @@
 package com.mineinabyss.looty.features.food
 
-import com.mineinabyss.geary.papermc.tracking.items.toGeary
+import com.mineinabyss.geary.papermc.tracking.items.inventory.toGeary
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

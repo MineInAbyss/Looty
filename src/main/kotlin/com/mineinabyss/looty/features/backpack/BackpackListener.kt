@@ -1,7 +1,7 @@
 package com.mineinabyss.looty.features.backpack
 
 import com.mineinabyss.geary.papermc.tracking.entities.toGearyOrNull
-import com.mineinabyss.geary.papermc.tracking.items.toGeary
+import com.mineinabyss.geary.papermc.tracking.items.inventory.toGeary
 import com.mineinabyss.idofront.entities.rightClicked
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit

@@ -1,7 +1,7 @@
 package com.mineinabyss.looty.features.holdsentity
 
 import com.mineinabyss.geary.papermc.tracking.entities.helpers.spawnFromPrefab
-import com.mineinabyss.geary.papermc.tracking.items.toGeary
+import com.mineinabyss.geary.papermc.tracking.items.inventory.toGeary
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action

@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack
 
 class LootySerializablePrefabItemService : SerializablePrefabItemService {
     override fun encodeFromPrefab(item: ItemStack, prefabName: String) {
-        val result = itemTracking.provider.serializePrefabToItemStack(PrefabKey.of(prefabName), existing = item)
+        val result = itemTracking.createItem(PrefabKey.of(prefabName), item)
         require(result != null) { "Failed to create serializable ItemStack from $prefabName, does the prefab exist and have a geary:set.item component?" }
     }
 }

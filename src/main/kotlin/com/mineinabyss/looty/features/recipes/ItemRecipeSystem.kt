@@ -1,6 +1,6 @@
 package com.mineinabyss.looty.features.recipes
 
-import com.mineinabyss.geary.papermc.tracking.items.itemTracking
+import com.mineinabyss.geary.papermc.tracking.items.gearyItems
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.accessors.TargetScope
 import com.mineinabyss.geary.systems.query.Query
@@ -19,7 +19,7 @@ class ItemRecipeQuery : Query(), Listener {
 
     fun TargetScope.registerRecipes(): Set<NamespacedKey> {
         val discoveredRecipes = mutableSetOf<NamespacedKey>()
-        val result: ItemStack? = recipes.result?.toItemStackOrNull() ?: itemTracking.createItem(prefabKey)
+        val result: ItemStack? = recipes.result?.toItemStackOrNull() ?: gearyItems.createItem(prefabKey)
 
         if (result == null) {
             looty.plugin.logger.warning("Recipe ${prefabKey.key} is missing result item")

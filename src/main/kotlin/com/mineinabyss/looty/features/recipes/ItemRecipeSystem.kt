@@ -14,27 +14,31 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
 class ItemRecipeQuery : Query(), Listener {
-    private val TargetScope.recipes by get<SetRecipes>()
+    private val TargetScope.setRecipes by get<SetRecipes>()
     private val TargetScope.prefabKey by get<PrefabKey>()
 
     fun TargetScope.registerRecipes(): Set<NamespacedKey> {
         val discoveredRecipes = mutableSetOf<NamespacedKey>()
-        val result: ItemStack? = recipes.result?.toItemStackOrNull() ?: gearyItems.createItem(prefabKey)
+        val result: ItemStack? = setRecipes.result?.toItemStackOrNull() ?: gearyItems.createItem(prefabKey)
 
         if (result == null) {
             looty.plugin.logger.warning("Recipe ${prefabKey.key} is missing result item")
             return emptySet()
         }
 
-        recipes.removeRecipes.forEach {
-            Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+        setRecipes.removeRecipes.forEach {
+            runCatching {
+                Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+            }.onFailure { it.printStackTrace() }
         }
 
-        recipes.recipes.forEachIndexed { i, recipe ->
-            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
-            // Register recipe only if not present
-            Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
-            if (recipes.discoverRecipes) discoveredRecipes += key
+        setRecipes.recipes.forEachIndexed { i, recipe ->
+            runCatching {
+                val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
+                // Register recipe only if not present
+                Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, setRecipes.group).register()
+                if (setRecipes.discoverRecipes) discoveredRecipes += key
+            }.onFailure { it.printStackTrace() }
         }
         return discoveredRecipes
     }

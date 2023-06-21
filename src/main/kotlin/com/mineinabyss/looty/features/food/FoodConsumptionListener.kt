@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.EquipmentSlot
 import kotlin.random.Random
 
-class CustomFoodSystem : Listener {
+class FoodConsumptionListener : Listener {
     @EventHandler
     fun PlayerItemConsumeEvent.onConsumeFood() {
         val gearyInventory = player.inventory.toGeary() ?: return

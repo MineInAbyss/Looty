@@ -1,5 +1,6 @@
 package com.mineinabyss.looty.features.recipes
 
+import com.mineinabyss.geary.papermc.gearyPaper
 import com.mineinabyss.geary.papermc.tracking.items.gearyItems
 import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.accessors.TargetScope
@@ -13,7 +14,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
-class ItemRecipeQuery : Query(), Listener {
+class ItemRecipeQuery : Query() {
     private val TargetScope.setRecipes by get<SetRecipes>()
     private val TargetScope.prefabKey by get<PrefabKey>()
 

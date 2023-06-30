@@ -17,7 +17,7 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 
-class ItemRecipeQuery : Query(), Listener {
+class ItemRecipeQuery : Query() {
     private val TargetScope.recipes by get<SetRecipes>()
     private val TargetScope.prefabKey by get<PrefabKey>()
 
@@ -31,31 +31,39 @@ class ItemRecipeQuery : Query(), Listener {
         }
 
         recipes.removeRecipes.forEach {
-            Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+            runCatching {
+                Bukkit.removeRecipe(NamespacedKey.fromString(it)!!)
+            }.onFailure { it.printStackTrace() }
         }
 
         recipes.recipes.forEachIndexed { i, recipe ->
-            val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
-            // Register recipe only if not present
-            Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
-            if (recipes.discoverRecipes) discoveredRecipes += key
+            runCatching {
+                val key = NamespacedKey(prefabKey.namespace, "${prefabKey.key}$i")
+                // Register recipe only if not present
+                Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
+                if (recipes.discoverRecipes) discoveredRecipes += key
+            }.onFailure { it.printStackTrace() }
         }
         return discoveredRecipes
     }
 }
 
-class RecipeDiscoverySystem(
-    val discoveredRecipes: List<NamespacedKey>
-): Listener {
+class RecipeDiscoverySystem(val discoveredRecipes: List<NamespacedKey>): Listener {
     @EventHandler
     fun PlayerJoinEvent.showRecipesOnJoin() {
         player.discoverRecipes(discoveredRecipes)
     }
+}
 
+class RecipeCraftingSystem : Listener {
+    /**
+     * Prevents custom items being usable in vanilla recipes based on their material,
+     * when they have a [DenyInVanillaRecipes] component, by setting result to null.
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PrepareItemCraftEvent.onCraftWithCustomItem() {
-        if (inventory.matrix.mapNotNull {
+        if (inventory.matrix.asSequence().mapNotNull {
                 it?.itemMeta?.persistentDataContainer?.decodePrefabs()?.firstOrNull()?.toEntityOrNull()
-            }.any { it.has<SetItem>() && !it.has<AllowInVanillaRecipes>() }) inventory.result = null
+            }.any { it.has<SetItem>() && it.has<DenyInVanillaRecipes>() }) inventory.result = null
     }
 }

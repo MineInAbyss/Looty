@@ -1,6 +1,7 @@
 package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.geary.papermc.datastore.decodePrefabs
+import org.bukkit.Keyed
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -13,6 +14,9 @@ class RecipeCraftingSystem : Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PrepareItemCraftEvent.onCraftWithCustomItem() {
+        // Ensure this only cancels vanilla recipes
+        if (recipe == null || (recipe as? Keyed)?.key()?.namespace() != "minecraft") return
+
         if (inventory.matrix.any {
                 it?.itemMeta?.persistentDataContainer
                     ?.decodePrefabs()

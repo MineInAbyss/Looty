@@ -35,7 +35,9 @@ class ItemRecipeQuery : Query() {
                 // Register recipe only if not present
                 Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
                 if (recipes.discoverRecipes) discoveredRecipes += key
-            }.onFailure { it.printStackTrace() }
+            }.onFailure {
+                looty.plugin.logger.warning("Failed to register recipe ${prefabKey.key} #$i, ${it.message}")
+            }
         }
         return discoveredRecipes
     }

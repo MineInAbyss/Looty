@@ -1,7 +1,6 @@
 package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.geary.papermc.datastore.decodePrefabs
-import com.mineinabyss.geary.papermc.tracking.items.components.SetItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -14,11 +13,13 @@ class RecipeCraftingSystem : Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PrepareItemCraftEvent.onCraftWithCustomItem() {
-        if (inventory.matrix
-                .asSequence()
-                .mapNotNull { it?.itemMeta?.persistentDataContainer?.decodePrefabs()?.firstOrNull()?.toEntityOrNull() }
-                .any { it.has<SetItem>() && it.has<DenyInVanillaRecipes>() }
-        ) {
+        if (inventory.matrix.any {
+                it?.itemMeta?.persistentDataContainer
+                    ?.decodePrefabs()
+                    ?.firstOrNull()
+                    ?.toEntityOrNull()
+                    ?.has<DenyInVanillaRecipes>() == true
+            }) {
             inventory.result = null
         }
     }

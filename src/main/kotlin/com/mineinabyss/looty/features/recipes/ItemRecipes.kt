@@ -20,7 +20,10 @@ interface ItemRecipes {
                     flatMap { it.registerRecipes() }
                 }
 
-                gearyPaper.plugin.listeners(RecipeDiscoverySystem(autoDiscoveredRecipes), RecipeCraftingSystem())
+                gearyPaper.plugin.listeners(
+                    RecipeDiscoverySystem(autoDiscoveredRecipes),
+                    RecipeCraftingSystem(),
+                )
             }
         }
     }

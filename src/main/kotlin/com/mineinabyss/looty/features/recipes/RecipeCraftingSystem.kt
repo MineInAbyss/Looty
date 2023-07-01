@@ -14,8 +14,12 @@ class RecipeCraftingSystem : Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PrepareItemCraftEvent.onCraftWithCustomItem() {
-        if (inventory.matrix.asSequence().mapNotNull {
-                it?.itemMeta?.persistentDataContainer?.decodePrefabs()?.firstOrNull()?.toEntityOrNull()
-            }.any { it.has<SetItem>() && it.has<DenyInVanillaRecipes>() }) inventory.result = null
+        if (inventory.matrix
+                .asSequence()
+                .mapNotNull { it?.itemMeta?.persistentDataContainer?.decodePrefabs()?.firstOrNull()?.toEntityOrNull() }
+                .any { it.has<SetItem>() && it.has<DenyInVanillaRecipes>() }
+        ) {
+            inventory.result = null
+        }
     }
 }

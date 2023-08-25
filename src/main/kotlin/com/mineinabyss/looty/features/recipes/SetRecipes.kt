@@ -1,4 +1,4 @@
-package com.mineinabyss.looty.ecs.components
+package com.mineinabyss.looty.features.recipes
 
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import com.mineinabyss.idofront.serialization.recipes.SerializableRecipeIngredients
@@ -6,8 +6,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("looty:recipes")
-class RegisterRecipeComponent(
+@SerialName("looty:set.recipes")
+class SetRecipes(
     val recipes: List<SerializableRecipeIngredients>,
     val discoverRecipes: Boolean = false,
     val group: String = "",

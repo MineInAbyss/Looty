@@ -1,15 +1,10 @@
+rootProject.name = "looty"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
         maven("https://repo.mineinabyss.com/releases")
         maven("https://repo.papermc.io/repository/maven-public/")
-    }
-
-    plugins {
-        val kotlinVersion: String by settings
-        kotlin("jvm") version kotlinVersion
-        kotlin("plugin.serialization") version kotlinVersion
-        kotlin("kapt") version kotlinVersion
     }
 
     val idofrontVersion: String by settings
@@ -30,9 +25,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("libs").from("com.mineinabyss:catalog:$idofrontVersion")
-        create("lootyLibs").from(files("gradle/lootyLibs.versions.toml"))
+        create("myLibs").from(files("gradle/myLibs.versions.toml"))
     }
 }
 
-
-rootProject.name = "looty"

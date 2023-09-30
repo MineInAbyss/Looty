@@ -44,7 +44,7 @@ class WearableItemSystem : Listener {
         // swap the items from cursor to helmet slot
         val currItem = currentItem
         currentItem = cursor
-        view.cursor = currItem
+        view.setCursor(currItem)
         isCancelled = true
         player.playSound(player.location, hat.sound, 1f, 1f)
     }

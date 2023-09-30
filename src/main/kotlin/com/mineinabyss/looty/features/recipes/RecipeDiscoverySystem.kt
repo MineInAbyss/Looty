@@ -6,7 +6,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
 class RecipeDiscoverySystem(
-    val discoveredRecipes: List<NamespacedKey>
+    val discoveredRecipes: Set<NamespacedKey>
 ) : Listener {
     @EventHandler
     fun PlayerJoinEvent.showRecipesOnJoin() {

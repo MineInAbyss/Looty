@@ -9,6 +9,6 @@ val looty by DI.observe<LootyModule>()
 class LootyModule(
     val plugin: LootyPlugin
 ) {
-    val configController = config<LootyConfig>("config") { plugin.fromPluginPath(loadDefault = true) }
+    val configController = config<LootyConfig>("config", plugin.dataFolder.toPath(), LootyConfig())
     val config: LootyConfig by configController
 }

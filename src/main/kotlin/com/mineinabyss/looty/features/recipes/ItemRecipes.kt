@@ -15,7 +15,7 @@ interface ItemRecipes {
         }
 
         override fun ItemRecipes.install() {
-            geary.pipeline.intercept(GearyPhase.ENABLE) {
+            geary.pipeline.runOnOrAfter(GearyPhase.ENABLE) {
                 val autoDiscoveredRecipes = query.registerRecipes()
 
                 gearyPaper.plugin.listeners(

@@ -3,7 +3,7 @@ package com.mineinabyss.looty.features.wearables
 import com.mineinabyss.geary.helpers.with
 import com.mineinabyss.geary.papermc.tracking.items.inventory.toGeary
 import com.mineinabyss.idofront.entities.rightClicked
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryCrafting
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryCrafting
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player

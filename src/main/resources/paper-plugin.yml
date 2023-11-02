@@ -1,14 +1,15 @@
 name: Looty
-version: ${plugin_version}
+version: "${plugin_version}"
 author: Offz
 main: com.mineinabyss.looty.LootyPlugin
 api-version: "1.20"
-depend: [ Geary ]
 
 prefix: Looty
 description: Custom items for Geary ECS
 
-commands:
-  looty:
-    description: The main looty command
-    usage: /looty [sub command]
+dependencies:
+  server:
+    Geary:
+      required: true
+      load: BEFORE
+      join-classpath: true

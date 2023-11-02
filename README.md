@@ -2,16 +2,15 @@
 
 # Looty
 
-[![Java CI with Gradle](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml/badge.svg)](https://github.com/MineInAbyss/Looty/actions/workflows/gradle-ci.yml)
 [![Maven](https://img.shields.io/maven-metadata/v?metadataUrl=https://repo.mineinabyss.com/releases/com/mineinabyss/looty/maven-metadata.xml)](https://repo.mineinabyss.com/#/releases/com/mineinabyss/looty)
 [![Contribute](https://shields.io/badge/Contribute-e57be5?logo=github%20sponsors&style=flat&logoColor=white)](https://wiki.mineinabyss.com/contribute)
 </div>
 
-Looty is a [Paper](https://papermc.io/) plugin for creating custom items with config files. We use [Geary](https://github.com/MineInAbyss/geary-papermc) to break down items into small components. We provide many components to modify vanilla behaviour, for new game features check out [Geary-addons](https://github.com/MineInAbyss/Geary-addons).
+Looty is a [Paper](https://papermc.io/) plugin for creating custom items with config files. We extend on basic item functionality in [Geary](https://github.com/MineInAbyss/geary-papermc) to help create complicated items all in config.
 
 ## Features
 
-- Automatically updates item name, lore, and custom models when the config changes
+- Useful components like `hat` to make any item wearable, or `food` to create food items with custom effects.
 - Support for custom recipes
 - Write configs in yaml, json, and more.
 

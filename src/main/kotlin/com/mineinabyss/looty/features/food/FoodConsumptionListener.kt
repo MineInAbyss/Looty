@@ -9,18 +9,14 @@ import org.bukkit.inventory.EquipmentSlot
 import kotlin.random.Random
 
 class FoodConsumptionListener : Listener {
+
     @EventHandler
     fun PlayerItemConsumeEvent.onConsumeFood() {
         val gearyInventory = player.inventory.toGeary() ?: return
-
-        val entity = if (hand == EquipmentSlot.HAND)
-            gearyInventory.itemInMainHand
-        else gearyInventory.itemInOffhand ?: return
-
+        val entity = if (hand == EquipmentSlot.HAND) gearyInventory.itemInMainHand else gearyInventory.itemInOffhand ?: return
         val gearyFood = entity?.get<Food>() ?: return
 
         val replacement = gearyFood.replacement?.toItemStack()
-        isCancelled = true // Cancel vanilla behaviour
 
         if (player.gameMode != GameMode.CREATIVE) {
             if (replacement != null) {

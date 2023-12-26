@@ -35,10 +35,6 @@ class LootyPlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-
-        //Reset to avoid duplicates and clear mixes that have been removed
-        server.potionBrewer.resetPotionMixes()
-
         service<SerializablePrefabItemService>(LootySerializablePrefabItemService())
         LootyCommands() //Register commands
 

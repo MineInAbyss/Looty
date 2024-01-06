@@ -19,7 +19,8 @@ class ItemRecipeQuery : GearyQuery() {
         val discoveredRecipes = mutableSetOf<NamespacedKey>()
 
         forEach { pointer ->
-            val result: ItemStack? = pointer.recipes.result?.toItemStackOrNull() ?: gearyItems.createItem(pointer.prefabKey)
+            val result: ItemStack? = runCatching { pointer.recipes.result?.toItemStackOrNull() ?: gearyItems.createItem(pointer.prefabKey) }
+                .getOrNull()
 
             if (result == null) {
                 looty.plugin.logger.warning("Recipe ${pointer.prefabKey.key} is missing result item")

@@ -35,7 +35,6 @@ class LootyPlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-        service<SerializablePrefabItemService>(LootySerializablePrefabItemService())
         LootyCommands() //Register commands
 
         listeners(

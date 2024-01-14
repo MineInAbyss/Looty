@@ -16,13 +16,8 @@ class FoodConsumptionListener : Listener {
         val entity = if (hand == EquipmentSlot.HAND) gearyInventory.itemInMainHand else gearyInventory.itemInOffhand ?: return
         val gearyFood = entity?.get<Food>() ?: return
 
-        val replacement = gearyFood.replacement?.toItemStack()
-
         if (player.gameMode != GameMode.CREATIVE) {
-            if (replacement != null) {
-                if (player.inventory.firstEmpty() != -1) player.inventory.addItem(replacement)
-                else player.world.dropItemNaturally(player.location, replacement)
-            }
+            replacement = gearyFood.replacement?.toItemStack()
             item.subtract()
 
             if (gearyFood.effectList.isNotEmpty() && Random.nextDouble(0.0, 1.0) <= gearyFood.effectChance)

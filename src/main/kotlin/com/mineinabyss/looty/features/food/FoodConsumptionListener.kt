@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import kotlin.random.Random
 
 class FoodConsumptionListener : Listener {
@@ -17,13 +18,17 @@ class FoodConsumptionListener : Listener {
         val gearyFood = entity?.get<Food>() ?: return
 
         if (player.gameMode != GameMode.CREATIVE) {
-            replacement = gearyFood.replacement?.toItemStack()
-            item.subtract()
+            player.inventory.getItem(hand).subtract()
+            gearyFood.replacement?.toItemStack()?.let { replacement ->
+                if (player.inventory.firstEmpty() != -1) player.inventory.addItem(replacement)
+                else player.world.dropItemNaturally(player.location, replacement)
+            }
 
             if (gearyFood.effectList.isNotEmpty() && Random.nextDouble(0.0, 1.0) <= gearyFood.effectChance)
                 player.addPotionEffects(gearyFood.effectList)
         }
 
+        isCancelled = true
         player.foodLevel += minOf(gearyFood.hunger, 20)
         player.saturation += minOf(gearyFood.saturation, 20.0).toFloat()
     }

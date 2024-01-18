@@ -10,13 +10,15 @@ interface ItemRecipes {
     val query: ItemRecipeQuery
 
     companion object : GearyAddonWithDefault<ItemRecipes> {
+        val recipes by lazy { default().query.registerRecipes() }
+
         override fun default() = object : ItemRecipes {
             override val query = ItemRecipeQuery()
         }
 
         override fun ItemRecipes.install() {
             geary.pipeline.runOnOrAfter(GearyPhase.ENABLE) {
-                val autoDiscoveredRecipes = query.registerRecipes()
+                val autoDiscoveredRecipes = recipes
 
                 gearyPaper.plugin.listeners(
                     RecipeDiscoverySystem(autoDiscoveredRecipes),

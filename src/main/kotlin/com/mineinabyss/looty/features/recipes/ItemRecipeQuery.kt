@@ -5,6 +5,7 @@ import com.mineinabyss.geary.prefabs.PrefabKey
 import com.mineinabyss.geary.systems.accessors.Pointer
 import com.mineinabyss.geary.systems.query.GearyQuery
 import com.mineinabyss.idofront.recipes.register
+import com.mineinabyss.idofront.serialization.recipes.SerializableRecipeIngredients
 import com.mineinabyss.looty.config.looty
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey

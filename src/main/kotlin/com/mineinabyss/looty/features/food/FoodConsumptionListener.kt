@@ -2,6 +2,7 @@ package com.mineinabyss.looty.features.food
 
 import com.mineinabyss.geary.papermc.tracking.items.inventory.toGeary
 import org.bukkit.GameMode
+import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -29,6 +30,7 @@ class FoodConsumptionListener : Listener {
         }
 
         isCancelled = true
+        player.playSound(player.location, Sound.ENTITY_PLAYER_BURP, 1f, 1f)
         player.foodLevel += minOf(gearyFood.hunger, 20)
         player.saturation += minOf(gearyFood.saturation, 20.0).toFloat()
     }

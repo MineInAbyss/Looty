@@ -8,6 +8,7 @@ import com.mineinabyss.idofront.items.editItemMeta
 import com.mineinabyss.idofront.messaging.broadcast
 import com.mineinabyss.idofront.messaging.broadcastVal
 import com.mineinabyss.idofront.nms.nbt.fastPDC
+import com.mineinabyss.idofront.serialization.BaseSerializableItemStack
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import com.mineinabyss.idofront.serialization.toSerializable
 import org.bukkit.Bukkit
@@ -62,13 +63,13 @@ class RecipeCraftingSystem : Listener {
         val inputGearyEntity = equipment.fastPDC?.decodePrefabs()?.firstOrNull() ?: return
         val smithingTransformRecipes = Bukkit.recipeIterator().asSequence().filter { (it as? SmithingTransformRecipe)?.result?.fastPDC?.hasComponentsEncoded == true }.filterIsInstance<SmithingTransformRecipe>()
         val customRecipeResult = smithingTransformRecipes.filter { it.template.test(template) && it.addition.test(mineral) && it.base.itemStack.itemMeta?.persistentDataContainer?.decodePrefabs()?.firstOrNull() == inputGearyEntity }.firstOrNull()?.result
-        var recipeResultItem = (customRecipeResult ?: ItemStack.empty()).let { result?.toSerializable()?.toItemStack(it, EnumSet.of(SerializableItemStack.Properties.DISPLAY_NAME)) }
+        var recipeResultItem = (customRecipeResult ?: ItemStack.empty()).let { result?.toSerializable()?.toItemStack(it, EnumSet.of(BaseSerializableItemStack.Properties.DISPLAY_NAME)) }
 
         recipeResultItem = recipeResultItem?.editItemMeta {
             displayName(
                 equipment.fastPDC?.decode<SetItemIgnoredProperties>()?.let { properties ->
                     persistentDataContainer.encode(properties)
-                    if (SerializableItemStack.Properties.DISPLAY_NAME in properties.ignore && result?.itemMeta?.hasDisplayName() == true)
+                    if (BaseSerializableItemStack.Properties.DISPLAY_NAME in properties.ignore && result?.itemMeta?.hasDisplayName() == true)
                         result?.itemMeta?.displayName()?.compact()
                     else displayName()?.compact()
                 } ?: displayName()?.compact()

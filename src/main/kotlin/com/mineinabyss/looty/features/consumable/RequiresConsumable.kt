@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import org.bukkit.entity.Player
 
 @Serializable
-@SerialName("looty:requiresConsumable")
+@SerialName("looty:requires_consumable")
 class RequiresConsumable(
     val type: SerializableItemStack,
     val minAmount: Int = 1,

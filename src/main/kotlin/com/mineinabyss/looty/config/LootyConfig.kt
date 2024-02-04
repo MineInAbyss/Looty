@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LootyConfig(
     val debug: Boolean = false,
-    val migrateByCustomModelData: Boolean = false
+    val migrateByCustomModelData: Boolean = false,
+    val autoDiscoverVanillaRecipes: Boolean = false
 )

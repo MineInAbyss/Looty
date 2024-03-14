@@ -1,39 +1,35 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val idofrontVersion: String by project
-val gearyVersion: String by project
-
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.kotlinx.serialization)
-    id("com.mineinabyss.conventions.kotlin.jvm")
-    id("com.mineinabyss.conventions.papermc")
-    id("com.mineinabyss.conventions.nms")
-    id("com.mineinabyss.conventions.copyjar")
-    id("com.mineinabyss.conventions.publication")
-    id("com.mineinabyss.conventions.autoversion")
+    alias(idofrontLibs.plugins.mia.kotlin.jvm)
+    alias(idofrontLibs.plugins.mia.papermc)
+    alias(idofrontLibs.plugins.mia.nms)
+    alias(idofrontLibs.plugins.mia.copyjar)
+    alias(idofrontLibs.plugins.mia.publication)
+    alias(idofrontLibs.plugins.mia.autoversion)
+    alias(idofrontLibs.plugins.kotlinx.serialization)
 }
 
 repositories {
     maven("https://repo.mineinabyss.com/snapshots")
     maven("https://jitpack.io")
+    maven("https://repo.dmulloy2.net/repository/public/")
     mavenLocal()
 }
 
 dependencies {
     // Other plugins
-    compileOnly(myLibs.geary.papermc)
+    compileOnly(libs.geary.papermc)
 
     // From Geary
 
-    compileOnly(libs.kotlinx.serialization.json)
-    compileOnly(libs.kotlinx.serialization.kaml)
-    compileOnly(libs.kotlinx.coroutines)
-    compileOnly(libs.minecraft.mccoroutine)
-
-    // Shaded
-    implementation(libs.bundles.idofront.core)
-    implementation(libs.idofront.nms)
+    compileOnly(idofrontLibs.kotlinx.serialization.json)
+    compileOnly(idofrontLibs.kotlinx.serialization.kaml)
+    compileOnly(idofrontLibs.kotlinx.coroutines)
+    compileOnly(idofrontLibs.minecraft.mccoroutine)
+    compileOnly(idofrontLibs.bundles.idofront.core)
+    compileOnly(idofrontLibs.idofront.nms)
 }
 
 tasks {

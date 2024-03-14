@@ -1,8 +1,9 @@
 package com.mineinabyss.looty.features.consumable
 
 import com.mineinabyss.geary.autoscan.AutoScan
-import com.mineinabyss.geary.systems.GearyListener
-import com.mineinabyss.geary.systems.accessors.Pointers
+import com.mineinabyss.geary.modules.GearyModule
+import com.mineinabyss.geary.systems.builders.listener
+import com.mineinabyss.geary.systems.query.ListenerQuery
 import com.mineinabyss.idofront.serialization.SerializableItemStack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,12 +17,13 @@ class ConsumeItemFromInventory(
 )
 
 @AutoScan
-class ConsumeItemAction : GearyListener() {
-    val Pointers.player by get<Player>().on(target)
-    val Pointers.action by get<ConsumeItemFromInventory>().on(source)
-
-    override fun Pointers.handle() {
-        val matchedItem = player.inventory.firstOrNull { action.type.matches(it) } ?: return
-        matchedItem.amount -= action.amount
+fun GearyModule.createConsumeItemAction() = listener(
+    object : ListenerQuery() {
+        val player by get<Player>()
+        val action by source.get<ConsumeItemFromInventory>()
     }
+).exec {
+    val matchedItem = player.inventory.firstOrNull { action.type.matches(it) } ?: return@exec
+    matchedItem.amount -= action.amount
 }
+

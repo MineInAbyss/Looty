@@ -25,7 +25,7 @@ fun CachedQueryRunner<ItemRecipeQuery>.registerRecipes(): Set<NamespacedKey> {
             .getOrNull()
 
         if (result == null) {
-            looty.plugin.logger.warning("Recipe ${prefabKey.key} is missing result item")
+            looty.logger.w("Recipe ${prefabKey.key} is missing result item")
             return@forEach
         }
 
@@ -42,7 +42,7 @@ fun CachedQueryRunner<ItemRecipeQuery>.registerRecipes(): Set<NamespacedKey> {
                 Bukkit.getRecipe(key) ?: recipe.toRecipe(key, result, recipes.group).register()
                 if (recipes.discoverRecipes) discoveredRecipes += key
             }.onFailure {
-                looty.plugin.logger.warning("Failed to register recipe ${prefabKey.key} #$i, ${it.message}")
+                looty.logger.w("Failed to register recipe ${prefabKey.key} #$i, ${it.message}")
             }
         }
     }

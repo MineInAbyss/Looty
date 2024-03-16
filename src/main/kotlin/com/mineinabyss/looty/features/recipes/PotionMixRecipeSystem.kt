@@ -28,5 +28,5 @@ fun GearyModule.createPotionMixRecipeSystem() = listener(
             looty.plugin.server.potionBrewer.removePotionMix(key)
             looty.plugin.server.potionBrewer.addPotionMix(potionmix.toPotionMix(key, result))
         }
-    } else looty.plugin.logger.warning("PotionMix $prefabKey is missing result item")
+    } else looty.logger.w("PotionMix $prefabKey is missing result item")
 }

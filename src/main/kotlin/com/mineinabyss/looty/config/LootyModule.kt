@@ -2,6 +2,7 @@ package com.mineinabyss.looty.config
 
 import com.mineinabyss.idofront.config.config
 import com.mineinabyss.idofront.di.DI
+import com.mineinabyss.idofront.messaging.observeLogger
 import com.mineinabyss.looty.LootyPlugin
 
 val looty by DI.observe<LootyModule>()
@@ -11,4 +12,5 @@ class LootyModule(
 ) {
     val configController = config<LootyConfig>("config", plugin.dataFolder.toPath(), LootyConfig())
     val config: LootyConfig by configController
+    val logger by plugin.observeLogger()
 }
